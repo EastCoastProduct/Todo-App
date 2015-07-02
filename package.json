@@ -1,0 +1,22 @@
+{
+  "name": "ToDoApp",
+  "scripts": {
+    "build": "browserify -t reactify app.js -o public/bundle.js && browserify -t browserify-css appcss.js > public/bundlecss.js"
+  },
+  "devDependencies": {
+    "browserify": "^7.0.0",
+    "reactify": "^0.17.1"
+  },
+  "dependencies": {
+    "browserify-css": "^0.6.1",
+    "express": "^4.10.6",
+    "firebase": "~2.2.7",
+    "node-jsx": "^0.12.4",
+    "react": "^0.12.1"
+  },
+  "browserify-css": {
+    "autoInject": true,
+    "minify": true,
+    "rootDir": "."
+  }
+}
