@@ -11,4 +11,7 @@ app.get('/', function(req, res) {
     var htmlMarkup = React.renderToString(mainView());
     res.send(htmlMarkup);
 });
-app.listen(2222);
+
+var port = 2222;
+app.listen(port);
+console.log("Server is running on: localhost:" + port);
