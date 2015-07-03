@@ -50,7 +50,7 @@ var TodoList = React.createClass({displayName: "TodoList",
     return {items: [], text: ""};
 },
 
-componentWillMount: function() {
+componentDidMount: function() {
     this.firebaseDb = new Firebase("https://app-todo-list.firebaseio.com/");
     this.firebaseDb.on("child_added", function(data) {
         this.items.push(data.val());
