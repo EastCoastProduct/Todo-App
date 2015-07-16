@@ -1,7 +1,7 @@
 {
   "name": "ToDoApp",
   "scripts": {
-    "build": "browserify -t reactify app.js -o public/bundle.js && browserify -t browserify-css appcss.js > public/bundlecss.js"
+    "build": "browserify -t reactify --extension=.js views/app.js -o public/bundleApp.js && browserify -t reactify --extension=.js views/users.js -o public/bundleUsers.js && browserify -t reactify --extension=.js views/newuser.js -o public/bundlenewuser.js && browserify -t reactify --extension=.js views/login.js -o public/bundleLogin.js && browserify -t browserify-css appcss.js > public/bundlecss.js"
   },
   "devDependencies": {
     "browserify": "^7.0.0",
@@ -11,8 +11,11 @@
     "browserify-css": "^0.6.1",
     "express": "^4.10.6",
     "firebase": "~2.2.7",
+    "js-data": "^2.0.0",
+    "js-data-firebase": "^2.0.0",
     "node-jsx": "^0.12.4",
-    "react": "^0.12.1"
+    "react": "^0.12.1",
+    "reactfire": "^0.4.0"
   },
   "browserify-css": {
     "autoInject": true,

@@ -1,32 +1,28 @@
 var React = require('react');
-var TodoList = require('./components/todolist.js');
+var NewUser = require('../components/newuser.js');
 
 if(typeof window !== 'undefined') {
     window.onload = function() {
-        React.render(mainView(), document);
+        React.render(newUserView(), document);
     }
 }
 
-var items = [ ];
-
-var mainView = React.createClass({
+var newUserView = React.createClass({
     render: function() {
         return (
             <html>
                 <head>
-                    <title>To-Do List</title>
-                    <script src="public/bundle.js"></script>
+                    <title>To-Do List New User</title>
+                    <script src="public/bundlenewuser.js"></script>
                     <script src="public/bundlecss.js"></script>
                 </head>
                 <body>
                     <section id="container">
                         <section className="wrapper">
-                            <h3><i className="fa"></i>To-Do List</h3>
+                            <h3><i className="fa"></i>Create new user</h3>
                             <div className="row mt">
-                                <div className="col-md-12">
-                                    <section id="todoList" className="task-panel tasks-widget">
-                                        <TodoList />
-                                    </section>
+                                <div className="col-md-6">
+                                    <NewUser />
                                 </div>
                             </div>
                         </section>
@@ -37,4 +33,4 @@ var mainView = React.createClass({
     }
 });
 
-module.exports = mainView;
+module.exports = newUserView;
