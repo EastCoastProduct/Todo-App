@@ -1,34 +1,49 @@
-/** @jsx React.DOM */
-var React = require('react');
-var Firebase = require('firebase');
+import React from 'react';
+import Firebase from 'firebase';
+import Router from 'react-router';
+import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
+import auth from '../auth';
 
-var NewUser = React.createClass({
-	getInitialState: function() {
+//add cancel button
+//add total points for each user
+let NewUser = React.createClass({
+	mixins: [Router.Navigation],
+
+	getInitialState() {
+      	if (!auth.loggedIn()) {//if not admin, show message that he doesn't have rights
+      		console.log("redirect to login");
+      		this.transitionTo('login');
+      	};
+
 		this.user = {};
 	  	return { uid: '', first_name: '', last_name: '', email: '', isAdmin: false, user: {}};
 	},
 
-	componentWillMount: function() {
+	componentWillMount() {
 		this.firebaseDb = new Firebase('https://app-todo-list.firebaseio.com/users/');
 	},
 
-	inputEmailTextChange: function(e) {
+	inputEmailTextChange(e) {
     	this.setState({email: e.target.value});
 	},
 
-	inputPasswordTextChange: function(e) {
+	inputPasswordTextChange(e) {
     	this.setState({password: e.target.value});
 	},
 
-	inputFirstNameTextChange: function(e) {
+	inputFirstNameTextChange(e) {
     	this.setState({first_name: e.target.value});
 	},
 
-	inputLastNameTextChange: function(e) {
+	inputLastNameTextChange(e) {
     	this.setState({last_name: e.target.value});
 	},
 
-	createUser: function(e) {
+	inputIsAdminChange(e) {
+    	this.setState({isAdmin: e.target.checked});
+	},
+
+	createUser(e) {
 		e.preventDefault();
 		if (this.state.email.trim().length !== 0) {
 				this.firebaseDb.createUser({ 
@@ -45,16 +60,20 @@ var NewUser = React.createClass({
 					    first_name: this.state.first_name,
 					    last_name: this.state.last_name,
 					    email: this.state.email,
-					    isAdmin: false
+					    isAdmin: this.state.isAdmin
 					});
+					this.setState({first_name: ""}); 
+					this.setState({last_name: ""});
 					this.setState({email: ""}); 
 					this.setState({password: ""});
+					this.setState({isAdmin: false});
+					this.transitionTo('users');
 				}
 			}.bind(this));
 		};
 	},
 
-	render: function() {
+	render() {
 		return <div>
 					<form onSubmit={this.createUser} >
 						<div><span className="col-md-2">First name:</span>
@@ -68,6 +87,9 @@ var NewUser = React.createClass({
 				        </div>
 				        <div><span className="col-md-2">Password:</span>
 				            <input type = 'text' value = { this.state.password } onChange = {this.inputPasswordTextChange} />
+				        </div>
+				        <div><span className="col-md-2">Admin:</span>
+				            <input type = 'checkbox' checked = { this.state.isAdmin } onChange = {this.inputIsAdminChange} />
 				        </div>
 	                    <div className="col-md-4"><span className="pull-right"><button> Add new user </button></span></div>
 					</form>

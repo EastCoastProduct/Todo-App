@@ -1,0 +1,9 @@
+{
+  "firebase": "app-todo-list",
+  "public": ".",
+  "ignore": [
+    "firebase.json",
+    "**/.*",
+    "**/node_modules/**"
+  ]
+}

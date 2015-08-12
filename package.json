@@ -1,25 +1,22 @@
 {
-  "name": "ToDoApp",
+  "name": "newes6",
+  "private": true,
   "scripts": {
-    "build": "browserify -t reactify --extension=.js views/app.js -o public/bundleApp.js && browserify -t reactify --extension=.js views/users.js -o public/bundleUsers.js && browserify -t reactify --extension=.js views/newuser.js -o public/bundlenewuser.js && browserify -t reactify --extension=.js views/login.js -o public/bundleLogin.js && browserify -t browserify-css appcss.js > public/bundlecss.js"
-  },
-  "devDependencies": {
-    "browserify": "^7.0.0",
-    "reactify": "^0.17.1"
+    "start": "webpack-dev-server --hot --progress --colors",
+    "build": "webpack --progress --colors"
   },
   "dependencies": {
-    "browserify-css": "^0.6.1",
-    "express": "^4.10.6",
-    "firebase": "~2.2.7",
-    "js-data": "^2.0.0",
-    "js-data-firebase": "^2.0.0",
-    "node-jsx": "^0.12.4",
-    "react": "^0.12.1",
-    "reactfire": "^0.4.0"
+    "babel-core": "^5.8.3",
+    "babel-loader": "^5.3.2",
+    "firebase": "^2.2.7",
+    "react": "^0.13.3",
+    "react-hot-loader": "^1.2.8",
+    "react-router": "^0.13.3",
+    "webpack": "^1.10.1",
+    "webpack-dev-server": "^1.10.1"
   },
-  "browserify-css": {
-    "autoInject": true,
-    "minify": true,
-    "rootDir": "."
+  "devDependencies": {
+    "css-loader": "^0.15.6",
+    "style-loader": "^0.12.3"
   }
 }
