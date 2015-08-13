@@ -3,9 +3,8 @@ import Firebase from 'firebase';
 import Router from 'react-router';
 import auth from '../auth';
 
-//add total score in user data
-//add link to preview users account
-//add total points to user document in db
+//remove current user from list of users
+//add link in header for preview and edit account
 
 let UsersList = React.createClass({
     mixins: [Router.Navigation], //mixin for redirect on button click, transitionTo function

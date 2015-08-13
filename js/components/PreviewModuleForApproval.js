@@ -5,7 +5,6 @@ import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-route
 import auth from '../auth';
 
 //add admin comment
-//add total points to user document when module approved
 
 let PreviewModuleForApproval = React.createClass({
 	mixins: [Router.Navigation],
@@ -16,8 +15,10 @@ let PreviewModuleForApproval = React.createClass({
 
 	componentWillMount() {
         this.moduleFb = new Firebase('https://app-todo-list.firebaseio.com/modules/' + this.state.moduleId);
+        this.usersFb = new Firebase('https://app-todo-list.firebaseio.com/users/' + this.state.studentId);
         this.moduleApprovalFb = new Firebase(this.moduleFb + '/users/' + this.state.studentId);
-        this.studentFb = new Firebase('https://app-todo-list.firebaseio.com/users/' + this.state.studentId + '/modules/' + this.state.moduleId)
+        this.pointsFb = new Firebase('https://app-todo-list.firebaseio.com/users/' + this.state.studentId + '/modules/');
+        this.studentFb = new Firebase(this.pointsFb + '/' + this.state.moduleId);
         this.getModuleData();
     },
 
@@ -40,12 +41,27 @@ let PreviewModuleForApproval = React.createClass({
     showAllModules() {
         this.transitionTo('moduleslist');
     },
-/*
+    /*
     adminCommentOnChange(e) {
         this.setState({comment: e.target.value});
     },*/
 
     approveModule() {
+        this.usersFb.once("value", function(snapshot) {
+            var pointsData = snapshot.val();
+            if(snapshot.hasChild("total_points")){
+                var oldPoints = parseInt(pointsData.total_points);
+                var newPoints = String(oldPoints + parseInt(this.state.points));
+                this.usersFb.update({
+                    total_points: newPoints
+                })
+            } else (
+                this.usersFb.update({
+                    total_points: this.state.points
+                })
+            )
+        }.bind(this))
+
         this.studentFb.once("value", function(snap){
             var data = snap.val();
             if (snap.hasChild("repeated")){

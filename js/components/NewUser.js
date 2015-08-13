@@ -5,7 +5,7 @@ import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-route
 import auth from '../auth';
 
 //add cancel button
-//add total points for each user
+
 let NewUser = React.createClass({
 	mixins: [Router.Navigation],
 
@@ -76,22 +76,24 @@ let NewUser = React.createClass({
 	render() {
 		return <div>
 					<form onSubmit={this.createUser} >
-						<div><span className="col-md-2">First name:</span>
+						<div><span>First name:</span>
 				           <input type = 'text' value = { this.state.first_name } onChange = {this.inputFirstNameTextChange} />
 				       </div>
-				       <div><span className="col-md-2">Last name:</span>
+				       <div><span>Last name:</span>
 				           <input type = 'text' value = { this.state.last_name } onChange = {this.inputLastNameTextChange} />
 				       </div>
-						<div><span className="col-md-2">E-mail:</span>
+						<div><span>E-mail:</span>
 				            <input type = 'text' value = { this.state.email } onChange = {this.inputEmailTextChange} />
 				        </div>
-				        <div><span className="col-md-2">Password:</span>
+				        <div><span>Password:</span>
 				            <input type = 'text' value = { this.state.password } onChange = {this.inputPasswordTextChange} />
 				        </div>
-				        <div><span className="col-md-2">Admin:</span>
+				        <div><span>Admin:</span>
 				            <input type = 'checkbox' checked = { this.state.isAdmin } onChange = {this.inputIsAdminChange} />
 				        </div>
-	                    <div className="col-md-4"><span className="pull-right"><button> Add new user </button></span></div>
+	                    <div>
+		                    <span><button> Add new user </button></span>
+	                    </div>
 					</form>
 				</div>;
 	}
