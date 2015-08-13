@@ -3,9 +3,6 @@ import Firebase from 'firebase';
 import Router from 'react-router';
 import auth from '../auth';
 
-//remove current user from list of users
-//add link in header for preview and edit account
-
 let UsersList = React.createClass({
     mixins: [Router.Navigation], //mixin for redirect on button click, transitionTo function
 
@@ -15,6 +12,7 @@ let UsersList = React.createClass({
 
     componentWillMount() {
         this.firebaseDb = new Firebase("https://app-todo-list.firebaseio.com/users/");
+        this.currentUser = auth.getUserId();
         this.getAllUsers();
     },
 
@@ -25,19 +23,21 @@ let UsersList = React.createClass({
         if(!auth.isAdmin()){
           if(!items.isAdmin){
             items.id = data.key();
-            this.userDb = new Firebase(this.firebaseDb + '/' + data.key());
-            this.userDb.once("value", function(snap){
+            if (data.key() != this.currentUser){
+              this.userDb = new Firebase(this.firebaseDb + '/' + data.key());
+              this.userDb.once("value", function(snap){
               array.push(items);
               this.setState({ users: array });
             }.bind(this));
-          }} else {
+          }}} else {
             items.id = data.key();
-            this.userDb = new Firebase(this.firebaseDb + '/' + data.key());
-            this.userDb.once("value", function(snap){
-              array.push(items);
-              this.setState({ users: array });
-            }.bind(this));
-          }
+            if (data.key() != this.currentUser){
+              this.userDb = new Firebase(this.firebaseDb + '/' + data.key());
+              this.userDb.once("value", function(snap){
+                array.push(items);
+                this.setState({ users: array });
+              }.bind(this));
+          }}
       }.bind(this));
     },
 
@@ -97,20 +97,17 @@ let UserItem = React.createClass({
     
       return <ul className='task-list'>
                   <li key={ user.id } className=''>
-                        <span className='task-title'>
-                            <span className='task-title-sp'>{this.state.value}</span>
+                        <span>
+                            <span>{this.state.value}</span>
                             <div>
                                 <button type='button' onClick={this.viewProfile}>
                                     <i> View profile </i>
                                 </button>
                             </div>
                             {(auth.loggedIn() && auth.isAdmin()) ? (
-                            <div className='pull-right'>
-                                <button type='button' className='btn btn-primary btn-xs'>
-                                    <i className='fa'> edit </i>
-                                </button>
-                                <button type='button' className='btn btn-danger btn-xs' >
-                                    <i className='fa'> delete </i>
+                            <div>
+                                <button type='button'>
+                                    <i> delete </i>
                                 </button>
                             </div>
                             ) : (<div></div>)}

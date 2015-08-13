@@ -1,24 +1,20 @@
 import React from 'react';
 import Firebase from 'firebase';
 import Router from 'react-router';
-import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 import auth from '../auth';
 
-//add image
-//if no finished modules and total points, don't show it
-
-let UserInfo = React.createClass({
+let MyAccount = React.createClass({
 	mixins: [Router.Navigation],
     
 	getInitialState() {
-		return { id: this.props.query.id, modules: [] };
+		return { modules: [] };
 	},
 
 	componentWillMount() {
-        this.userFb = new Firebase('https://app-todo-list.firebaseio.com/users/' + this.state.id);
+        this.currentUser = auth.getUserId();
+        this.userFb = new Firebase('https://app-todo-list.firebaseio.com/users/' + this.currentUser);
         this.modulesFb = new Firebase('https://app-todo-list.firebaseio.com/modules/');
         this.getUserData();
-        this.currentUser = auth.getUserId();
     },
 
     componentWillUnmount() {
@@ -96,7 +92,7 @@ let UserInfo = React.createClass({
                             <div>{ _singleItems }</div>
                         </div>) : (<div></div>)}
                     
-                    {(auth.loggedIn() && auth.isAdmin()) ? (<div><span><button onClick={this.editProfile}>Edit profile</button></span></div>) : (<div></div>)}
+                    <div><span><button onClick={this.editProfile}>Edit profile</button></span></div>
                     <div><span><button onClick={this.showAllUsers}>Show all users</button></span></div>
 				</div>;
 	}
@@ -124,6 +120,6 @@ let ModuleItem = React.createClass({
                     </li>
                 </ul>;
     }
-  });
+});
 
-module.exports = UserInfo;
+module.exports = MyAccount;

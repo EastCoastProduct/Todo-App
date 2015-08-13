@@ -152,7 +152,7 @@ let PreviewModule = React.createClass({
                     {(!auth.isAdmin() && !this.state.approved && this.state.submitted) ? (<div><span>Submitted, waiting for response from admin!</span></div>):(<div></div>)}
                     {(!auth.isAdmin() && this.state.approved && !this.state.repeatable) ? (<div><span>This module is finished!</span></div>):(<div></div>)}
                     {((!auth.isAdmin() && !this.state.submitted) || (!auth.isAdmin() && this.state.approved && this.state.repeatable)) ? (
-                        <div> {(this.state.repeatable && this.state.repeated > 0) ? (<span>Repeated {this.state.repeated} times</span>) : (<span></span>)}
+                        <div> {(this.state.repeatable && this.state.repeated > 1) ? (<span>Repeated {this.state.repeated} times</span>) : (<span></span>)}
                            <form onSubmit={this.handleModuleSubmit}>
                                <span>Comment:</span>
                                <input type = 'text' value={this.state.comment} onChange={this.commentOnChange}/>

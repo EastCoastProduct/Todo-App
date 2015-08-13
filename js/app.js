@@ -13,6 +13,7 @@ import EditModuleHandler from './components/EditModule.js';
 import PreviewModuleHandler from './components/PreviewModule.js';
 import PreviewModuleForApprovalHandler from './components/PreviewModuleForApproval.js';
 import UserInfoHandler from './components/UserInfo.js';
+import MyAccountHandler from './components/MyAccount.js';
 import '../css/style.css';
 
 let App = React.createClass({ 
@@ -57,6 +58,7 @@ let App = React.createClass({
                                     <div>You are not logged in</div>
                                 )}
                             </li>
+                            <li><Link to="/myaccount">My account</Link></li>
                             <li><Link to="/users">Users list</Link></li>
                             <li><Link to="/newuser">New user</Link></li>
                             <li><Link to="/moduleslist">Modules list</Link></li>
@@ -77,6 +79,7 @@ let App = React.createClass({
                                 <div>You are not logged in</div>
                             )}
                             </li>
+                            <li><Link to="/myaccount">My account</Link></li>
                             <li><Link to="/users">Users list</Link></li>
                             <li><Link to="/moduleslist">Modules list</Link></li>
                             <RouteHandler />
@@ -106,6 +109,7 @@ let routes = (
         <Route name="previewmodule" path="/previewmodule" handler={PreviewModuleHandler}/>
         <Route name="previewmoduleforapproval" path="/previewmoduleforapproval" handler={PreviewModuleForApprovalHandler}/>
         <Route name="userinfo" path="/userinfo" handler={UserInfoHandler}/>
+        <Route name="myaccount" path="/myaccount" handler={MyAccountHandler}/>
     </Route>
 );
 
