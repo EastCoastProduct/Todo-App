@@ -18,6 +18,7 @@ let PreviewModule = React.createClass({
 
 	componentWillMount() {
         this.studentModuleFb = new Firebase(userFb + '/' + this.state.userId + '/modules/');
+        this.moduleFb = new Firebase(firebaseDb + '/' + this.state.id + '/users/' + this.state.userId);
         this.getBasicModuleData();
         if(!auth.isAdmin()) {
             this.getModuleDataForStudent();
@@ -53,7 +54,7 @@ let PreviewModule = React.createClass({
         var userId = this.state.userId;
         var moduleId = this.state.id;
         var moduleUserFb = new Firebase(userFb + '/' + userId + '/modules/');
-        var points, repeated;
+        var points, repeated, rejected, adminComment;
 
         moduleUserFb.once("value", function(snapshot) {
             if(snapshot.hasChild(moduleId)) {
@@ -69,6 +70,19 @@ let PreviewModule = React.createClass({
                             submitted: true,
                             repeated: repeated
                         })
+                    } else if(data.rejected) {
+                        this.rejectedDataFb = new Firebase(firebaseDb + '/' + moduleId + '/users/' + userId);
+                        this.rejectedDataFb.once("value", function(rData) {
+                            var item = rData.val();
+                            this.setState({
+                                submitted: true,
+                                points: points,
+                                approved: false, 
+                                repeated: "0",
+                                rejected: true,
+                                adminComment: item.adminComment
+                            })
+                        }.bind(this))
                     } else (
                         this.setState({
                             submitted: true,
@@ -108,7 +122,8 @@ let PreviewModule = React.createClass({
             comment: '',
             solutionUrl: '',
             submitted: true,
-            approved: false
+            approved: false,
+            rejected: false
         });
     },
 
@@ -138,7 +153,19 @@ let PreviewModule = React.createClass({
                     <div><span>Points:</span><div>{ this.state.points }</div></div>
 			        <div><span>Repeatable:</span><div>{ String(this.state.repeatable) }</div></div>
                     {auth.isAdmin() ? (<AdminView onDelete = {this.deleteModule} onEdit = {this.editModule}/>) : (<div></div>)}
-                    {(!auth.isAdmin() && !this.state.approved && this.state.submitted) ? (<div><span>Submitted, waiting for response from admin!</span></div>):(<div></div>)}
+                    {(!auth.isAdmin() && !this.state.approved && this.state.submitted && !this.state.rejected) ? (<div><span>Submitted, waiting for response from admin!</span></div>):(<div></div>)}
+                    {this.state.rejected ? (<div>
+                                                <div><span>This module is rejected!</span></div>
+                                                <div><span>Comment from admin: {this.state.adminComment}</span></div>
+                                                <form onSubmit={this.handleModuleSubmit}>
+                                                   <span>Comment:</span>
+                                                   <input type = 'text' value={this.state.comment} onChange={this.commentOnChange}/>
+                                                   <span>Solution url:</span>
+                                                   <input type = 'text' value={this.state.solutionUrl} onChange={this.solutionUrlOnChange} />
+                                                   <div><span><button>Submit module</button></span></div>
+                                               </form>
+                                           </div>
+                        ):(<div></div>)}
                     {(!auth.isAdmin() && this.state.approved && !this.state.repeatable) ? (<div><span>This module is finished!</span></div>):(<div></div>)}
                     {((!auth.isAdmin() && !this.state.submitted) || (!auth.isAdmin() && this.state.approved && this.state.repeatable)) ? (
                         <div> {(this.state.repeatable && this.state.repeated > 1) ? (<span>Repeated {this.state.repeated} times</span>) : (<span></span>)}

@@ -4,8 +4,6 @@ import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 import auth from '../auth';
 
-//show rejected modules
-
 let ModulesList = React.createClass({
     mixins: [Router.Navigation],
 
@@ -13,7 +11,7 @@ let ModulesList = React.createClass({
         if (!auth.loggedIn()) {
             this.transitionTo('login');
         };
-        return { modules: [], modulesForApproval: [], finishedModules: [] };
+        return { modules: [], modulesForApproval: [], finishedModules: [], rejectedModules: [] };
     },
 
     componentWillMount() {
@@ -33,6 +31,7 @@ let ModulesList = React.createClass({
             var modulesArray = this.state.modules;
             var modulesForApprovalArray = this.state.modulesForApproval;
             var finishedModulesArray = this.state.finishedModules;
+            var rejectedModulesArray = this.state.rejectedModules;
             var items = data.val(); //modules
             var itemsKey = data.key(); //module id
             if (items.users) { //if module has field "users"
@@ -49,7 +48,7 @@ let ModulesList = React.createClass({
                 }.bind(this));
                 this.approvalDb.on("child_added", function(snap) { //items in modules/moduleid/users/userid
                     var data = snap.val(); //approved, comment, solutionurl
-                    if(snap.key() == userId && !data.approved){ //if itemId = userId and if not approved
+                    if(snap.key() == userId && !data.approved && !data.rejected){ //if itemId = userId and if not approved
                         data.id = itemsKey; //id = module id
                         data.title = items.title; //title = module title
                         data.studentId = userId; //studentId = userId
@@ -74,6 +73,14 @@ let ModulesList = React.createClass({
                             modules: modulesArray
                         });
                     }
+                    if (snap.key() == userId && data.rejected){ //if itemId = userId and if approved and if repeatable
+                        data.id = itemsKey;
+                        data.title = items.title;
+                        rejectedModulesArray.push(data);
+                        this.setState({
+                            rejectedModules: rejectedModulesArray
+                        });
+                    }
                 }.bind(this))
             } else {
                 items.id = itemsKey;
@@ -89,13 +96,14 @@ let ModulesList = React.createClass({
         this.firebaseDb.on("child_added", function(data) {
             var modulesArray = this.state.modules;
             var modulesForApprovalArray = this.state.modulesForApproval;
+            var rejectedModulesArray = this.state.rejectedModules;
             var items = data.val();
             var itemsKey = data.key();
             if (items.users) {
                 this.approvalDb = new Firebase('https://app-todo-list.firebaseio.com/modules/' + data.key() + '/users/');
                 this.approvalDb.on("child_added", function(snap) {
                     var data = snap.val();
-                    if(!data.approved){
+                    if(!data.approved && !data.rejected){
                         var userId = snap.key();
                         this.userDataFb = new Firebase(this.usersFb + '/' + userId);
                         this.userDataFb.once("value", function(snapshot) {
@@ -131,6 +139,8 @@ let ModulesList = React.createClass({
         var _singleItemsFor = [];
         var finishedModules = this.state.finishedModules;
         var _singleItemsFinished = [];
+        var rejectedModules = this.state.rejectedModules;
+        var _singleItemsRejected = [];
 
         modules.forEach(function (module, i) {
             _singleItems.push(<ModuleItem key={i} module={modules[i]}  />);
@@ -146,9 +156,15 @@ let ModulesList = React.createClass({
             });
         }
 
+        rejectedModules.forEach(function (rejectedModule, i) {
+            _singleItemsRejected.push(<ModuleItemRejected key={i} rejectedModule={rejectedModules[i]} />);
+        });
+
         return <div>
                     {(_singleItemsFor != '') ? (<div>Modules waiting for approval: { _singleItemsFor }</div>) : 
                     (<div>Modules waiting for approval: No modules</div>)}
+                    {(_singleItemsRejected != '') ? (<div>Rejected modules: { _singleItemsRejected }</div>) : 
+                    (<div></div>)}
                     {(!auth.isAdmin() && _singleItemsFinished != '') ? (<div>Finished modules: { _singleItemsFinished }</div>) : (<div></div>)}
                     {(!auth.isAdmin() && _singleItemsFinished == '') ? (<div>Finished modules: No modules</div>) : (<div></div>)}
                     {_singleItems != '' ? (<div>All modules: { _singleItems }</div>) : (<div>All modules: No modules</div>)}
@@ -234,6 +250,34 @@ let ModuleItemFinished = React.createClass({
 
         return <ul>
                   <li key={ finishedModule.moduleId }>
+                        <span>
+                        <div> {this.state.nameVal} </div>
+                            <div><button type='button' onClick={this.preview}><i> preview </i></button></div>
+                        </span>
+                    </li>
+                </ul>;
+    }   
+});
+
+let ModuleItemRejected = React.createClass({
+    mixins: [Router.Navigation],
+
+    getInitialState() {
+        return {
+            moduleIdVal: this.props.rejectedModule.id,
+            nameVal: this.props.rejectedModule.title
+        }
+    },
+
+    preview() {
+        this.transitionTo('previewmodule', null, { id: this.state.moduleIdVal });
+    },
+
+    render() {
+        var rejectedModule = this.props.rejectedModule;
+
+        return <ul>
+                  <li key={ rejectedModule.moduleId }>
                         <span>
                         <div> {this.state.nameVal} </div>
                             <div><button type='button' onClick={this.preview}><i> preview </i></button></div>

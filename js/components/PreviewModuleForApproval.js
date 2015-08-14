@@ -102,8 +102,12 @@ let PreviewModuleForApproval = React.createClass({
         e.preventDefault();
         this.moduleApprovalFb.update({
             approved: false,
-            adminComment: this.state.adminComment
+            adminComment: this.state.adminComment,
+            rejected: true
         });
+        this.studentFb.update({
+            rejected: true
+        })
         this.setState({ approved: false, adminComment: '', rejected: true })
     },
 
@@ -138,7 +142,7 @@ let PreviewModuleForApproval = React.createClass({
                         <div><span>Comment:</span><div>{this.state.comment}</div></div>
                         <div><span>Solution url:</span><div>{this.state.solutionUrl}</div></div>
                         <div>
-                        {auth.isAdmin() ? (!this.state.approved ? (
+                        {auth.isAdmin() ? ((!this.state.approved && !this.state.rejected) ? (
                             <div>
                                 <span><button onClick={this.approveModule}>Approve</button></span>
                                 <form onSubmit={this.rejectModule}>
@@ -146,10 +150,11 @@ let PreviewModuleForApproval = React.createClass({
                                    <input type = 'text' value={this.state.adminComment} onChange={this.adminCommentOnChange}/>
                                    <span><button>Reject</button></span>
                                 </form>
-                            </div>
-                            ) : (
-                            <span>Module approved</span>
-                            )) : (<div></div>)}
+                            </div>) : (<span></span>)) : (<div></div>)}
+                        {auth.isAdmin() ? ((!this.state.approved && this.state.rejected) ? (
+                            <div><span>Module rejected! Comment: {this.state.comment}</span></div>) : (<span></span>)) : (<div></div>)}
+                        {auth.isAdmin() ? (this.state.approved) ? (
+                            <div><span>Module approved!</span></div>) : (<span></span>) : (<div></div>)}
                         {(!auth.isAdmin() && !this.state.approved && !this.state.rejected) ? (<span>Module submitted, waiting for response from admin!</span>) : (<span></span>)}
                         {(!auth.isAdmin() && this.state.approved && !this.state.rejected) ? (<span>Module finished!</span>) : (<span></span>)}
                         {(!auth.isAdmin() && !this.state.approved && this.state.rejected) ? (
@@ -162,8 +167,7 @@ let PreviewModuleForApproval = React.createClass({
                                    <input type = 'text' value={this.state.solutionUrl} onChange={this.solutionUrlOnChange} />
                                    <div><span><button>Submit module</button></span></div>
                                </form>
-                           </div>
-                            ) : (<span></span>)}
+                           </div>) : (<span></span>)}
                         </div>
                     </div>
                     <div>
