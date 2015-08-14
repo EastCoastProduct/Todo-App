@@ -4,12 +4,13 @@ import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 import auth from '../auth';
 
+//show rejected modules
+
 let ModulesList = React.createClass({
     mixins: [Router.Navigation],
 
     getInitialState() {
         if (!auth.loggedIn()) {
-            console.log("redirect to login");
             this.transitionTo('login');
         };
         return { modules: [], modulesForApproval: [], finishedModules: [] };
@@ -132,7 +133,7 @@ let ModulesList = React.createClass({
         var _singleItemsFinished = [];
 
         modules.forEach(function (module, i) {
-        _singleItems.push(<ModuleItem key={i} module={modules[i]}  />);
+            _singleItems.push(<ModuleItem key={i} module={modules[i]}  />);
         });
 
         modulesForA.forEach(function (moduleForA, i) {
@@ -146,12 +147,12 @@ let ModulesList = React.createClass({
         }
 
         return <div>
-                    <div>Modules waiting for approval: { _singleItemsFor }</div>
-                    {!auth.isAdmin() ? (<div>Finished modules: { _singleItemsFinished }</div>) : (<div></div>)}
-                    <div>All modules: { _singleItems }</div>  
-                    {auth.isAdmin() ? (
-                        <AddNewModuleButton />
-                    ) : (<div></div>)}
+                    {(_singleItemsFor != '') ? (<div>Modules waiting for approval: { _singleItemsFor }</div>) : 
+                    (<div>Modules waiting for approval: No modules</div>)}
+                    {(!auth.isAdmin() && _singleItemsFinished != '') ? (<div>Finished modules: { _singleItemsFinished }</div>) : (<div></div>)}
+                    {(!auth.isAdmin() && _singleItemsFinished == '') ? (<div>Finished modules: No modules</div>) : (<div></div>)}
+                    {_singleItems != '' ? (<div>All modules: { _singleItems }</div>) : (<div>All modules: No modules</div>)}
+                    {auth.isAdmin() ? (<AddNewModuleButton />) : (<div></div>)}
                </div>;
     }
 });
@@ -175,9 +176,7 @@ let ModuleItem = React.createClass({
                         <span>
                             <div> {this.state.value} </div>
                             <div>
-                                <button type='button' onClick={this.preview}>
-                                    <i> preview </i>
-                                </button>
+                                <button type='button' onClick={this.preview}><i> preview </i></button>
                             </div>
                         </span>
                     </li>
@@ -209,11 +208,7 @@ let ModuleItemForA = React.createClass({
                         <span>
                         {auth.isAdmin() ? (<div> {this.state.nameVal} {this.state.userVal} </div>) : (
                             <div> {this.state.nameVal} </div> )}
-                            <div>
-                                <button type='button' onClick={this.preview}>
-                                    <i> preview </i>
-                                </button>
-                            </div>
+                            <div><button type='button' onClick={this.preview}><i> preview </i></button></div>
                         </span>
                     </li>
                 </ul>;
@@ -241,11 +236,7 @@ let ModuleItemFinished = React.createClass({
                   <li key={ finishedModule.moduleId }>
                         <span>
                         <div> {this.state.nameVal} </div>
-                            <div>
-                                <button type='button' onClick={this.preview}>
-                                    <i> preview </i>
-                                </button>
-                            </div>
+                            <div><button type='button' onClick={this.preview}><i> preview </i></button></div>
                         </span>
                     </li>
                 </ul>;
@@ -260,9 +251,7 @@ let AddNewModuleButton = React.createClass({
     },
 
     render(){
-        return <div>
-                   <button onClick={this.redirectToNewModule}> Add new module </button>
-               </div>
+        return <div><button onClick={this.redirectToNewModule}> Add new module </button></div>
     }
 });
 

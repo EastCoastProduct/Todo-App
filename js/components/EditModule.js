@@ -10,8 +10,7 @@ let EditModule = React.createClass({
 	mixins: [Router.Navigation],
 
 	getInitialState() {
-      	if (!auth.loggedIn()) { //if not admin, show message that he doesn't have rights
-      		console.log("redirect to login");
+      	if (!auth.loggedIn()) {
       		this.transitionTo('login');
       	};
 		return { id: this.props.query.id, title: '', description: '', taxonomy: '', points:'', repeatable: false };

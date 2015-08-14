@@ -4,19 +4,19 @@ import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 
 let Logout = React.createClass({
-	  mixins: [Router.Navigation],
+    mixins: [Router.Navigation],
 
-  	componentDidMount() {
-    	  auth.logout();
+    componentDidMount() {
+        auth.logout();
     },
 
-  	redirectToLogin() {
-  		  this.transitionTo('login');
-  	},
+    redirectToLogin() {
+        this.transitionTo('login');
+    },
 
-  	render() {
-  		  return <div></div>;
-  	}
+    render() {
+        return <div></div>;
+    }
 });
 
 export default Logout; 

@@ -14,6 +14,7 @@ import PreviewModuleHandler from './components/PreviewModule.js';
 import PreviewModuleForApprovalHandler from './components/PreviewModuleForApproval.js';
 import UserInfoHandler from './components/UserInfo.js';
 import MyAccountHandler from './components/MyAccount.js';
+import EditUserHandler from './components/EditUser.js';
 import '../css/style.css';
 
 let App = React.createClass({ 
@@ -110,6 +111,7 @@ let routes = (
         <Route name="previewmoduleforapproval" path="/previewmoduleforapproval" handler={PreviewModuleForApprovalHandler}/>
         <Route name="userinfo" path="/userinfo" handler={UserInfoHandler}/>
         <Route name="myaccount" path="/myaccount" handler={MyAccountHandler}/>
+        <Route name="edituser" path="/edituser" handler={EditUserHandler}/>
     </Route>
 );
 

@@ -5,13 +5,12 @@ import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-route
 import auth from '../auth';
 
 //add image
-//if no finished modules and total points, don't show it
 
 let UserInfo = React.createClass({
 	mixins: [Router.Navigation],
     
 	getInitialState() {
-		return { id: this.props.query.id, modules: [] };
+		return { id: this.props.query.id, modules: [], totalPoints: '0' };
 	},
 
 	componentWillMount() {
@@ -79,23 +78,14 @@ let UserInfo = React.createClass({
         });
 
 		return <div>
-					<div><span>First name:</span>
-                        <div>{ this.state.firstName }</div>
-			        </div>
-			        <div><span>Last name:</span>
-                        <div>{ this.state.lastName }</div>
-			        </div>
-					<div><span>E-mail address:</span>
-                        <div>{ this.state.email }</div>
-			        </div>
-                    {!this.state.isAdmin ? (
-                        <div>
-                            <span>Total points:</span>
-                            <div>{ this.state.totalPoints }</div>
-                            <span>Finished modules:</span>
-                            <div>{ _singleItems }</div>
-                        </div>) : (<div></div>)}
-                    
+					<div><span>First name:</span><div>{ this.state.firstName }</div></div>
+			        <div><span>Last name:</span><div>{ this.state.lastName }</div></div>
+					<div><span>E-mail address:</span><div>{ this.state.email }</div></div>
+                    {(!this.state.isAdmin) ? (
+                        <div><span>Total points:</span><div>{ this.state.totalPoints }</div></div>) : (<div></div>)}
+                    {(!this.state.isAdmin && this.state.modules != '') ? (   
+                        <div><span>Finished modules:</span><div>{ _singleItems }</div></div>) : 
+                    (<div><span>Finished modules:</span><div>No finished modules</div></div>)}
                     {(auth.loggedIn() && auth.isAdmin()) ? (<div><span><button onClick={this.editProfile}>Edit profile</button></span></div>) : (<div></div>)}
                     <div><span><button onClick={this.showAllUsers}>Show all users</button></span></div>
 				</div>;
@@ -115,11 +105,11 @@ let ModuleItem = React.createClass({
     render() {
       var module = this.props.module;
     
-      return <ul className='task-list'>
-                  <li className=''>
-                        <span className='task-title'>
-                            <span className='task-title-sp'>Module: {this.state.name} </span>
-                            <span className='task-title-sp'>Points: {this.state.points}</span>
+      return <ul>
+                  <li>
+                        <span>
+                            <span>Module: {this.state.name} </span>
+                            <span>Points: {this.state.points}</span>
                         </span>
                     </li>
                 </ul>;

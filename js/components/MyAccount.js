@@ -7,7 +7,7 @@ let MyAccount = React.createClass({
 	mixins: [Router.Navigation],
     
 	getInitialState() {
-		return { modules: [] };
+		return { modules: [], totalPoints: '0' };
 	},
 
 	componentWillMount() {
@@ -75,23 +75,15 @@ let MyAccount = React.createClass({
         });
 
 		return <div>
-					<div><span>First name:</span>
-                        <div>{ this.state.firstName }</div>
-			        </div>
-			        <div><span>Last name:</span>
-                        <div>{ this.state.lastName }</div>
-			        </div>
-					<div><span>E-mail address:</span>
-                        <div>{ this.state.email }</div>
-			        </div>
-                    {!this.state.isAdmin ? (
-                        <div>
-                            <span>Total points:</span>
-                            <div>{ this.state.totalPoints }</div>
-                            <span>Finished modules:</span>
-                            <div>{ _singleItems }</div>
-                        </div>) : (<div></div>)}
-                    
+					<div><span>First name:</span><div>{ this.state.firstName }</div></div>
+			        <div><span>Last name:</span><div>{ this.state.lastName }</div></div>
+					<div><span>E-mail address:</span><div>{ this.state.email }</div></div>
+                    {(!this.state.isAdmin) ? (
+                        <div><span>Total points:</span><div>{ this.state.totalPoints }</div></div>) : (<div></div>)}
+                    {(!this.state.isAdmin && this.state.modules != '') ? (   
+                        <div><span>Finished modules:</span><div>{ _singleItems }</div></div>) : (<div></div>)}
+                    {(!this.state.isAdmin && this.state.modules == '') ? (   
+                        <div><span>Finished modules:</span><div>No finished modules</div></div>) : (<div></div>)}
                     <div><span><button onClick={this.editProfile}>Edit profile</button></span></div>
                     <div><span><button onClick={this.showAllUsers}>Show all users</button></span></div>
 				</div>;

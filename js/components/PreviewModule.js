@@ -8,7 +8,6 @@ var firebaseDb = new Firebase('https://app-todo-list.firebaseio.com/modules/');
 var userFb = new Firebase('https://app-todo-list.firebaseio.com/users/');
 
 // what if admin deletes module which is waiting for approval
-// show preview of user's comment and url and if admin leaves some message
 
 let PreviewModule = React.createClass({
 	mixins: [Router.Navigation],
@@ -133,21 +132,11 @@ let PreviewModule = React.createClass({
 
 	render() {
 		return <div>
-					<div><span>Title:</span>
-			           <div>{ this.state.title }</div>
-			       </div>
-			       <div><span>Description:</span>
-			           <div>{ this.state.description }</div>
-			       </div>
-					<div><span>Taxonomy:</span>
-			            <div>{ this.state.taxonomy }</div>
-			        </div>
-                    <div><span>Points:</span>
-                        <div>{ this.state.points }</div>
-                    </div>
-			        <div><span>Repeatable:</span>
-			            <div>{ String(this.state.repeatable) }</div>
-			        </div>
+					<div><span>Title:</span><div>{ this.state.title }</div></div>
+			        <div><span>Description:</span><div>{ this.state.description }</div></div>
+					<div><span>Taxonomy:</span><div>{ this.state.taxonomy }</div></div>
+                    <div><span>Points:</span><div>{ this.state.points }</div></div>
+			        <div><span>Repeatable:</span><div>{ String(this.state.repeatable) }</div></div>
                     {auth.isAdmin() ? (<AdminView onDelete = {this.deleteModule} onEdit = {this.editModule}/>) : (<div></div>)}
                     {(!auth.isAdmin() && !this.state.approved && this.state.submitted) ? (<div><span>Submitted, waiting for response from admin!</span></div>):(<div></div>)}
                     {(!auth.isAdmin() && this.state.approved && !this.state.repeatable) ? (<div><span>This module is finished!</span></div>):(<div></div>)}
@@ -177,12 +166,8 @@ let AdminView = React.createClass({
 
     render() {
         return <div>
-                    <button type='button' onClick={this.handleEdit}>
-                        <i> Edit module </i>
-                    </button>
-                    <button type='button' onClick={this.handleDelete}>
-                        <i> Delete module </i>
-                    </button>
+                    <button type='button' onClick={this.handleEdit}><i> Edit module </i></button>
+                    <button type='button' onClick={this.handleDelete}><i> Delete module </i></button>
                </div>;
     }
 });

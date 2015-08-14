@@ -4,13 +4,11 @@ import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 import auth from '../auth';
 
-//add admin comment
-
 let PreviewModuleForApproval = React.createClass({
 	mixins: [Router.Navigation],
 
 	getInitialState() {
-		return { moduleId: this.props.query.moduleId, studentId: this.props.query.studentId, approved: false };
+		return { moduleId: this.props.query.moduleId, studentId: this.props.query.studentId, approved: false, adminComment: '' };
 	},
 
 	componentWillMount() {
@@ -35,16 +33,18 @@ let PreviewModuleForApproval = React.createClass({
         this.moduleApprovalFb.once('value', function(snapshot){
             var data = snapshot.val();
             this.setState({ comment: data.comment, solutionUrl: data.solutionUrl });
+            if (data.adminComment) {
+                this.setState({
+                    adminComment: data.adminComment,
+                    rejected: true
+                })
+            }
         }.bind(this));
     }, 
 
     showAllModules() {
         this.transitionTo('moduleslist');
     },
-    /*
-    adminCommentOnChange(e) {
-        this.setState({comment: e.target.value});
-    },*/
 
     approveModule() {
         this.usersFb.once("value", function(snapshot) {
@@ -67,7 +67,7 @@ let PreviewModuleForApproval = React.createClass({
             if (snap.hasChild("repeated")){
                 var oldRepeated = parseInt(data.repeated);
                 var newRepeate = String(oldRepeated + 1);
-                this.moduleApprovalFb.set({
+                this.moduleApprovalFb.set({ //put here update and only approved:true
                     approved: true,
                     comment: this.state.comment,
                     solutionUrl: this.state.solutionUrl
@@ -89,53 +89,89 @@ let PreviewModuleForApproval = React.createClass({
                     points: this.state.points,
                     repeated: "1"
                 });
-                this.setState({ approved: true })
+                this.setState({ approved: true,  })
             }
         }.bind(this))
     },
 
-    /*rejectModule() {
+    adminCommentOnChange(e) {
+        this.setState({adminComment: e.target.value});
+    },
 
-    },*/
+    rejectModule(e) {
+        e.preventDefault();
+        this.moduleApprovalFb.update({
+            approved: false,
+            adminComment: this.state.adminComment
+        });
+        this.setState({ approved: false, adminComment: '', rejected: true })
+    },
+
+    commentOnChange(e) {
+        this.setState({comment: e.target.value});
+    },
+
+    solutionUrlOnChange(e) {
+        this.setState({solutionUrl: e.target.value});
+    },
+
+    handleModuleSubmit(e) {
+        e.preventDefault();
+        this.moduleApprovalFb.update({
+            comment: this.state.comment,
+            solutionUrl: this.state.solutionUrl,
+            approved: false
+        });
+        this.setState({
+            comment: '',
+            solutionUrl: '',
+            submitted: true,
+            approved: false,
+            rejected: false
+        });
+    },
 
 	render() {
 		return  <div>
                     <div>
                         <span>Submission info:</span>
-                        <div><span>Comment:</span>
-                           <div>{this.state.comment}</div>
-                       </div>
-                       <div><span>Solution url:</span>
-                           <div>{this.state.solutionUrl}</div>
-                       </div>
+                        <div><span>Comment:</span><div>{this.state.comment}</div></div>
+                        <div><span>Solution url:</span><div>{this.state.solutionUrl}</div></div>
                         <div>
-                        {auth.isAdmin() ? (!this.state.approved ? (<span><button onClick={this.approveModule}>Approve</button></span>) : (
+                        {auth.isAdmin() ? (!this.state.approved ? (
+                            <div>
+                                <span><button onClick={this.approveModule}>Approve</button></span>
+                                <form onSubmit={this.rejectModule}>
+                                   <span>Comment:</span>
+                                   <input type = 'text' value={this.state.adminComment} onChange={this.adminCommentOnChange}/>
+                                   <span><button>Reject</button></span>
+                                </form>
+                            </div>
+                            ) : (
                             <span>Module approved</span>
-                            )) : (
-                        !this.state.approved ? (<span>Module submitted, waiting for response from admin!</span>) : (
-                            <span>Module approved</span>
-                            )
-                        )}
-                        
+                            )) : (<div></div>)}
+                        {(!auth.isAdmin() && !this.state.approved && !this.state.rejected) ? (<span>Module submitted, waiting for response from admin!</span>) : (<span></span>)}
+                        {(!auth.isAdmin() && this.state.approved && !this.state.rejected) ? (<span>Module finished!</span>) : (<span></span>)}
+                        {(!auth.isAdmin() && !this.state.approved && this.state.rejected) ? (
+                            <div>
+                                <span>Module rejected! Comment from admin: { this.state.adminComment }</span>
+                                <form onSubmit={this.handleModuleSubmit}>
+                                   <span>Comment:</span>
+                                   <input type = 'text' value={this.state.comment} onChange={this.commentOnChange}/>
+                                   <span>Solution url:</span>
+                                   <input type = 'text' value={this.state.solutionUrl} onChange={this.solutionUrlOnChange} />
+                                   <div><span><button>Submit module</button></span></div>
+                               </form>
+                           </div>
+                            ) : (<span></span>)}
                         </div>
                     </div>
                     <div>
-                        <span>Module info:</span>
-    					<div><span>Title:</span>
-    			           <div>{this.state.title}</div>
-    			       </div>
-    			       <div><span>Description:</span>
-    			           <div>{this.state.description}</div>
-    			       </div>
-    					<div><span>Taxonomy:</span>
-    			            <div>{this.state.taxonomy}</div>
-    			        </div>
-                        <div><span>Points:</span>
-                            <div>{this.state.points}</div>
-                        </div>
-    			        <div><span>Repeatable:</span>
-    			            <div>{String(this.state.repeatable)}</div>
-    			        </div>
+                        <span>Module info:</span><div><span>Title:</span><div>{this.state.title}</div></div>
+    			        <div><span>Description:</span><div>{this.state.description}</div></div>
+    					<div><span>Taxonomy:</span><div>{this.state.taxonomy}</div></div>
+                        <div><span>Points:</span><div>{this.state.points}</div></div>
+    			        <div><span>Repeatable:</span><div>{String(this.state.repeatable)}</div></div>
                         <div><span><button onClick={this.showAllModules}>Show all modules</button></span></div>
     				</div>
                 </div>;
