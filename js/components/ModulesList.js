@@ -4,12 +4,21 @@ import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 import auth from '../auth';
 
+//add filtering
+//add paging
+
 let ModulesList = React.createClass({
     mixins: [Router.Navigation],
 
     getInitialState() {
+        var userStatus = auth.getStatus();
+        var userId = auth.getUserId();
+
         if (!auth.loggedIn()) {
             this.transitionTo('login');
+        };
+        if (userStatus == "created") {
+            this.transitionTo('changepassword', null, {id: userId});
         };
         return { modules: [], modulesForApproval: [], finishedModules: [], rejectedModules: [] };
     },
@@ -26,15 +35,15 @@ let ModulesList = React.createClass({
 
     getAllModulesForStudent() {
         this.firebaseDb.on("child_added", function(data) {
-            var userId = auth.getUserId(); //student id 
+            var userId = auth.getUserId();
             var userName = auth.getUser();
             var modulesArray = this.state.modules;
             var modulesForApprovalArray = this.state.modulesForApproval;
             var finishedModulesArray = this.state.finishedModules;
             var rejectedModulesArray = this.state.rejectedModules;
-            var items = data.val(); //modules
-            var itemsKey = data.key(); //module id
-            if (items.users) { //if module has field "users"
+            var items = data.val();
+            var itemsKey = data.key();
+            if (items.users) {
                 this.approvalDb = new Firebase('https://app-todo-list.firebaseio.com/modules/' + data.key() + '/users/');
                 this.approvalDb.once("value", function(snap){
                     var data = snap.val();
@@ -46,19 +55,19 @@ let ModulesList = React.createClass({
                         });
                     }
                 }.bind(this));
-                this.approvalDb.on("child_added", function(snap) { //items in modules/moduleid/users/userid
-                    var data = snap.val(); //approved, comment, solutionurl
-                    if(snap.key() == userId && !data.approved && !data.rejected){ //if itemId = userId and if not approved
-                        data.id = itemsKey; //id = module id
-                        data.title = items.title; //title = module title
-                        data.studentId = userId; //studentId = userId
-                        data.userName = userName; //userName = user's name + last name
-                        modulesForApprovalArray.push(data); //push that in modulesForApproval array and set state
+                this.approvalDb.on("child_added", function(snap) {
+                    var data = snap.val();
+                    if(snap.key() == userId && !data.approved && !data.rejected){
+                        data.id = itemsKey;
+                        data.title = items.title;
+                        data.studentId = userId;
+                        data.userName = userName;
+                        modulesForApprovalArray.push(data);
                         this.setState({
                             modulesForApproval: modulesForApprovalArray
                         })
                     }
-                    if (snap.key() == userId && data.approved) { //if itemId = userId and if approved
+                    if (snap.key() == userId && data.approved) {
                         data.id = itemsKey;
                         data.title = items.title;
                         finishedModulesArray.push(data);
@@ -66,14 +75,14 @@ let ModulesList = React.createClass({
                             finishedModules: finishedModulesArray
                         })
                     }
-                    if (snap.key() == userId && data.approved && items.repeatable){ //if itemId = userId and if approved and if repeatable
+                    if (snap.key() == userId && data.approved && items.repeatable){
                         items.id = itemsKey;
                         modulesArray.push(items);
                         this.setState({
                             modules: modulesArray
                         });
                     }
-                    if (snap.key() == userId && data.rejected){ //if itemId = userId and if approved and if repeatable
+                    if (snap.key() == userId && data.rejected){
                         data.id = itemsKey;
                         data.title = items.title;
                         rejectedModulesArray.push(data);

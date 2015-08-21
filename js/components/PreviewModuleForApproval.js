@@ -4,6 +4,9 @@ import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 import auth from '../auth';
 
+//validation
+//dodati students info
+
 let PreviewModuleForApproval = React.createClass({
 	mixins: [Router.Navigation],
 

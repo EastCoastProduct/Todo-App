@@ -14,6 +14,7 @@ let UserInfo = React.createClass({
 	},
 
 	componentWillMount() {
+        this.firebaseDb = new Firebase('https://app-todo-list.firebaseio.com/');
         this.userFb = new Firebase('https://app-todo-list.firebaseio.com/users/' + this.state.id);
         this.modulesFb = new Firebase('https://app-todo-list.firebaseio.com/modules/');
         this.getUserData();
@@ -35,21 +36,22 @@ let UserInfo = React.createClass({
                 isAdmin: data.isAdmin
             });
             if (data.total_points) {
-                this.setState({
-                    totalPoints: data.total_points
-                })
+                this.setState({ totalPoints: data.total_points })
             }
-            if (data.modules) { //if user has modules field
-                this.userModulesFb = new Firebase(this.userFb + '/modules'); //path to modules field in user db
+            if (data.description) {
+                this.setState({ description: data.description })
+            }
+            if (data.modules) {
+                this.userModulesFb = new Firebase(this.userFb + '/modules');
                 var modulesArray = this.state.modules; 
-                this.userModulesFb.on("child_added", function(snap) { //for every item in modules field in user db
-                    var id = snap.key(); // module id for student
+                this.userModulesFb.on("child_added", function(snap) {
+                    var id = snap.key();
                     var userModuleData = snap.val();
                     if(userModuleData.approved) {
-                        this.moduleUserFb = new Firebase(this.modulesFb + '/' + id); //db of that module data
+                        this.moduleUserFb = new Firebase(this.modulesFb + '/' + id);
                         this.moduleUserFb.once("value", function(snap2) {
                             var data2 = snap2.val();
-                            var moduleInfo = {moduleName: data2.title, points: userModuleData.points};
+                            var moduleInfo = { moduleName: data2.title, points: userModuleData.points };
                             modulesArray.push(moduleInfo);
                             this.setState({
                                 modules: modulesArray
@@ -61,12 +63,18 @@ let UserInfo = React.createClass({
         }.bind(this));
     },
 
-    editProfile() {
-        this.transitionTo('edituser', null, { id: this.state.id });
-    },
-
     showAllUsers() {
         this.transitionTo('users');
+    },
+
+    deleteAccount(){
+        this.userFb.update({ status: "inactive" });
+        this.transitionTo('users');
+        console.log("User account set as inactive");
+    },
+
+    editAccount(){
+        this.transitionTo('edituser', null, {id: this.state.id})
     },
 
 	render() {
@@ -81,12 +89,14 @@ let UserInfo = React.createClass({
 					<div><span>First name:</span><div>{ this.state.firstName }</div></div>
 			        <div><span>Last name:</span><div>{ this.state.lastName }</div></div>
 					<div><span>E-mail address:</span><div>{ this.state.email }</div></div>
+                    <div><span>Description:</span><div>{ this.state.description }</div></div>
                     {(!this.state.isAdmin) ? (
                         <div><span>Total points:</span><div>{ this.state.totalPoints }</div></div>) : (<div></div>)}
                     {(!this.state.isAdmin && this.state.modules != '') ? (   
                         <div><span>Finished modules:</span><div>{ _singleItems }</div></div>) : 
                     (<div><span>Finished modules:</span><div>No finished modules</div></div>)}
-                    {(auth.loggedIn() && auth.isAdmin()) ? (<div><span><button onClick={this.editProfile}>Edit profile</button></span></div>) : (<div></div>)}
+                    {auth.isAdmin() ? (<span><button onClick={this.deleteAccount}>Delete account</button>
+                                            <button onClick={this.editAccount}>Edit</button></span>) : (<span></span>)}
                     <div><span><button onClick={this.showAllUsers}>Show all users</button></span></div>
 				</div>;
 	}
@@ -96,23 +106,18 @@ let ModuleItem = React.createClass({
     mixins: [Router.Navigation],
     
     getInitialState() {
-        return {
-            name: this.props.user.moduleName,
-            points: this.props.user.points
-        }
+        return { name: this.props.user.moduleName, points: this.props.user.points, repeated: this.props.user.repeated }
     },
 
     render() {
       var module = this.props.module;
     
       return <ul>
-                  <li>
-                        <span>
-                            <span>Module: {this.state.name} </span>
-                            <span>Points: {this.state.points}</span>
-                        </span>
-                    </li>
-                </ul>;
+              <li><span>
+                    <span>Module: {this.state.name} </span>
+                    <span>Points: {this.state.points} </span>
+                </span></li>
+            </ul>;
     }
   });
 

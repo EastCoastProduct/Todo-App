@@ -41,19 +41,19 @@ let EditModule = React.createClass({
     },
 
 	inputTitleTextChange(e) {
-    	this.setState({title: e.target.value});
+    	this.setState({title: e.target.value, titleMessage: '', message: ''});
 	},
 
 	inputDescriptionTextChange(e) {
-    	this.setState({description: e.target.value});
+    	this.setState({description: e.target.value, descriptionMessage: '', message: ''});
 	},
 
 	inputTaxonomyTextChange(e) {
-    	this.setState({taxonomy: e.target.value});
+    	this.setState({taxonomy: e.target.value, taxonomyMessage: '', message: ''});
 	},
 
     inputPointsTextChange(e) {
-        this.setState({points: e.target.value});
+        this.setState({points: e.target.value, pointsMessage: '', message: ''});
     },
 
 	checkboxRepeatableChange(e) {
@@ -66,17 +66,46 @@ let EditModule = React.createClass({
 
     editModule(e) {
         e.preventDefault();
-        if (this.state.title.trim().length !== 0) {
-            var moduleFb = new Firebase(firebaseDb + '/' + this.state.id)
-            moduleFb.update({ 
-                title: this.state.title, 
-                description: this.state.description,
-                taxonomy: this.state.taxonomy,
-                points: this.state.points,
-                repeatable: this.state.repeatable
-            });
-        };
-        this.transitionTo('previewmodule', null, { id: this.state.id });
+        this.handleValidation(res => {
+            if(res){
+                var moduleFb = new Firebase(firebaseDb + '/' + this.state.id)
+                moduleFb.update({ 
+                    title: this.state.title, 
+                    description: this.state.description,
+                    taxonomy: this.state.taxonomy,
+                    points: this.state.points,
+                    repeatable: this.state.repeatable
+                });
+                this.transitionTo('previewmodule', null, { id: this.state.id });
+            }
+        })
+    },
+
+    handleValidation(response){
+        response = arguments[arguments.length - 1];
+        var err = false;
+
+        if(this.state.title.trim().length == 0){
+            this.setState({ titleMessage: 'Enter title.' });
+            err = true;
+        }
+
+        if(this.state.description.trim().length == 0){
+            this.setState({ descriptionMessage: 'Enter description.' });
+            err = true;
+        }
+
+        if(this.state.taxonomy.trim().length == 0){
+            this.setState({ taxonomyMessage: 'Enter taxonomy.' });
+            err = true;
+        }
+
+        if(this.state.points.trim().length == 0){
+            this.setState({ pointsMessage: 'Enter points.' });
+            err = true;
+        }
+
+        if(err){ response (false); return; } else { response (true); return; }
     },
 
 	render() {
@@ -84,15 +113,19 @@ let EditModule = React.createClass({
 					<form onSubmit={this.editModule} >
 						<div><span>Title:</span>
 				           <input type = 'text' value = { this.state.title } onChange = {this.inputTitleTextChange} />
+                           <div>{this.state.titleMessage}</div>
 				       </div>
 				       <div><span>Description:</span>
 				           <input type = 'text' value = { this.state.description } onChange = {this.inputDescriptionTextChange} />
+                           <div>{this.state.descriptionMessage}</div>
 				       </div>
 						<div><span>Taxonomy:</span>
 				            <input type = 'text' value = { this.state.taxonomy } onChange = {this.inputTaxonomyTextChange} />
+                            <div>{this.state.taxonomyMessage}</div>
 				        </div>
                         <div><span>Points:</span>
                             <input type = 'text' value = { this.state.points } onChange = {this.inputPointsTextChange} />
+                            <div>{this.state.pointsMessage}</div>
                         </div>
 				        <div><span>Repeatable:</span>
 				            <input type = 'checkbox' checked = { this.state.repeatable } onChange = {this.checkboxRepeatableChange} />

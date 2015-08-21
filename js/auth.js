@@ -10,9 +10,13 @@ module.exports = {
         loginRequest(email, pass, (res) => {
             if (res.authenticated) {
                 localStorage.token = res.token;
+                if (!!localStorage.loginError) {
+                    delete localStorage.loginError;
+                }
                 if (cb) cb(true);
                 this.onChange(true);
             } else {
+                localStorage.loginError = res.loginError;
                 if (cb) cb(false);
                 this.onChange(false);
             }
@@ -42,17 +46,26 @@ module.exports = {
         return localStorage.userId;
     },
 
+    getStatus() {
+        return localStorage.userStatus;
+    }, 
+
     logout(cb) {
         delete localStorage.token;
         delete localStorage.user;
         delete localStorage.admin;
         delete localStorage.userId;
+        delete localStorage.userStatus;
         if (cb) cb();
         this.onChange(false);
     },
 
     loggedIn() {
         return !!localStorage.token;
+    },
+
+    getLoginError() {
+        return localStorage.loginError;
     },
 
     onChange() {}
@@ -66,14 +79,9 @@ function loginRequest(email, pass, cb) {
         password: String(pass)
     }, function(error, authData) {
         if (error) {
-            console.log("Login failed!", error);
-            cb({authenticated: false});
+            cb({ authenticated: false, loginError: error.message});
         } else {
-            cb({
-                authenticated: true,
-                token: authData.token
-            });
-            console.log("Login successfull!", authData)
+            cb({ authenticated: true, token: authData.token });
         }
     });
 }
@@ -90,6 +98,7 @@ function getUserData(email) {
                 localStorage.userId = k;
                 localStorage.user = data.first_name + " " + data.last_name;
                 localStorage.admin = data.isAdmin;
+                localStorage.userStatus = data.status;
             })
         }
     })

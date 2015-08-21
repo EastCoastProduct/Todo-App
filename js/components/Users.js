@@ -3,6 +3,9 @@ import Firebase from 'firebase';
 import Router from 'react-router';
 import auth from '../auth';
 
+//add paging
+//add created users, active users and deleted(inactive) users for admin
+
 let UsersList = React.createClass({
     mixins: [Router.Navigation],
 
@@ -23,7 +26,7 @@ let UsersList = React.createClass({
             if(!auth.isAdmin()){
                 if(!items.isAdmin){
                     items.id = data.key();
-                    if (data.key() != this.currentUser){
+                    if (data.key() != this.currentUser && items.status != "inactive"){
                         this.userDb = new Firebase(this.firebaseDb + '/' + data.key());
                         this.userDb.once("value", function(snap){
                             array.push(items);
@@ -33,7 +36,7 @@ let UsersList = React.createClass({
                 }
             } else {
                 items.id = data.key();
-                if (data.key() != this.currentUser){
+                if ((data.key() != this.currentUser) && items.status != "inactive"){
                     this.userDb = new Firebase(this.firebaseDb + '/' + data.key());
                     this.userDb.once("value", function(snap){
                         array.push(items);
@@ -71,11 +74,7 @@ let UserItem = React.createClass({
     mixins: [Router.Navigation],
 
     getInitialState() {
-        return { value: this.props.user.first_name }
-    },
-
-    remove() {
-        //firebaseDb.destroy(this.props.user.id); //also add remove user functionality
+        return { firstName: this.props.user.first_name, email: this.props.user.email }
     },
 
     edit() {
@@ -92,10 +91,8 @@ let UserItem = React.createClass({
         return <ul>
                 <li key={ user.id }>
                     <span>
-                        <span>{this.state.value}</span>
+                        <span>{this.state.firstName}</span>
                         <div><button type='button' onClick={this.viewProfile}><i> View profile </i></button></div>
-                        {(auth.loggedIn() && auth.isAdmin()) ? (
-                            <div><button type='button'><i> delete </i></button></div>) : (<div></div>)}
                     </span>
                 </li>
                </ul>;

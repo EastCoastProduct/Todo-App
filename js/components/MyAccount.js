@@ -3,6 +3,8 @@ import Firebase from 'firebase';
 import Router from 'react-router';
 import auth from '../auth';
 
+//image
+
 let MyAccount = React.createClass({
 	mixins: [Router.Navigation],
     
@@ -36,14 +38,19 @@ let MyAccount = React.createClass({
                     totalPoints: data.total_points
                 })
             }
-            if (data.modules) { //if user has modules field
-                this.userModulesFb = new Firebase(this.userFb + '/modules'); //path to modules field in user db
+            if(data.description){
+                this.setState({
+                    description: data.description
+                })
+            }
+            if (data.modules) {
+                this.userModulesFb = new Firebase(this.userFb + '/modules');
                 var modulesArray = this.state.modules; 
-                this.userModulesFb.on("child_added", function(snap) { //for every item in modules field in user db
-                    var id = snap.key(); // module id for student
+                this.userModulesFb.on("child_added", function(snap) {
+                    var id = snap.key();
                     var userModuleData = snap.val();
                     if(userModuleData.approved) {
-                        this.moduleUserFb = new Firebase(this.modulesFb + '/' + id); //db of that module data
+                        this.moduleUserFb = new Firebase(this.modulesFb + '/' + id);
                         this.moduleUserFb.once("value", function(snap2) {
                             var data2 = snap2.val();
                             var moduleInfo = {moduleName: data2.title, points: userModuleData.points};
@@ -59,11 +66,15 @@ let MyAccount = React.createClass({
     },
 
     editProfile() {
-        this.transitionTo('edituser', null, { id: this.state.id });
+        this.transitionTo('edituser', null, { id: this.currentUser });
     },
 
-    showAllUsers() {
-        this.transitionTo('users');
+    changeEmail(){
+        this.transitionTo('changeemail', null, { id: this.currentUser });
+    },
+
+    changePassword(){
+        this.transitionTo('changepassword', null, { id: this.currentUser });
     },
 
 	render() {
@@ -78,14 +89,18 @@ let MyAccount = React.createClass({
 					<div><span>First name:</span><div>{ this.state.firstName }</div></div>
 			        <div><span>Last name:</span><div>{ this.state.lastName }</div></div>
 					<div><span>E-mail address:</span><div>{ this.state.email }</div></div>
+                    <div><span>Description:</span><div>{ this.state.description }</div></div>
                     {(!this.state.isAdmin) ? (
                         <div><span>Total points:</span><div>{ this.state.totalPoints }</div></div>) : (<div></div>)}
                     {(!this.state.isAdmin && this.state.modules != '') ? (   
                         <div><span>Finished modules:</span><div>{ _singleItems }</div></div>) : (<div></div>)}
                     {(!this.state.isAdmin && this.state.modules == '') ? (   
                         <div><span>Finished modules:</span><div>No finished modules</div></div>) : (<div></div>)}
-                    <div><span><button onClick={this.editProfile}>Edit profile</button></span></div>
-                    <div><span><button onClick={this.showAllUsers}>Show all users</button></span></div>
+                    <div>
+                        <span><button onClick={this.editProfile}>Edit profile</button></span>
+                        <span><button onClick = {this.changeEmail}>Change email</button></span>
+                        <span><button onClick = {this.changePassword}>Change password</button></span>
+                    </div>
 				</div>;
 	}
 });

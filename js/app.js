@@ -15,6 +15,9 @@ import PreviewModuleForApprovalHandler from './components/PreviewModuleForApprov
 import UserInfoHandler from './components/UserInfo.js';
 import MyAccountHandler from './components/MyAccount.js';
 import EditUserHandler from './components/EditUser.js';
+import ChangeEmailHandler from './components/ChangeEmail.js';
+import ChangePasswordHandler from './components/ChangePassword.js';
+import ForgotPasswordHandler from './components/ForgotPassword.js';
 import '../css/style.css';
 
 let App = React.createClass({ 
@@ -112,6 +115,9 @@ let routes = (
         <Route name="userinfo" path="/userinfo" handler={UserInfoHandler}/>
         <Route name="myaccount" path="/myaccount" handler={MyAccountHandler}/>
         <Route name="edituser" path="/edituser" handler={EditUserHandler}/>
+        <Route name="changeemail" path="/changeemail" handler={ChangeEmailHandler}/>
+        <Route name="changepassword" path="/changepassword" handler={ChangePasswordHandler}/>
+        <Route name="forgotpassword" path="/forgotpassword" handler={ForgotPasswordHandler}/>
     </Route>
 );
 

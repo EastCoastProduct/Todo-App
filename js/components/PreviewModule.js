@@ -7,13 +7,11 @@ import auth from '../auth';
 var firebaseDb = new Firebase('https://app-todo-list.firebaseio.com/modules/');
 var userFb = new Firebase('https://app-todo-list.firebaseio.com/users/');
 
-// what if admin deletes module which is waiting for approval
-
 let PreviewModule = React.createClass({
 	mixins: [Router.Navigation],
 
 	getInitialState() {
-		return { id: this.props.query.id, userId: auth.getUserId(), submitted: false };
+		return { id: this.props.query.id, userId: auth.getUserId(), submitted: false, moduleInProgress: "false" };
 	},
 
 	componentWillMount() {
@@ -45,6 +43,15 @@ let PreviewModule = React.createClass({
                 repeatable = true;
             } else {
                 repeatable = false;
+            }
+            if(data.users){
+                var userFb = new Firebase(moduleDataFb + '/users/');
+                userFb.on("child_added", function(snap){
+                    var checkUser = snap.val();
+                    if(checkUser.approved == false){
+                        this.setState({ moduleInProgress: "true" })
+                    }
+                }.bind(this))
             }
             this.setState({ title: title, description: description, taxonomy: taxonomy, points: points, repeatable: repeatable });
         }.bind(this))
@@ -152,7 +159,8 @@ let PreviewModule = React.createClass({
 					<div><span>Taxonomy:</span><div>{ this.state.taxonomy }</div></div>
                     <div><span>Points:</span><div>{ this.state.points }</div></div>
 			        <div><span>Repeatable:</span><div>{ String(this.state.repeatable) }</div></div>
-                    {auth.isAdmin() ? (<AdminView onDelete = {this.deleteModule} onEdit = {this.editModule}/>) : (<div></div>)}
+
+                    {auth.isAdmin() ? (<AdminView onDelete = {this.deleteModule} onEdit = {this.editModule} inProgress = {this.state.moduleInProgress} />) : (<div></div>)}
                     {(!auth.isAdmin() && !this.state.approved && this.state.submitted && !this.state.rejected) ? (<div><span>Submitted, waiting for response from admin!</span></div>):(<div></div>)}
                     {this.state.rejected ? (<div>
                                                 <div><span>This module is rejected!</span></div>
@@ -194,7 +202,7 @@ let AdminView = React.createClass({
     render() {
         return <div>
                     <button type='button' onClick={this.handleEdit}><i> Edit module </i></button>
-                    <button type='button' onClick={this.handleDelete}><i> Delete module </i></button>
+                    {this.props.inProgress == "true" ? (<div></div>) : (<button type='button' onClick={this.handleDelete}><i> Delete module </i></button>)}
                </div>;
     }
 });
