@@ -118,11 +118,11 @@ let ModuleItem = React.createClass({
     render() {
       var module = this.props.module;
     
-      return <ul className='task-list'>
-                  <li className=''>
-                        <span className='task-title'>
-                            <span className='task-title-sp'>Module: {this.state.name} </span>
-                            <span className='task-title-sp'>Points: {this.state.points}</span>
+      return <ul>
+                  <li>
+                        <span>
+                            <span>Module: {this.state.name} </span>
+                            <span>Points: {this.state.points}</span>
                         </span>
                     </li>
                 </ul>;
