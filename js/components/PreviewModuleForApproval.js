@@ -4,8 +4,7 @@ import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 import auth from '../auth';
 
-//validation
-//dodati students info
+//students info
 
 let PreviewModuleForApproval = React.createClass({
 	mixins: [Router.Navigation],
@@ -98,20 +97,24 @@ let PreviewModuleForApproval = React.createClass({
     },
 
     adminCommentOnChange(e) {
-        this.setState({adminComment: e.target.value});
+        this.setState({adminComment: e.target.value, adminCommentMessage:''});
     },
 
     rejectModule(e) {
         e.preventDefault();
-        this.moduleApprovalFb.update({
-            approved: false,
-            adminComment: this.state.adminComment,
-            rejected: true
-        });
-        this.studentFb.update({
-            rejected: true
+        this.handleValidation(res => {
+            if(res){
+                this.moduleApprovalFb.update({
+                    approved: false,
+                    adminComment: this.state.adminComment,
+                    rejected: true
+                });
+                this.studentFb.update({
+                    rejected: true
+                })
+                this.setState({ approved: false, adminComment: '', rejected: true })
+            }
         })
-        this.setState({ approved: false, adminComment: '', rejected: true })
     },
 
     commentOnChange(e) {
@@ -138,6 +141,18 @@ let PreviewModuleForApproval = React.createClass({
         });
     },
 
+    handleValidation(response){
+        response = arguments[arguments.length - 1];
+        var err = false;
+        var emailRegex = /^[a-z][a-zA-Z0-9_]*(\.[a-zA-Z][a-zA-Z0-9_]*)?@[a-z][a-zA-Z-0-9]*\.[a-z]+(\.[a-z]+)?$/;
+
+        if(this.state.adminComment.trim().length == 0){
+            this.setState({ adminCommentMessage: 'Enter comment.' });
+            err = true;
+        }
+        if(err){ response (false); return; } else { response (true); return; }
+    },
+
 	render() {
 		return  <div>
                     <div>
@@ -151,6 +166,7 @@ let PreviewModuleForApproval = React.createClass({
                                 <form onSubmit={this.rejectModule}>
                                    <span>Comment:</span>
                                    <input type = 'text' value={this.state.adminComment} onChange={this.adminCommentOnChange}/>
+                                   {this.state.adminCommentMessage}
                                    <span><button>Reject</button></span>
                                 </form>
                             </div>) : (<span></span>)) : (<div></div>)}

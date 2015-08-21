@@ -11,7 +11,7 @@ let PreviewModule = React.createClass({
 	mixins: [Router.Navigation],
 
 	getInitialState() {
-		return { id: this.props.query.id, userId: auth.getUserId(), submitted: false, moduleInProgress: "false" };
+		return { id: this.props.query.id, userId: auth.getUserId(), submitted: false, moduleInProgress: "false", comment: '', solutionUrl:'' };
 	},
 
 	componentWillMount() {
@@ -115,31 +115,35 @@ let PreviewModule = React.createClass({
 
     handleModuleSubmit(e) {
         e.preventDefault();
-        this.modulesApproval = new Firebase(firebaseDb + '/' + this.state.id + '/users/');
-        this.modulesApproval.child(this.state.userId).set({
-            comment: this.state.comment,
-            solutionUrl: this.state.solutionUrl,
-            approved: false
-        });
-        this.studentModuleFb.child(this.state.id).set({
-            approved: false,
-            repeated: this.state.repeated
-        });
-        this.setState({
-            comment: '',
-            solutionUrl: '',
-            submitted: true,
-            approved: false,
-            rejected: false
-        });
+        this.handleValidation(res => {
+            if(res){
+                this.modulesApproval = new Firebase(firebaseDb + '/' + this.state.id + '/users/');
+                this.modulesApproval.child(this.state.userId).set({
+                    comment: this.state.comment,
+                    solutionUrl: this.state.solutionUrl,
+                    approved: false
+                });
+                this.studentModuleFb.child(this.state.id).set({
+                    approved: false,
+                    repeated: this.state.repeated
+                });
+                this.setState({
+                    comment: '',
+                    solutionUrl: '',
+                    submitted: true,
+                    approved: false,
+                    rejected: false
+                });
+            }
+        })
     },
 
     commentOnChange(e) {
-        this.setState({comment: e.target.value});
+        this.setState({comment: e.target.value, commentMessage:''});
     },
 
     solutionUrlOnChange(e) {
-        this.setState({solutionUrl: e.target.value});
+        this.setState({solutionUrl: e.target.value, solutionUrlMessage:''});
     },
 
     deleteModule() {
@@ -150,6 +154,23 @@ let PreviewModule = React.createClass({
 
     editModule() {
         this.transitionTo('editmodule', null, { id: this.state.id });
+    },
+
+    handleValidation(response){
+        response = arguments[arguments.length - 1];
+        var err = false;
+        var emailRegex = /^[a-z][a-zA-Z0-9_]*(\.[a-zA-Z][a-zA-Z0-9_]*)?@[a-z][a-zA-Z-0-9]*\.[a-z]+(\.[a-z]+)?$/;
+
+        if(this.state.comment.trim().length == 0){
+            this.setState({ commentMessage: 'Enter comment.' });
+            err = true;
+        }
+
+        if(this.state.solutionUrl.trim().length == 0){
+            this.setState({ solutionUrlMessage: 'Enter solution url.' });
+            err = true;
+        }
+        if(err){ response (false); return; } else { response (true); return; }
     },
 
 	render() {
@@ -168,8 +189,10 @@ let PreviewModule = React.createClass({
                                                 <form onSubmit={this.handleModuleSubmit}>
                                                    <span>Comment:</span>
                                                    <input type = 'text' value={this.state.comment} onChange={this.commentOnChange}/>
+                                                   <div>{this.state.commentMessage}</div>
                                                    <span>Solution url:</span>
                                                    <input type = 'text' value={this.state.solutionUrl} onChange={this.solutionUrlOnChange} />
+                                                   <div>{this.state.solutionUrlMessage}</div>
                                                    <div><span><button>Submit module</button></span></div>
                                                </form>
                                            </div>
@@ -180,8 +203,10 @@ let PreviewModule = React.createClass({
                            <form onSubmit={this.handleModuleSubmit}>
                                <span>Comment:</span>
                                <input type = 'text' value={this.state.comment} onChange={this.commentOnChange}/>
+                               <div>{this.state.commentMessage}</div>
                                <span>Solution url:</span>
                                <input type = 'text' value={this.state.solutionUrl} onChange={this.solutionUrlOnChange} />
+                               <div>{this.state.solutionUrlMessage}</div>
                                <div><span><button>Submit module</button></span></div>
                            </form>
                        </div>) : (<div></div>)}    
