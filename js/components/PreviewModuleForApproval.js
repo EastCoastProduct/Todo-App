@@ -4,8 +4,6 @@ import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 import auth from '../auth';
 
-//students info
-
 let PreviewModuleForApproval = React.createClass({
 	mixins: [Router.Navigation],
 
@@ -28,6 +26,10 @@ let PreviewModuleForApproval = React.createClass({
     },
 
     getModuleData() {
+        this.usersFb.once('value', function(snap){
+            var user = snap.val();
+            this.setState({usersData: user.first_name + ' ' + user.last_name});
+        }.bind(this))
         this.moduleFb.once('value', function(snapshot){
             var data = snapshot.val();
             this.setState({ title: data.title, description: data.description, taxonomy: data.taxonomy, points:data.points, repeatable: data.repeatable });
@@ -157,6 +159,7 @@ let PreviewModuleForApproval = React.createClass({
 		return  <div>
                     <div>
                         <span>Submission info:</span>
+                        <div><span>Student:</span><div>{this.state.usersData}</div></div>
                         <div><span>Comment:</span><div>{this.state.comment}</div></div>
                         <div><span>Solution url:</span><div>{this.state.solutionUrl}</div></div>
                         <div>
