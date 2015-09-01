@@ -4,7 +4,7 @@ import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 import auth from '../auth';
 
-//add filtering
+//ako ima pending ili finished ili rejected module, opcija all nece prikazivati taj module ali ostale opcije hoce
 //add paging
 
 let ModulesList = React.createClass({
@@ -20,17 +20,30 @@ let ModulesList = React.createClass({
         if (userStatus == "created") {
             this.transitionTo('changepassword', null, {id: userId});
         };
-        return { modules: [], modulesForApproval: [], finishedModules: [], rejectedModules: [] };
+        return { modules: [], modulesForApproval: [], finishedModules: [], rejectedModules: [], taxonomy: [], taxonomySelected: 'All', modulesSelected: [] };
     },
 
     componentWillMount() {
         this.firebaseDb = new Firebase("https://app-todo-list.firebaseio.com/modules/");
         this.usersFb = new Firebase("https://app-todo-list.firebaseio.com/users/");
+        this.taxonomyDb = new Firebase("https://app-todo-list.firebaseio.com/taxonomy/");
+        this.getTaxonomy();
+
         if (!auth.isAdmin()) {
             this.getAllModulesForStudent();
         } else {
             this.getAllModulesForAdmin();
         }
+    },
+
+    getTaxonomy(){
+        this.taxonomyDb.on('child_added', function(snap){
+            var data = snap.val();
+            data.id = snap.key();
+            var taxonomyArray = this.state.taxonomy;
+            taxonomyArray.push(data);
+            this.setState({taxonomy: taxonomyArray})
+        }.bind(this))
     },
 
     getAllModulesForStudent() {
@@ -70,6 +83,7 @@ let ModulesList = React.createClass({
                     if (snap.key() == userId && data.approved) {
                         data.id = itemsKey;
                         data.title = items.title;
+                        data.status = items.status;
                         finishedModulesArray.push(data);
                         this.setState({
                             finishedModules: finishedModulesArray
@@ -126,6 +140,7 @@ let ModulesList = React.createClass({
                                 modulesForApproval: modulesForApprovalArray
                             })
                         }.bind(this))
+
                     }
                 }.bind(this))
             }
@@ -141,6 +156,31 @@ let ModulesList = React.createClass({
         this.firebaseDb.off();
     },
 
+    inputTaxonomyChange(e) {
+        this.setState({taxonomySelected: e.target.value});
+
+        var selected = e.target.value;
+        var selectedModules = [];
+        var selectedModulesArray = [];
+
+        this.firebaseDb.orderByChild('taxonomy').startAt(selected).endAt(selected).once('value', function(snapshot){ 
+            var data = snapshot.val();
+            if(data == null) {
+                this.setState({ modulesSelected: [] })
+            } else {
+                for (var k in data){
+                    var moduleFb = new Firebase(this.firebaseDb + '/' + k);
+                    moduleFb.once('value', function(snap){
+                        var item = snap.val();
+                        item.id = snap.key();
+                        selectedModulesArray.push(item);
+                        this.setState({ modulesSelected: selectedModulesArray })
+                    }.bind(this))
+                }
+            }
+        }.bind(this));
+    },
+
     render() {
         var modules = this.state.modules;
         var _singleItems = [];
@@ -150,13 +190,19 @@ let ModulesList = React.createClass({
         var _singleItemsFinished = [];
         var rejectedModules = this.state.rejectedModules;
         var _singleItemsRejected = [];
+        var sModules = this.state.modulesSelected;
+        var _singleItemsSelected = [];
 
         modules.forEach(function (module, i) {
-            _singleItems.push(<ModuleItem key={i} module={modules[i]}  />);
+            if(module.status == 'active'){ //ne radi dobro, staviti ovdje sve module
+                _singleItems.push(<ModuleItem key={i} module={modules[i]}  />);
+            }
         });
 
         modulesForA.forEach(function (moduleForA, i) {
-            _singleItemsFor.push(<ModuleItemForA key={i} moduleForA={modulesForA[i]}  />);
+            //if(module.status == 'active'){
+                _singleItemsFor.push(<ModuleItemForA key={i} moduleForA={modulesForA[i]}  />);
+            //}
         });
 
         if(!auth.isAdmin()){
@@ -166,7 +212,21 @@ let ModulesList = React.createClass({
         }
 
         rejectedModules.forEach(function (rejectedModule, i) {
-            _singleItemsRejected.push(<ModuleItemRejected key={i} rejectedModule={rejectedModules[i]} />);
+            //if(module.status == 'active'){
+                _singleItemsRejected.push(<ModuleItemRejected key={i} rejectedModule={rejectedModules[i]} />);
+            //}
+        });
+
+        if(this.state.taxonomy != ''){ //remove this if
+            var optionNodes = this.state.taxonomy.map(function(option){
+                return <option value={option.value}>{option.name}</option>;
+            });
+        }
+
+        sModules.forEach(function (selectedModule, i) {
+            if(selectedModule.status == 'active'){ //ne radi dobro
+                _singleItemsSelected.push(<ModuleItemSelected key={i} selectedModule={sModules[i]}  />);
+            }
         });
 
         return <div>
@@ -176,7 +236,17 @@ let ModulesList = React.createClass({
                     (<div></div>)}
                     {(!auth.isAdmin() && _singleItemsFinished != '') ? (<div>Finished modules: { _singleItemsFinished }</div>) : (<div></div>)}
                     {(!auth.isAdmin() && _singleItemsFinished == '') ? (<div>Finished modules: No modules</div>) : (<div></div>)}
-                    {_singleItems != '' ? (<div>All modules: { _singleItems }</div>) : (<div>All modules: No modules</div>)}
+
+                    <div><span>Show:</span>
+                        <select value={this.state.taxonomySelected} onChange={this.inputTaxonomyChange}>
+                            <option value='All'>All</option>
+                            {optionNodes}
+                        </select>
+                    </div>
+                    {this.state.taxonomySelected == 'All' ? (
+                        _singleItems != '' ? (<div>Modules: { _singleItems }</div>) : (<div>Modules: No modules</div>)
+                    ) : ( _singleItemsSelected != '' ? (<div>Modules: {_singleItemsSelected}</div>) : (<div>Modules: No modules</div>))}
+                    
                     {auth.isAdmin() ? (<AddNewModuleButton />) : (<div></div>)}
                </div>;
     }
@@ -186,7 +256,7 @@ let ModuleItem = React.createClass({
     mixins: [Router.Navigation],
 
     getInitialState() {
-        return { value: this.props.module.title }
+        return { value: this.props.module.title, status: this.props.module.status }
     },
 
     preview() {
@@ -200,9 +270,9 @@ let ModuleItem = React.createClass({
                   <li key={ module.id }>
                         <span>
                             <div> {this.state.value} </div>
-                            <div>
-                                <button type='button' onClick={this.preview}><i> preview </i></button>
-                            </div>
+                            {this.state.status == 'active' ? (
+                                <div><button type='button' onClick={this.preview}><i> preview </i></button></div>
+                                ) : (<div></div>)}
                         </span>
                     </li>
                 </ul>;
@@ -246,7 +316,8 @@ let ModuleItemFinished = React.createClass({
     getInitialState() {
         return {
             moduleIdVal: this.props.finishedModule.id,
-            nameVal: this.props.finishedModule.title
+            nameVal: this.props.finishedModule.title,
+            status: this.props.finishedModule.status
         }
     },
 
@@ -261,7 +332,8 @@ let ModuleItemFinished = React.createClass({
                   <li key={ finishedModule.moduleId }>
                         <span>
                         <div> {this.state.nameVal} </div>
-                            <div><button type='button' onClick={this.preview}><i> preview </i></button></div>
+                        {this.state.status == 'active' ? (<div><button type='button' onClick={this.preview}><i> preview </i></button></div>) : 
+                        (<div></div>)}
                         </span>
                     </li>
                 </ul>;
@@ -287,6 +359,34 @@ let ModuleItemRejected = React.createClass({
 
         return <ul>
                   <li key={ rejectedModule.moduleId }>
+                        <span>
+                        <div> {this.state.nameVal} </div>
+                            <div><button type='button' onClick={this.preview}><i> preview </i></button></div>
+                        </span>
+                    </li>
+                </ul>;
+    }   
+});
+
+let ModuleItemSelected = React.createClass({
+    mixins: [Router.Navigation],
+
+    getInitialState() {
+        return {
+            moduleIdVal: this.props.selectedModule.id,
+            nameVal: this.props.selectedModule.title
+        }
+    },
+
+    preview() {
+        this.transitionTo('previewmodule', null, { id: this.state.moduleIdVal });
+    },
+
+    render() {
+        var selectedModule = this.props.selectedModule;
+
+        return <ul>
+                  <li key={ selectedModule.moduleId }>
                         <span>
                         <div> {this.state.nameVal} </div>
                             <div><button type='button' onClick={this.preview}><i> preview </i></button></div>

@@ -65,7 +65,7 @@ let UsersList = React.createClass({
 
         return <div>
                 {_singleItems != '' ? (<div>{ _singleItems } </div> ) : (<div>No users</div> )} 
-                {(auth.loggedIn() && auth.isAdmin())? (<div><button type='button' onClick={this.redirectToNewUser}>Add new user</button></div>) : (<div></div>)}
+                {(auth.loggedIn() && auth.isAdmin())? (<div className = "newuser-button"><button className="form-button newuser-addbtn" type='button' onClick={this.redirectToNewUser}>Add new user</button></div>) : (<div></div>)}
                </div>;
     }
 });
@@ -88,11 +88,11 @@ let UserItem = React.createClass({
     render() {
         var user = this.props.user;
 
-        return <ul>
-                <li key={ user.id }>
+        return <ul className="userlist">
+                <li className="userlist-item" key={ user.id }>
                     <span>
                         <span>{this.state.firstName}</span>
-                        <div><button type='button' onClick={this.viewProfile}><i> View profile </i></button></div>
+                        <div><button className="form-button" type='button' onClick={this.viewProfile}><i> View profile </i></button></div>
                     </span>
                 </li>
                </ul>;

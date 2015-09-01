@@ -97,7 +97,7 @@ let ChangePassword = React.createClass({
 			err = true;
 		}
 		if(!passwordRegex.test(this.state.newPassword)){
-			this.setState({ newPasswordMessage: 'Your password must contain at least 6 characters, at least one number and letters.' }); 
+			this.setState({ newPasswordMessage: 'Your password must contain at least 6 characters and at least one number.' }); 
 			err = true;
 		}
 		if(err){ response (false); return; } else { response (true); return; }

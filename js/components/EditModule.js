@@ -4,6 +4,8 @@ import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 import auth from '../auth';
 
+//restrict points to numeric
+
 var firebaseDb = new Firebase('https://app-todo-list.firebaseio.com/modules');
 
 let EditModule = React.createClass({
@@ -13,26 +15,38 @@ let EditModule = React.createClass({
       	if (!auth.loggedIn()) {
       		this.transitionTo('login');
       	};
-		return { id: this.props.query.id, title: '', description: '', taxonomy: '', points:'', repeatable: false };
+		return { id: this.props.query.id, title: '', description: '', taxonomy: [], taxonomySelected: '', points:'', repeatable: false };
 	},
 
 	componentWillMount() {
+        this.taxonomyDb = new Firebase('https://app-todo-list.firebaseio.com/taxonomy');
         this.getModuleData();
+        this.getTaxonomy();
     },
 
     getModuleData() {
         var id = this.state.id;
         var moduleFb = new Firebase(firebaseDb + '/' + id);
-        var title, description, taxonomy, points, repeatable;
+        var title, description, taxonomySelected, points, repeatable;
 
         moduleFb.once('value', function(snapshot){
             var data = snapshot.val();
             title = data.title;
             description = data.description;
-            taxonomy = data.taxonomy;
+            taxonomySelected = data.taxonomy;
             points = data.points;
             repeatable = data.repeatable;
-            this.setState({ title: title, description: description, taxonomy: taxonomy, points: points, repeatable: repeatable });
+            this.setState({ title: title, description: description, taxonomySelected: taxonomySelected, points: points, repeatable: repeatable });
+        }.bind(this))
+    },
+
+    getTaxonomy(){
+        this.taxonomyDb.on('child_added', function(snap){
+            var taxonomyArray = this.state.taxonomy;
+            var data = snap.val();
+            data.id = snap.key();
+            taxonomyArray.push(data);
+            this.setState({taxonomy: taxonomyArray})
         }.bind(this))
     },
 
@@ -48,9 +62,9 @@ let EditModule = React.createClass({
     	this.setState({description: e.target.value, descriptionMessage: '', message: ''});
 	},
 
-	inputTaxonomyTextChange(e) {
-    	this.setState({taxonomy: e.target.value, taxonomyMessage: '', message: ''});
-	},
+	inputTaxonomyChange(e) {
+        this.setState({taxonomySelected: e.target.value});
+    },
 
     inputPointsTextChange(e) {
         this.setState({points: e.target.value, pointsMessage: '', message: ''});
@@ -72,7 +86,7 @@ let EditModule = React.createClass({
                 moduleFb.update({ 
                     title: this.state.title, 
                     description: this.state.description,
-                    taxonomy: this.state.taxonomy,
+                    taxonomy: this.state.taxonomySelected,
                     points: this.state.points,
                     repeatable: this.state.repeatable
                 });
@@ -93,12 +107,7 @@ let EditModule = React.createClass({
         if(this.state.description.trim().length == 0){
             this.setState({ descriptionMessage: 'Enter description.' });
             err = true;
-        }
-
-        if(this.state.taxonomy.trim().length == 0){
-            this.setState({ taxonomyMessage: 'Enter taxonomy.' });
-            err = true;
-        }
+        } 
 
         if(this.state.points.trim().length == 0){
             this.setState({ pointsMessage: 'Enter points.' });
@@ -109,6 +118,10 @@ let EditModule = React.createClass({
     },
 
 	render() {
+        var optionNodes = this.state.taxonomy.map(function(option){
+                return <option value={option.value}>{option.name}</option>;
+        });
+
 		return <div>
 					<form onSubmit={this.editModule} >
 						<div><span>Title:</span>
@@ -120,9 +133,10 @@ let EditModule = React.createClass({
                            <div>{this.state.descriptionMessage}</div>
 				       </div>
 						<div><span>Taxonomy:</span>
-				            <input type = 'text' value = { this.state.taxonomy } onChange = {this.inputTaxonomyTextChange} />
-                            <div>{this.state.taxonomyMessage}</div>
-				        </div>
+                            <select value={this.state.taxonomySelected} onChange={this.inputTaxonomyChange}>
+                                {optionNodes}
+                            </select>
+                        </div>
                         <div><span>Points:</span>
                             <input type = 'text' value = { this.state.points } onChange = {this.inputPointsTextChange} />
                             <div>{this.state.pointsMessage}</div>

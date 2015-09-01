@@ -3,13 +3,11 @@ import Firebase from 'firebase';
 import Router from 'react-router';
 import auth from '../auth';
 
-//image
-
 let MyAccount = React.createClass({
 	mixins: [Router.Navigation],
     
 	getInitialState() {
-		return { modules: [], totalPoints: '0' };
+		return { modules: [], totalPoints: '0', image: '' };
 	},
 
 	componentWillMount() {
@@ -34,14 +32,13 @@ let MyAccount = React.createClass({
                 isAdmin: data.isAdmin
             });
             if (data.total_points) {
-                this.setState({
-                    totalPoints: data.total_points
-                })
+                this.setState({ totalPoints: data.total_points })
             }
             if(data.description){
-                this.setState({
-                    description: data.description
-                })
+                this.setState({ description: data.description })
+            }
+            if(data.image){
+                this.setState({ image: data.image })
             }
             if (data.modules) {
                 this.userModulesFb = new Firebase(this.userFb + '/modules');
@@ -55,9 +52,7 @@ let MyAccount = React.createClass({
                             var data2 = snap2.val();
                             var moduleInfo = {moduleName: data2.title, points: userModuleData.points};
                             modulesArray.push(moduleInfo);
-                            this.setState({
-                                modules: modulesArray
-                            });
+                            this.setState({ modules: modulesArray });
                         }.bind(this))
                     }
                 }.bind(this))
@@ -86,6 +81,7 @@ let MyAccount = React.createClass({
         });
 
 		return <div>
+                    {this.state.image != '' ? (<div><img className="usersImage" src={ this.state.image }/></div>) : (<div></div>)}
 					<div><span>First name:</span><div>{ this.state.firstName }</div></div>
 			        <div><span>Last name:</span><div>{ this.state.lastName }</div></div>
 					<div><span>E-mail address:</span><div>{ this.state.email }</div></div>

@@ -18,6 +18,7 @@ import EditUserHandler from './components/EditUser.js';
 import ChangeEmailHandler from './components/ChangeEmail.js';
 import ChangePasswordHandler from './components/ChangePassword.js';
 import ForgotPasswordHandler from './components/ForgotPassword.js';
+import TaxonomyHandler from './components/Taxonomy.js';
 import '../css/style.css';
 
 let App = React.createClass({ 
@@ -52,11 +53,7 @@ let App = React.createClass({
                     this.state.admin ? (
                         <ul>
                             <li>
-                                {this.state.loggedIn ? (
-                                    <Link to="/logout">Log out</Link>
-                                ) : (
-                                    <Link to="/login">Login</Link>
-                                )}
+                                {this.state.loggedIn ? (<Link to="/logout">Log out</Link>) : ( <Link to="/login">Login</Link>)}
                                 {this.state.loggedIn ? (
                                     <div>Admin:&nbsp;{this.state.user}</div> ) : (
                                     <div>You are not logged in</div>
@@ -67,6 +64,7 @@ let App = React.createClass({
                             <li><Link to="/newuser">New user</Link></li>
                             <li><Link to="/moduleslist">Modules list</Link></li>
                             <li><Link to="/newmodule">New module</Link></li>
+                            <li><Link to="/taxonomy">Modules taxonomy</Link></li>
                             <RouteHandler />
                         </ul>
                         ) : (
@@ -118,6 +116,7 @@ let routes = (
         <Route name="changeemail" path="/changeemail" handler={ChangeEmailHandler}/>
         <Route name="changepassword" path="/changepassword" handler={ChangePasswordHandler}/>
         <Route name="forgotpassword" path="/forgotpassword" handler={ForgotPasswordHandler}/>
+        <Route name="taxonomy" path="/taxonomy" handler={TaxonomyHandler}/>
     </Route>
 );
 

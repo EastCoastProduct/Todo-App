@@ -4,6 +4,8 @@ import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 import auth from '../auth';
 
+//popraviti brisanje modula
+
 var firebaseDb = new Firebase('https://app-todo-list.firebaseio.com/modules/');
 var userFb = new Firebase('https://app-todo-list.firebaseio.com/users/');
 
@@ -148,7 +150,10 @@ let PreviewModule = React.createClass({
 
     deleteModule() {
         var itemForRemoval = new Firebase(firebaseDb + '/' + this.state.id);
-        itemForRemoval.remove();
+        itemForRemoval.update({
+            status: 'inactive'
+        })
+        //itemForRemoval.remove();
         this.transitionTo('moduleslist');
     },
 

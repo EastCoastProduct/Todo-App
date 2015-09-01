@@ -4,13 +4,13 @@ import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 import auth from '../auth';
 
-//add image
+//ako izbrisemo usera koji ima pending module za approval, module ce osrtati pending
 
 let UserInfo = React.createClass({
 	mixins: [Router.Navigation],
     
 	getInitialState() {
-		return { id: this.props.query.id, modules: [], totalPoints: '0' };
+		return { id: this.props.query.id, modules: [], totalPoints: '0', image: '' };
 	},
 
 	componentWillMount() {
@@ -18,6 +18,7 @@ let UserInfo = React.createClass({
         this.userFb = new Firebase('https://app-todo-list.firebaseio.com/users/' + this.state.id);
         this.modulesFb = new Firebase('https://app-todo-list.firebaseio.com/modules/');
         this.getUserData();
+        this.userStatus = auth.getStatus();
         this.currentUser = auth.getUserId();
     },
 
@@ -40,6 +41,9 @@ let UserInfo = React.createClass({
             }
             if (data.description) {
                 this.setState({ description: data.description })
+            }
+            if(data.image){
+                this.setState({ image: data.image })
             }
             if (data.modules) {
                 this.userModulesFb = new Firebase(this.userFb + '/modules');
@@ -68,13 +72,21 @@ let UserInfo = React.createClass({
     },
 
     deleteAccount(){
-        this.userFb.update({ status: "inactive" });
-        this.transitionTo('users');
-        console.log("User account set as inactive");
+        if (this.userStatus == "created") {
+            this.transitionTo('changepassword', null, {id: this.currentUser});
+        } else {
+            this.userFb.update({ status: "inactive" });
+            this.transitionTo('users');
+            console.log("User account set as inactive");
+        }
     },
 
     editAccount(){
-        this.transitionTo('edituser', null, {id: this.state.id})
+        if (this.userStatus == "created") {
+            this.transitionTo('changepassword', null, {id: this.currentUser});
+        } else {
+            this.transitionTo('edituser', null, {id: this.state.id})
+        }
     },
 
 	render() {
@@ -86,6 +98,7 @@ let UserInfo = React.createClass({
         });
 
 		return <div>
+                    {this.state.image != '' ? (<div><img className="usersImage" src={ this.state.image }/></div>) : (<div></div>)}
 					<div><span>First name:</span><div>{ this.state.firstName }</div></div>
 			        <div><span>Last name:</span><div>{ this.state.lastName }</div></div>
 					<div><span>E-mail address:</span><div>{ this.state.email }</div></div>

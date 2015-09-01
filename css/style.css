@@ -1,0 +1,200 @@
+.usersImage {
+	width: 100px;
+	height: 100px;
+}
+
+@font-face {
+    font-family: 'league gothic';
+    src: url("/fonts/LeagueGothic.otf");
+}
+
+/*global*/
+
+.form-button {
+  margin: 10px auto;
+  background-color: #8E8EA1;
+  display: inline-block;
+  color: #ffffff;
+  font-family: "league gothic", helvetica;
+  font-size: 20px;
+  text-decoration: none;
+  border: 1px solid #000;
+  width: 100px;
+}
+
+/* User Creation Style */
+
+.newuser-content {
+	/*border: 1px solid red;*/
+  border-radius: 5px;
+	text-align: center;
+	width:33%;
+	margin: 0 33%;
+	/*border-radius: 25px;*/
+	display: inline-block;
+	position: absolute;
+	
+	
+}
+
+
+.newuser-button-add{
+  position: relative;
+  float:left;
+  clear: both;
+}
+
+.newuser-button-cancel{
+  position: relative;
+  float:right;
+}
+
+.newuser-form{
+	position: relative;
+	margin-top: 50px;
+	color:#000000;
+	font-family: "league gothic", helvetica;
+	text-shadow: rgba(0, 0, 0, 0.15) 0px 2px 1px;
+	background-color: #DCDCE8;
+	padding: 10px;
+
+}
+
+.newuser-form div {
+	margin:5px;
+}
+
+.container {
+	margin-top: 50px;
+}
+
+.newuser-form span {
+	margin-left:0px;
+  margin-top:5px;
+  margin-bottom: 5px;
+	float: left;
+	width: 46%;
+	text-align: left;
+}
+
+.newuser-form input {
+	margin-right: 0px;
+	width: 50%;
+  float: right;
+  margin-bottom: 5px;
+  margin-top:5px;
+
+}
+
+
+
+
+/*New Module Style*/
+
+
+.newmodule-container {
+  margin: 60px auto;
+  padding-top: 20px;
+  
+  width: 33%;
+  border: 1px solid black;
+  height: 260px;
+  color:#000000;
+  font-family: "league gothic", helvetica;
+  text-shadow: rgba(0, 0, 0, 0.15) 0px 2px 1px;
+  font-size: 20px;
+  background-color: #DCDCE8;
+}
+
+.newmodule-form span {
+  margin-left: 30px;
+  margin-top: 0px;
+  float: left;
+  width: 35%;
+  text-align: left;
+}
+
+.newmodule-form input {
+  float: right;
+  margin-right: 30px;
+  margin-top: 5px;
+  width: 40%;
+}
+.newmodule-button {
+  margin: 10px 39%;
+}
+
+
+/*Preview Pages*/
+
+
+.preview-container {
+  border: 3px solid red;
+  width: 40%;
+  margin: 0 auto;
+  padding:15px;
+}
+
+.preview-container span {
+  font-weight: bold;
+  text-decoration: underline;
+  font-family: "league gothic", helvetica;
+  font-size: 20px;
+}
+
+.preview-container div {
+  margin: 4px 0;
+  clear: both;
+}
+
+.show-modules-btn {
+  margin: 10px auto;
+  background-color: #8E8EA1;
+  display: block;
+  color: #ffffff;
+  font-family: "league gothic", helvetica;
+  font-size: 20px;
+  text-decoration: none;
+  border: 1px solid #000;
+  width: 31%;
+  clear: both;
+  margin: 0 auto;
+}
+
+.preview-btn{
+  margin-top: 15px;
+  margin-bottom: 15px
+}
+
+/*Users list*/
+
+
+.userlist{
+  display: block;
+  width:15%;
+  list-style: none;
+  margin: 5px auto;
+  padding-left:0;
+  
+  border: 2px solid red;
+}
+
+.userlist li{
+  font-weight: bold;
+  text-align: center;
+}
+
+.userlist span{
+  display: block;
+  padding: 5px 0;
+}
+
+
+.newuser-button{
+  margin:0 auto;
+  width:15%;
+  text-align: center;
+}
+.newuser-addbtn{
+  text-align: center;
+}

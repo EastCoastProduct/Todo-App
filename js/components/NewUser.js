@@ -8,9 +8,16 @@ let NewUser = React.createClass({
 	mixins: [Router.Navigation],
 
 	getInitialState() {
-      	if (!auth.loggedIn()) {
+		if (!auth.loggedIn()) {
       		this.transitionTo('login');
-      	};
+      	} else {
+      		var userStatus = auth.getStatus();
+        	var userId = auth.getUserId();
+        	if (userStatus == "created") {
+	            this.transitionTo('changepassword', null, {id: userId});
+	        }
+      	}
+
 	  	return { uid: '', first_name: '', last_name: '', email: '', isAdmin: false, user: {}, message: '' };
 	},
 
@@ -127,7 +134,7 @@ let NewUser = React.createClass({
 
 	render() {
 		return <div>
-					<form onSubmit={this.createUser} >
+					<form className = "newuser-form newuser-content container" onSubmit={this.createUser} >
 						<div><span>First name:</span>
 				           <input type = 'text' value = { this.state.first_name } onChange = {this.inputFirstNameTextChange} />
 				           <div>{this.state.firstNameMessage}</div>
@@ -144,8 +151,8 @@ let NewUser = React.createClass({
 				            <input type = 'checkbox' checked = { this.state.isAdmin } onChange = {this.inputIsAdminChange} />
 				        </div>
 	                    <div>
-		                    <span><button> Add new user </button></span>
-		                    <span><button onClick={this.cancel}> Cancel </button></span>
+		                    <button className="form-button newuser-button-add"> Add new user </button>
+		                    <button className="form-button newuser-button-cancel" onClick={this.cancel}> Cancel </button>
 	                    </div>
 					</form>
 					{this.state.message}
