@@ -3,7 +3,6 @@ import Firebase from 'firebase';
 import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 import auth from '../auth';
-import Dropzone from 'react-dropzone';
 
 let EditUser = React.createClass({
 	mixins: [Router.Navigation],
