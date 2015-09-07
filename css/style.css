@@ -181,8 +181,8 @@ fieldset {
 }
 
 .usersImage {
-	width: 100px;
-	height: 100px;
+	width: 150px;
+	height: 150px;
 }
 
 .usersImageEdit {
@@ -191,14 +191,14 @@ fieldset {
 }
 
 .imageContainer {
-  height: 110px;
+  height: 160px;
   width: 99%;
   margin: 10px auto;
   position: relative;
 }
 
 .imageBox {
-  margin-left: 25%;
+  margin-left: 20%;
   left: 50%;
 }
 
@@ -217,6 +217,11 @@ fieldset {
     width: 70%;
     height: 100%;
     border:2px solid black;
+    overflow: hidden; 
+}
+
+.paddingBottom {
+    padding-bottom: 15px;
 }
 
 #sidebar    {
@@ -226,6 +231,9 @@ fieldset {
     height: 100%;
     border-right:2px solid black;
     padding: 1%;
+
+    margin-bottom: -99999px;
+  padding-bottom: 99999px;
 }
 
 #page-wrap  {
@@ -246,6 +254,10 @@ fieldset {
 
 .marginTop{
   margin-top: 40px;
+}
+
+.marginBottom{
+  margin-bottom: 20px;
 }
 
 .marginRight{

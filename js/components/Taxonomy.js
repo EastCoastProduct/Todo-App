@@ -39,7 +39,6 @@ let Taxonomy = React.createClass({
     	this.firebaseDb.on('child_removed', function(snap){
     		var taxonomyArray = this.state.taxonomies;
     		var item = snap.key();
-    		console.log(item);
     		for (var i=0; i < taxonomyArray.length; i++) {
 		        if (taxonomyArray[i] != undefined && (taxonomyArray[i].id === item)) {
 		            if(i>-1){

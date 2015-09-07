@@ -90,7 +90,7 @@ let Login = React.createClass({
 
     render() {
         return (
-                <div id="login-form">
+                <div id="login-form" className='paddingBottom'>
                     <fieldset>
                         <form onSubmit={this.loginUser}>
                             <input type='email' placeholder="Email" onChange={this.handleEmailChange} />

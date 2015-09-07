@@ -77,7 +77,6 @@ let UserInfo = React.createClass({
         } else {
             this.userFb.update({ status: "inactive" });
             this.transitionTo('users');
-            console.log("User account set as inactive");
         }
     },
 
@@ -110,7 +109,7 @@ let UserInfo = React.createClass({
                     (<div></div>)}
                     {auth.isAdmin() ? (<div className='paddingTopBig key'><span className='marginRight'><button className='button_example' onClick={this.deleteAccount}>Delete account</button></span>
                                        <span className='marginRight'><button className='button_example' onClick={this.editAccount}>Edit account</button></span></div>) : (<span></span>)}
-                    <div className='value'><span className='marginRight'><button className='button_example' onClick={this.showAllUsers}>Show all users</button></span></div>
+                    <div className='value paddingTopBig'><span className='marginRight'><button className='button_example' onClick={this.showAllUsers}>Show all users</button></span></div>
 				</div>;
 	}
 });
