@@ -107,9 +107,9 @@ let UserInfo = React.createClass({
                     {(!this.state.isAdmin && this.state.modules != '') ? (   
                         <div><div className='infoKey paddingTop lightFont'>Finished modules</div><div>{ _singleItems }</div></div>) : 
                     (<div></div>)}
-                    {auth.isAdmin() ? (<div className='paddingTopBig key'><span className='marginRight'><button className='button_example' onClick={this.deleteAccount}>Delete account</button></span>
+                    {auth.isAdmin() ? (<div className='paddingTopBig userInfoKey'><span className='marginRight'><button className='button_example' onClick={this.deleteAccount}>Delete account</button></span>
                                        <span className='marginRight'><button className='button_example' onClick={this.editAccount}>Edit account</button></span></div>) : (<span></span>)}
-                    <div className='value paddingTopBig'><span className='marginRight'><button className='button_example' onClick={this.showAllUsers}>Show all users</button></span></div>
+                    <div className='userInfoValue paddingTopBig'><span className='marginRight'><button className='button_example' onClick={this.showAllUsers}>Show all users</button></span></div>
 				</div>;
 	}
 });

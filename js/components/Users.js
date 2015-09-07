@@ -88,7 +88,7 @@ let UserItem = React.createClass({
     render() {
         var user = this.props.user;
 
-        return <div className='paddingTop' key={ user.id }>
+        return <div className='marginTop itemBackground' key={ user.id }>
                     <div className='key'>{this.state.firstName}</div>
                     <div className='value'><button className='button_example' type='button' onClick={this.viewProfile}>View profile</button></div>
                </div>;

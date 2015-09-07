@@ -5,7 +5,19 @@ html {
 
 .key{
     display : inline-block;
-    min-width: 250px;
+    min-width: 91%;
+    padding-left: 10px;
+}
+
+.userInfoKey{
+    display : inline-block;
+    min-width: 200px;
+    /*padding-left: 10px;*/
+}
+
+.userInfoValue{
+    display : inline-block;
+    min-width: 150px;
 }
 
 .lightFont{
@@ -14,7 +26,16 @@ html {
 
 .value{
     display : inline-block;
-    min-width: 100px;
+}
+
+.taxonomyKey{
+    display : inline-block;
+    min-width: 22%;
+    padding-left: 10px;
+}
+
+.taxonomyValue{
+    display : inline-block;
 }
 
 .infoKey{
@@ -252,8 +273,12 @@ fieldset {
   margin-right: 15px;
 }
 
-.marginTop{
+.marginTopBig{
   margin-top: 40px;
+}
+
+.marginTop{
+  margin-top: 20px;
 }
 
 .marginBottom{
@@ -262,6 +287,10 @@ fieldset {
 
 .marginRight{
   margin-right: 5px;
+}
+
+.itemBackground {
+  background-color: #EBEBEC;
 }
 
 .button_example{

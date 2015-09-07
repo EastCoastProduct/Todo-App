@@ -86,8 +86,8 @@ let Taxonomy = React.createClass({
         });
 
 		return <div>
-                <div id='taxonomy-form'>
 				{_singleItems}
+                <div id='taxonomy-form'>
 				<form className='paddingTopBig taxonomy' onSubmit={this.createTaxonomy} >
 			       <input type='taxonomy' placeholder='Taxonomy title' value={this.state.name} onChange={this.inputNameTextChange} />
 			       <div className='errorMessage'>{this.state.nameMessage}</div>
@@ -135,9 +135,9 @@ let TaxonomyItem = React.createClass({
     render() {
         var taxonomy = this.props.taxonomy;
 
-        return <div className='paddingTop' key={ this.state.id }>
-                    <div className='key'>{this.state.value}</div>
-                    <div className='value'>{!this.state.error ? (<button type='button' className='button_example' onClick={this.delete}>Delete</button>) : (<div></div>)}</div>
+        return <div className='marginTop' key={ this.state.id }>
+                    <div className='taxonomyKey'>{this.state.value}</div>
+                    <div className='taxonomyValue'>{!this.state.error ? (<button type='button' className='button_example' onClick={this.delete}>Delete</button>) : (<div></div>)}</div>
                 </div>;
     }   
 });

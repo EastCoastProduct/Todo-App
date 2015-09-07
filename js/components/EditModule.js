@@ -74,9 +74,9 @@ let EditModule = React.createClass({
     	this.setState({repeatable: e.target.checked});
 	},
 
-    cancel() {
-        this.transitionTo('moduleslist');
-    },
+    //cancel() {
+    //    this.transitionTo('moduleslist');
+    //},
 
     editModule(e) {
         e.preventDefault();
@@ -122,32 +122,23 @@ let EditModule = React.createClass({
                 return <option value={option.value}>{option.name}</option>;
         });
 
-		return <div>
+		return <div id='changeData-form'>
+                <fieldset>
 					<form onSubmit={this.editModule} >
-						<div><span>Title:</span>
-				           <input type = 'text' value = { this.state.title } onChange = {this.inputTitleTextChange} />
-                           <div>{this.state.titleMessage}</div>
-				       </div>
-				       <div><span>Description:</span>
-				           <input type = 'text' value = { this.state.description } onChange = {this.inputDescriptionTextChange} />
-                           <div>{this.state.descriptionMessage}</div>
-				       </div>
-						<div><span>Taxonomy:</span>
-                            <select value={this.state.taxonomySelected} onChange={this.inputTaxonomyChange}>
-                                {optionNodes}
-                            </select>
-                        </div>
-                        <div><span>Points:</span>
-                            <input type = 'text' value = { this.state.points } onChange = {this.inputPointsTextChange} />
-                            <div>{this.state.pointsMessage}</div>
-                        </div>
-				        <div><span>Repeatable:</span>
-				            <input type = 'checkbox' checked = { this.state.repeatable } onChange = {this.checkboxRepeatableChange} />
-				        </div>
-	                    <div><span><button>Update module</button></span></div>
+				           <input type='text' placeholder='Title' value={this.state.title} onChange={this.inputTitleTextChange} />
+                           <div className='errorMessage'>{this.state.titleMessage}</div>
+                           <input type='text' placeholder='Points' value={this.state.points} onChange={this.inputPointsTextChange} />
+                            <div className='errorMessage'>{this.state.pointsMessage}</div>
+				           <textarea rows={8} placeholder='Description' value={this.state.description} onChange={this.inputDescriptionTextChange} />
+                           <div className='errorMessage'>{this.state.descriptionMessage}</div>
+                           <select className='adminFont' value={this.state.taxonomySelected} onChange={this.inputTaxonomyChange}>{optionNodes}</select>
+                           <div className='paddingAll'><span className='adminFont'>Repeatable</span>
+                               <input type ='checkbox' checked={this.state.repeatable} onChange={this.checkboxRepeatableChange} />
+                           </div>
+                        <input type='submit' value='Update module'/>
 					</form>
-                    <div><span><button onClick = {this.cancel}>Cancel</button></span></div>
-				</div>;
+                </fieldset>
+			   </div>;
 	}
 });
 export default EditModule;
