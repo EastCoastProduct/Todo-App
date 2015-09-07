@@ -1,6 +1,6 @@
 import React from 'react';
 
-let Home = React.createClass({
+let ChangeSuccess = React.createClass({
 	getInitialState(){
 		return {id: this.props.query.successMessage};
 	},
@@ -10,4 +10,4 @@ let Home = React.createClass({
 	}
 });
 
-export default Home;
+export default ChangeSuccess;

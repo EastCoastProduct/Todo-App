@@ -60,7 +60,7 @@ let ChangeEmail = React.createClass({
 								}
 							} else {
 								this.userFb.update({ email: this.state.newEmail	})
-								this.transitionTo('myaccount');
+								this.transitionTo('changesuccess', null, { successMessage: 'Your email address is successfuly changed!' });
 							}
 						}.bind(this))
 					}
@@ -93,24 +93,21 @@ let ChangeEmail = React.createClass({
 	},
 
 	render(){
-		return <div>
-				<form onSubmit={this.changeEmail} >
-					<div><span>Old e-mail:</span>
-						<input type = 'text' value = { this.state.oldEmail } onChange = {this.inputOldEmailTextChange} />
-						<div>{this.state.oldEmailMessage}</div>
-					</div>
-					<div><span>New e-mail:</span>
-						<input type = 'text' value = { this.state.newEmail } onChange = {this.inputNewEmailTextChange} />
-						<div>{this.state.newEmailMessage}</div>
-					</div>
-					<div><span>Password:</span>
-						<input type = 'password' value = { this.state.password } onChange = {this.inputPasswordTextChange} />
-						<div>{this.state.passwordMessage}</div>
-					</div>
-					<div><span><button>Save</button></span></div>
-				</form>
-				<div><span><button onClick = {this.cancel}>Cancel</button></span></div>
-				<div>{this.state.message}</div>
+		return <div id='changeData-form'>
+				<fieldset>
+					<form onSubmit={this.changeEmail} >
+							<input type='email' placeholder="Old Email" value={this.state.oldEmail} onChange = {this.inputOldEmailTextChange} />
+							<div className='errorMessage'>{this.state.oldEmailMessage}</div>
+
+							<input type='email' placeholder="New Email" value={this.state.newEmail} onChange = {this.inputNewEmailTextChange} />
+							<div className='errorMessage'>{this.state.newEmailMessage}</div>
+
+							<input type='password' placeholder="Password" value={this.state.password} onChange = {this.inputPasswordTextChange} />
+							<div className='errorMessage'>{this.state.passwordMessage}</div>
+							<input type='submit' value='Save'/>
+					</form>
+				</fieldset>
+				<div className='errorMessage paddingLeft'>{this.state.message}</div>
 			</div>
 	}
 });

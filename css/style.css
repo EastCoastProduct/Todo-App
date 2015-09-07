@@ -15,7 +15,9 @@ html {
   padding-left: 20px;
 }
 
-/* login */
+.paddingAll{
+  padding: 10px;
+}
 
 a {
   color: #999;
@@ -31,17 +33,17 @@ fieldset {
   margin: 0;
 }
 
-#forgotPassword-form {
+#forgotPassword-form, #changeData-form {
   width: 40%;
 }
 
-#login-form fieldset, #forgotPassword-form fieldset {
+#login-form fieldset, #forgotPassword-form fieldset, #changeData-form fieldset {
   background: #fff;
   border-radius: 0 0 5px 5px;
   padding: 20px;
 }
 
-#login-form fieldset:before, #forgotPassword-form fieldset:before {
+#login-form fieldset:before, #forgotPassword-form fieldset:before, #changeData-form  fieldset:before {
   background-color: #fff;
   content: "";
   height: 8px;
@@ -55,7 +57,7 @@ fieldset {
   width: 8px;
 }
 
-#login-form input, #forgotPassword-form input {
+#login-form input, #forgotPassword-form input, #changeData-form input, #changeData-form textarea {
   font-size: 14px;
 }
 
@@ -70,7 +72,14 @@ fieldset {
   border-radius: 3px 3px 0 0;
 }
 
-#forgotPassword-form input[type="emailReset"] {
+#forgotPassword-form input[type="emailReset"], #changeData-form input[type="email"], #changeData-form input[type="password"], #changeData-form input[type="text"]  {
+  border: 1px solid #dcdcdc;
+  padding: 10px 5px;
+  width: 95%;
+  border-radius: 3px 3px 0 0;
+}
+
+#changeData-form textarea{
   border: 1px solid #dcdcdc;
   padding: 10px 5px;
   width: 95%;
@@ -81,7 +90,7 @@ fieldset {
   border-radius: 0px 0px 3px 3px;
 }
 
-#login-form input[type="submit"], #forgotPassword-form input[type="submit"] {
+#login-form input[type="submit"], #forgotPassword-form input[type="submit"], #changeData-form input[type="submit"] {
   background: #555252;
   border-radius: 1px;
   color: #fff;
@@ -101,11 +110,14 @@ fieldset {
   margin-top: 16px;
 }
 
-/* login end */
-
 .usersImage {
 	width: 100px;
 	height: 100px;
+}
+
+.usersImageEdit {
+  width: 200px;
+  height: 200px;
 }
 
 .imageContainer {
@@ -170,9 +182,8 @@ fieldset {
   margin-right: 5px;
 }
 
-
 .button_example{
-border:px solid #FFFFFF; -webkit-border-radius: px; -moz-border-radius: px;border-radius: px;width:px;font-size:10px;font-family:helvetica, sans-serif; padding: 5px 5px 5px 5px; text-decoration:none; display:inline-block; color: #FFFFFF;
+ font-size:10px;font-family:helvetica, sans-serif; padding: 5px 5px 5px 5px; text-decoration:none; display:inline-block; color: #FFFFFF;
  background-color: #7d7e7d; background-image: -webkit-gradient(linear, left top, left bottom, from(#7d7e7d), to(#0e0e0e));
  background-image: -webkit-linear-gradient(top, #7d7e7d, #0e0e0e);
  background-image: -moz-linear-gradient(top, #7d7e7d, #0e0e0e);
@@ -182,7 +193,6 @@ border:px solid #FFFFFF; -webkit-border-radius: px; -moz-border-radius: px;borde
 }
 
 .button_example:hover{
- border:px solid #FFFFFF;
  background-color: #646464; background-image: -webkit-gradient(linear, left top, left bottom, from(#646464), to(#282828));
  background-image: -webkit-linear-gradient(top, #646464, #282828);
  background-image: -moz-linear-gradient(top, #646464, #282828);

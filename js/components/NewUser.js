@@ -134,25 +134,25 @@ let NewUser = React.createClass({
 
 	render() {
 		return <div>
-					<form className = "newuser-form newuser-content container" onSubmit={this.createUser} >
+					<form onSubmit={this.createUser} >
 						<div><span>First name:</span>
-				           <input type = 'text' value = { this.state.first_name } onChange = {this.inputFirstNameTextChange} />
+				           <input type='text' value={this.state.first_name} onChange={this.inputFirstNameTextChange} />
 				           <div>{this.state.firstNameMessage}</div>
 				       </div>
 				       <div><span>Last name:</span>
-				           <input type = 'text' value = { this.state.last_name } onChange = {this.inputLastNameTextChange} />
+				           <input type='text' value={this.state.last_name} onChange={this.inputLastNameTextChange} />
 				           <div>{this.state.lastNameMessage}</div>
 				       </div>
 						<div><span>E-mail:</span>
-				            <input type = 'text' value = { this.state.email } onChange = {this.inputEmailTextChange} />
+				            <input type='text' value={this.state.email} onChange={this.inputEmailTextChange} />
 				            <div>{this.state.emailMessage}</div>
 				        </div>
 				        <div><span>Admin:</span>
-				            <input type = 'checkbox' checked = { this.state.isAdmin } onChange = {this.inputIsAdminChange} />
+				            <input type='checkbox' checked={this.state.isAdmin} onChange={this.inputIsAdminChange} />
 				        </div>
 	                    <div>
-		                    <button className="form-button newuser-button-add"> Add new user </button>
-		                    <button className="form-button newuser-button-cancel" onClick={this.cancel}> Cancel </button>
+		                    <button> Add new user </button>
+		                    <button onClick={this.cancel}> Cancel </button>
 	                    </div>
 					</form>
 					{this.state.message}

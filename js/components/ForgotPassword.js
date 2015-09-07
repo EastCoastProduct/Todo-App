@@ -4,6 +4,9 @@ import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 import auth from '../auth';
 
+
+//user se moze ulogirati sa starim pass
+
 let ForgotPassword = React.createClass({
 	mixins: [Router.Navigation],
 
@@ -47,7 +50,7 @@ let ForgotPassword = React.createClass({
 				                	}
 				                }.bind(this))
 				            }
-				            this.transitionTo('passwordresetsuccess', null, { successMessage: 'Password reset email is sent to your email address!' });
+				            this.transitionTo('changesuccess', null, { successMessage: 'Password reset email is sent to your email address!' });
 				            //this.transitionTo('login'); //ne redirectati nego prikazati success poruku
 				        }.bind(this))
 					} else {
@@ -79,8 +82,8 @@ let ForgotPassword = React.createClass({
 		return <div id='forgotPassword-form'>
 				<fieldset>
 				<form onSubmit={this.resetPassword} >
-						<input type='emailReset' value = { this.state.email } placeholder="Email" onChange = {this.inputEmailTextChange} />
-						<div className='errorMessage'>{this.state.emailMessage}</div>
+					<input type='emailReset' value = { this.state.email } placeholder="Email" onChange = {this.inputEmailTextChange} />
+					<div className='errorMessage'>{this.state.emailMessage}</div>
 					<input type='submit' value='Reset password'/>
 				</form>
 				</fieldset>

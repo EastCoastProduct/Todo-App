@@ -5,6 +5,9 @@ import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-route
 import auth from '../auth';
 import Dropzone from 'react-dropzone';
 
+//add remove image functionality
+//ne radi dobro image upload onChange??
+
 let EditUser = React.createClass({
 	mixins: [Router.Navigation],
     
@@ -20,7 +23,7 @@ let EditUser = React.createClass({
             var data = snap.val();
             if (data != null) {
                 this.setState({ image: data })
-            } else { this.image = ''; }
+            } else { this.setState({ image: '' }) }
         }.bind(this));
     },
 
@@ -42,6 +45,8 @@ let EditUser = React.createClass({
             } 
             if(data.image){
                 this.setState({ image: data.image })
+            } else {
+                this.setState({ image: '' })
             }
         }.bind(this));
     },
@@ -58,9 +63,9 @@ let EditUser = React.createClass({
     	this.setState({description: e.target.value, descriptionMessage: '', message: ''});
 	},
 
-    cancel() {
-        {auth.isAdmin() ? (this.transitionTo('userinfo', null, {id: this.state.id})) : (this.transitionTo('myaccount'))}
-    },
+    //cancel() {
+    //    {auth.isAdmin() ? (this.transitionTo('userinfo', null, {id: this.state.id})) : (this.transitionTo('myaccount'))}
+    //},
 
     editUser(e) {
     	e.preventDefault();
@@ -79,7 +84,7 @@ let EditUser = React.createClass({
             				this.userFb.update({ description: this.state.description })
             			}
             		} else { this.userFb.update({ description: this.state.description })}
-            		if(auth.isAdmin()){ this.transitionTo('users'); } else { this.transitionTo('myaccount'); }
+            		if(auth.isAdmin()){ this.transitionTo('users'); } else { this.transitionTo('changesuccess', null, { successMessage: 'Your user info is successfuly changed!' }); }
             	}.bind(this))
             }
         })
@@ -122,35 +127,25 @@ let EditUser = React.createClass({
     },
 
 	render() {
-		return <div> 
-
+		return <div id='changeData-form'> 
+                <fieldset>
                 <div>
-                    <span>Profile image:</span>
                     <Dropzone ref="dropzone" onDrop={this.onDrop} >
-                        {this.image == '' ? (
-                            <div>Drop file here, or click to select file to upload.</div>
-                        ) : (
-                            <div><img className="usersImage" src={ this.state.image }/></div>
-                        )}
+                        {this.state.image == '' ? (
+                            <div className='paddingAll'>Drop file here, or click to select file to upload.</div>
+                        ) : (<div><img className="usersImageEdit" src={ this.state.image }/></div>)}
                     </Dropzone>
                 </div>
-
-				<form onSubmit={this.editUser} >
-					<div><span>First name:</span>
-						<input type = 'text' value = { this.state.firstName } onChange = {this.inputFirstNameTextChange} />
-                        <div>{this.state.firstNameMessage}</div>
-					</div>
-					<div><span>Last name:</span>
-						<input type = 'text' value = { this.state.lastName } onChange = {this.inputLastNameTextChange} />
-                        <div>{this.state.lastNameMessage}</div>
-					</div>
-					<div><span>Description:</span>
-						<input type = 'text' value = { this.state.description } onChange = {this.inputDescriptionTextChange} />
-                        <div>{this.state.descriptionMessage}</div>
-					</div>
-					<div><span><button>Save</button></span></div>
-                    <div><span><button onClick = {this.cancel}>Cancel</button></span></div>
+                <form className='paddingTop' onSubmit={this.editUser} >
+					<input type='text' placeholder='First name' value={this.state.firstName} onChange = {this.inputFirstNameTextChange} />
+                    <div className='errorMessage'>{this.state.firstNameMessage}</div>
+					<input type='text' placeholder='Last name' value={this.state.lastName} onChange = {this.inputLastNameTextChange} />
+                    <div className='errorMessage'>{this.state.lastNameMessage}</div>
+					<textarea rows={8} placeholder='Description' value = {this.state.description} onChange = {this.inputDescriptionTextChange} />
+                    <div className='errorMessage'>{this.state.descriptionMessage}</div>
+				    <input type='submit' value='Save'/>
 				</form>
+                </fieldset>
 			</div>
 	}
 });

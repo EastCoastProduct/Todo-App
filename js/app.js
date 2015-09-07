@@ -20,7 +20,7 @@ import ChangePasswordHandler from './components/ChangePassword.js';
 import ForgotPasswordHandler from './components/ForgotPassword.js';
 import TaxonomyHandler from './components/Taxonomy.js';
 import HomeHandler from './components/Home.js'
-import PasswordResetSuccessHandler from './components/PasswordResetSuccess.js';
+import ChangeSuccessHandler from './components/ChangeSuccess.js';
 import '../css/style.css';
 
 let App = React.createClass({ 
@@ -54,17 +54,17 @@ let App = React.createClass({
             <div id='main'className='clear'>
                 { this.state.loggedIn ? (
                     this.state.admin ? (
-                        <div className='right'>
+                        <div>
                             <div className='right'>
-                                <span className='marginForNavigation'><Link to="/logout" className='rightLink'>Log out</Link></span>
-                                <span className='marginForNavigation'><Link to="/myaccount" className='rightLink'>My account</Link></span>
                                 <span className='marginForNavigation'><Link to="/users" className='rightLink'>Users list</Link></span>
                                 <span className='marginForNavigation'><Link to="/newuser" className='rightLink'>New user</Link></span>
                                 <span className='marginForNavigation'><Link to="/moduleslist" className='rightLink'>Modules list</Link></span>
                                 <span className='marginForNavigation'><Link to="/newmodule" className='rightLink'>New module</Link></span>
-                                <span><Link to="/taxonomy" className='rightLink'>Modules taxonomy</Link></span>
+                                <span className='marginForNavigation'><Link to="/taxonomy" className='rightLink'>Modules taxonomy</Link></span>
+                                <span className='marginForNavigation'><Link to="/logout" className='rightLink'>Log out</Link></span>
                             </div>
-                            <RouteHandler />
+                            <div id="sidebar"><MyAccountHandler/></div>
+                            <div id="page-wrap"><RouteHandler /></div>
                         </div>
                         ) : (
                         <div>
@@ -111,7 +111,7 @@ let routes = (
         <Route name="changepassword" path="/changepassword" handler={ChangePasswordHandler}/>
         <Route name="forgotpassword" path="/forgotpassword" handler={ForgotPasswordHandler}/>
         <Route name="taxonomy" path="/taxonomy" handler={TaxonomyHandler}/>
-        <Route name="passwordresetsuccess" path="/passwordresetsuccess" handler={PasswordResetSuccessHandler}/>
+        <Route name="changesuccess" path="/changesuccess" handler={ChangeSuccessHandler}/>
     </Route>
 );
 

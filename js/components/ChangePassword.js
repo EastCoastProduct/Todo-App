@@ -4,6 +4,7 @@ import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 import auth from '../auth';
 
+//user se moze ulogirati sa starim pass
 let ChangePassword = React.createClass({
 	mixins: [Router.Navigation],
 
@@ -66,9 +67,9 @@ let ChangePassword = React.createClass({
 											status: "active"
 										})
 										localStorage.userStatus = "active";
-										this.transitionTo('myaccount');
+										this.transitionTo('changesuccess', null, { successMessage: 'Your password is successfuly changed!' });
 									} else {
-										this.transitionTo('myaccount');
+										this.transitionTo('changesuccess', null, { successMessage: 'Your password is successfuly changed!' });
 									}
 								}.bind(this))
 							}
@@ -104,24 +105,21 @@ let ChangePassword = React.createClass({
 	},
 
 	render(){
-		return <div>
-				<form onSubmit={this.changePassword} >
-					<div><span>E-mail:</span>
-						<input type = 'text' value = { this.state.email } onChange = {this.inputEmailTextChange} />
-						<div>{this.state.emailMessage}</div>
-					</div>
-					<div><span>Old password:</span>
-						<input type = 'password' value = { this.state.oldPassword } onChange = {this.inputOldPasswordTextChange} />
-						<div>{this.state.oldPasswordMessage}</div>
-					</div>
-					<div><span>New password:</span>
-						<input type = 'password' value = { this.state.newPassword } onChange = {this.inputNewPasswordTextChange} />
-						<div>{this.state.newPasswordMessage}</div>
-					</div>
-					<div><span><button>Save</button></span></div>
-				</form>
-				<div><span><button onClick = {this.cancel}>Cancel</button></span></div>
-				<div>{this.state.message}</div>
+		return <div id='changeData-form'>
+				<fieldset>
+					<form onSubmit={this.changePassword} >
+						<input type='email' placeholder='Email' value={this.state.email} onChange = {this.inputEmailTextChange} />
+						<div className='errorMessage'>{this.state.emailMessage}</div>
+
+						<input type='password' placeholder='Old password' value={this.state.oldPassword} onChange = {this.inputOldPasswordTextChange} />
+						<div className='errorMessage'>{this.state.oldPasswordMessage}</div>
+
+						<input type='password' placeholder='New password' value={this.state.newPassword} onChange = {this.inputNewPasswordTextChange} />
+						<div className='errorMessage'>{this.state.newPasswordMessage}</div>
+						<input type='submit' value='Save'/>
+					</form>
+				</fieldset>
+				<div className='errorMessage paddingLeft'>{this.state.message}</div>
 			</div>
 	}
 });
