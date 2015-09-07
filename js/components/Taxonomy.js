@@ -69,7 +69,7 @@ let Taxonomy = React.createClass({
         var err = false;
 
         if(this.state.name.trim().length == 0){
-            this.setState({ nameMessage: 'Enter name.' });
+            this.setState({ nameMessage: 'Enter title.' });
             err = true;
         }
 
@@ -86,16 +86,14 @@ let Taxonomy = React.createClass({
             _singleItems.push(<TaxonomyItem key={i} taxonomy={taxonomies[i]} onDelete = {fb} change={change}/>);
         });
 
-		return <div>
+		return <div id='taxonomy-form'>
 				{_singleItems}
-				<form onSubmit={this.createTaxonomy} >
-						<div><span>Add new taxonomy:</span>
-				           <input type = 'text' value = { this.state.name } onChange = {this.inputNameTextChange} />
-				           <div>{this.state.nameMessage}</div>
-				       </div>
-	                    <div><span><button>Create taxonomy</button></span></div>
-					</form>
-				</div>;
+				<form className='paddingTopBig taxonomy' onSubmit={this.createTaxonomy} >
+			       <input type='taxonomy' placeholder='Taxonomy title' value={this.state.name} onChange={this.inputNameTextChange} />
+			       <div className='errorMessage'>{this.state.nameMessage}</div>
+                   <input type='submit' value='Add new taxonomy'/>
+				</form>
+			   </div>;
 	}
 });
 
@@ -135,17 +133,10 @@ let TaxonomyItem = React.createClass({
     render() {
         var taxonomy = this.props.taxonomy;
 
-        return <ul>
-                  <li key={ this.state.id }>
-                        <span>
-                            <div> {this.state.value} </div>
-                            <div>
-                                
-                                {!this.state.error ? (<button type='button' onClick={this.delete}><i> delete </i></button>) : (<div></div>)}
-                            </div>
-                        </span>
-                    </li>
-                </ul>;
+        return <div className='paddingTop' key={ this.state.id }>
+                    <div className='key'>{this.state.value}</div>
+                    <div className='value'>{!this.state.error ? (<button type='button' className='button_example' onClick={this.delete}>Delete</button>) : (<div></div>)}</div>
+                </div>;
     }   
 });
 

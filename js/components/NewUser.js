@@ -89,7 +89,7 @@ let NewUser = React.createClass({
 								    status: "created"
 								});
 								this.setState({ first_name: '', last_name: '', email: '', isAdmin: false }); 
-								this.transitionTo('users');
+								this.transitionTo('users'); //show message? 
 							} else {
 								switch (error.code) {
 									case "INVALID_USER":
@@ -133,29 +133,22 @@ let NewUser = React.createClass({
 	},
 
 	render() {
-		return <div>
+		return <div id='changeData-form'>
+				<fieldset>
 					<form onSubmit={this.createUser} >
-						<div><span>First name:</span>
-				           <input type='text' value={this.state.first_name} onChange={this.inputFirstNameTextChange} />
-				           <div>{this.state.firstNameMessage}</div>
+			           <input type='text' placeholder='First name' value={this.state.first_name} onChange={this.inputFirstNameTextChange} />
+			           <div className='errorMessage'>{this.state.firstNameMessage}</div>
+			           <input type='text' placeholder='Last name' value={this.state.last_name} onChange={this.inputLastNameTextChange} />
+			           <div className='errorMessage'>{this.state.lastNameMessage}</div>
+			           <input type='text' placeholder='Email' value={this.state.email} onChange={this.inputEmailTextChange} />
+			           <div className='errorMessage'>{this.state.emailMessage}</div>
+				       <div className='paddingAll'><span className='adminFont'>Administrator</span>
+				           <input type='checkbox' checked={this.state.isAdmin} onChange={this.inputIsAdminChange} />
 				       </div>
-				       <div><span>Last name:</span>
-				           <input type='text' value={this.state.last_name} onChange={this.inputLastNameTextChange} />
-				           <div>{this.state.lastNameMessage}</div>
-				       </div>
-						<div><span>E-mail:</span>
-				            <input type='text' value={this.state.email} onChange={this.inputEmailTextChange} />
-				            <div>{this.state.emailMessage}</div>
-				        </div>
-				        <div><span>Admin:</span>
-				            <input type='checkbox' checked={this.state.isAdmin} onChange={this.inputIsAdminChange} />
-				        </div>
-	                    <div>
-		                    <button> Add new user </button>
-		                    <button onClick={this.cancel}> Cancel </button>
-	                    </div>
+	                   <input type='submit' value='Add new user'/>
 					</form>
-					{this.state.message}
+				 </fieldset>
+				<div className='errorMessage paddingLeft'>{this.state.message}</div>
 				</div>;
 	}
 });

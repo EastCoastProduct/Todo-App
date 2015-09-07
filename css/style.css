@@ -3,12 +3,30 @@ html {
   font-size: 14px;
 }
 
+.key{
+    display : inline-block;
+    min-width: 250px;
+}
+
+.value{
+    display : inline-block;
+    min-width: 150px;
+}
+
+.adminFont {
+  font: 14px '.HelveticaNeueDeskInterface-Regular';
+}
+
 .errorMessage{
   color: #B63131;
 }
 
 .paddingTop{
   padding-top: 20px;
+}
+
+.paddingTopBig{
+  padding-top: 50px;
 }
 
 .paddingLeft{
@@ -33,8 +51,13 @@ fieldset {
   margin: 0;
 }
 
-#forgotPassword-form, #changeData-form {
+#forgotPassword-form, #changeData-form ,#taxonomy-form  {
   width: 40%;
+}
+
+.taxonomy {
+  width:70%;
+
 }
 
 #login-form fieldset, #forgotPassword-form fieldset, #changeData-form fieldset {
@@ -57,7 +80,7 @@ fieldset {
   width: 8px;
 }
 
-#login-form input, #forgotPassword-form input, #changeData-form input, #changeData-form textarea {
+#login-form input, #forgotPassword-form input, #changeData-form input, #changeData-form textarea, #taxonomy-form input {
   font-size: 14px;
 }
 
@@ -79,10 +102,24 @@ fieldset {
   border-radius: 3px 3px 0 0;
 }
 
-#changeData-form textarea{
+#taxonomy-form input[type="taxonomy"]  {
+  border: 1px solid #dcdcdc;
+  padding: 10px 5px;
+  width: 96%;
+  border-radius: 3px 3px 0 0;
+}
+
+#changeData-form textarea {
   border: 1px solid #dcdcdc;
   padding: 10px 5px;
   width: 95%;
+  border-radius: 3px 3px 0 0;
+}
+
+#changeData-form select{
+  border: 1px solid #dcdcdc;
+  width: 98%;
+  height:40px;
   border-radius: 3px 3px 0 0;
 }
 
@@ -100,9 +137,22 @@ fieldset {
   padding: 5px 20px;
 }
 
+#taxonomy-form input[type="submit"] {
+  background: #555252;
+  border-radius: 1px;
+  color: #fff;
+  float: right;
+  font-weight: normal;
+  margin-top: 10px;
+}
+
 #login-form input[type="submit"]:hover {
   background: #7A7A7C;
   color: #fff;
+}
+
+#changeData-form input[type="checkbox"]{
+  float: right;
 }
 
 #login-form footer {
@@ -153,7 +203,7 @@ fieldset {
     width: 25%;
     background: #dcdbda;
     float: left;
-    height: 100% !important;
+    height: 100%;
     border-right:2px solid black;
     padding: 1%;
 }

@@ -7,6 +7,7 @@ import Dropzone from 'react-dropzone';
 
 //add remove image functionality
 //ne radi dobro image upload onChange??
+//kad admin apdejta profil redirectati ga na success msg
 
 let EditUser = React.createClass({
 	mixins: [Router.Navigation],
