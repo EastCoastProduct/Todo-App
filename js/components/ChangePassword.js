@@ -126,4 +126,4 @@ let ChangePassword = React.createClass({
 	}
 });
 
-module.exports = ChangePassword;
+export default ChangePassword;

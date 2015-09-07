@@ -8,7 +8,7 @@ let ForgotPassword = React.createClass({
 	mixins: [Router.Navigation],
 
 	getInitialState(){
-		return { email: '', message:''}
+		return { email: '', message:'', successMessage: ''}
 	},
 
 	componentWillMount() {
@@ -47,7 +47,8 @@ let ForgotPassword = React.createClass({
 				                	}
 				                }.bind(this))
 				            }
-				            this.transitionTo('login');
+				            this.transitionTo('passwordresetsuccess', null, { successMessage: 'Password reset email is sent to your email address!' });
+				            //this.transitionTo('login'); //ne redirectati nego prikazati success poruku
 				        }.bind(this))
 					} else {
 						switch (error.code) {
@@ -63,10 +64,6 @@ let ForgotPassword = React.createClass({
 		})
 	},
 
-	cancel(){
-		this.transitionTo('login');
-	},
-
 	handleValidation(response){
         response = arguments[arguments.length - 1];
         var err = false;
@@ -79,18 +76,17 @@ let ForgotPassword = React.createClass({
     },
 
 	render(){
-		return <div>
+		return <div id='forgotPassword-form'>
+				<fieldset>
 				<form onSubmit={this.resetPassword} >
-					<div><span>E-mail:</span>
-						<input type = 'text' value = { this.state.email } onChange = {this.inputEmailTextChange} />
-						<div>{this.state.emailMessage}</div>
-					</div>
-					<div><span><button>Reset password</button></span></div>
-					<div><span><button onClick = {this.cancel}>Cancel</button></span></div>
-					{this.state.message}
+						<input type='emailReset' value = { this.state.email } placeholder="Email" onChange = {this.inputEmailTextChange} />
+						<div className='errorMessage'>{this.state.emailMessage}</div>
+					<input type='submit' value='Reset password'/>
 				</form>
+				</fieldset>
+				<div className='errorMessage paddingLeft'>{this.state.message}</div>
 			</div>
 	}
 });
 
-module.exports = ForgotPassword;
+export default ForgotPassword;

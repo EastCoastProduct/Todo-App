@@ -149,4 +149,4 @@ let TaxonomyItem = React.createClass({
     }   
 });
 
-module.exports = Taxonomy;
+export default Taxonomy;

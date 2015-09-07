@@ -229,7 +229,7 @@ let ModulesList = React.createClass({
             }
         });
 
-        return <div>
+        return <div >
                     {(_singleItemsFor != '') ? (<div>Modules waiting for approval: { _singleItemsFor }</div>) : 
                     (<div>Modules waiting for approval: No modules</div>)}
                     {(_singleItemsRejected != '') ? (<div>Rejected modules: { _singleItemsRejected }</div>) : 
@@ -408,4 +408,4 @@ let AddNewModuleButton = React.createClass({
     }
 });
 
-module.exports = ModulesList;
+export default ModulesList;

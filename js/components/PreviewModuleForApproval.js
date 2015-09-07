@@ -204,4 +204,4 @@ let PreviewModuleForApproval = React.createClass({
 	}
 });
 
-module.exports = PreviewModuleForApproval;
+export default PreviewModuleForApproval;

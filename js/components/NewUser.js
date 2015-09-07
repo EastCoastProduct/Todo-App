@@ -160,4 +160,4 @@ let NewUser = React.createClass({
 	}
 });
 
-module.exports = NewUser;
+export default NewUser;

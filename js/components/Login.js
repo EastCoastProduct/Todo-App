@@ -90,21 +90,21 @@ let Login = React.createClass({
 
     render() {
         return (
-            <div>
-                <form onSubmit={this.loginUser}>
-                    <div>
-                        <label><input type='text' placeholder="email" onChange={this.handleEmailChange} /></label>
-                        <div>{this.state.emailMessage}</div>
-                    </div>
-                    <div>
-                        <label><input type="password" placeholder="password" onChange={this.handlePasswordChange}/></label>
-                        <div>{this.state.passwordMessage}</div>
-                    </div>
-                    <button type="submit">login</button>
-                </form>
-                <a href='/#/forgotpassword'>Forgot password?</a>
-                <div>{this.state.message}</div>
-            </div>
+                <div id="login-form">
+                    <fieldset>
+                        <form onSubmit={this.loginUser}>
+                            <input type='email' placeholder="Email" onChange={this.handleEmailChange} />
+                            <div className='errorMessage'>{this.state.emailMessage}</div>
+                            <input type="password" placeholder="Password" onChange={this.handlePasswordChange}/>
+                            <div className='errorMessage'>{this.state.passwordMessage}</div>
+                            <input type="submit" value="Login" />
+                            <footer className="clearfix">
+                                <p><a href='/#/forgotpassword'>Forgot Password</a></p>
+                            </footer>
+                        </form>
+                        <div className='errorMessage paddingTop'>{this.state.message}</div>
+                    </fieldset>
+                </div>
         );
     }
 });

@@ -81,21 +81,28 @@ let MyAccount = React.createClass({
         });
 
 		return <div>
-                    {this.state.image != '' ? (<div><img className="usersImage" src={ this.state.image }/></div>) : (<div></div>)}
-					<div><span>First name:</span><div>{ this.state.firstName }</div></div>
-			        <div><span>Last name:</span><div>{ this.state.lastName }</div></div>
-					<div><span>E-mail address:</span><div>{ this.state.email }</div></div>
-                    <div><span>Description:</span><div>{ this.state.description }</div></div>
-                    {(!this.state.isAdmin) ? (
-                        <div><span>Total points:</span><div>{ this.state.totalPoints }</div></div>) : (<div></div>)}
+                    {this.state.image != '' ? (<div className='imageContainer'><div className='imageBox'><img className='usersImage'src={ this.state.image }/></div></div>) : (<div></div>)}
+					
+                    <div className='marginTop'><span><b>{ this.state.firstName }</b></span>&nbsp;<span><b>{ this.state.lastName }</b></span></div>
+					<div>{ this.state.email }</div>
+
+                    {(!this.state.isAdmin) ? (<div><b>{ this.state.totalPoints }</b></div>) : (<div></div>)}
+
+
+
                     {(!this.state.isAdmin && this.state.modules != '') ? (   
-                        <div><span>Finished modules:</span><div>{ _singleItems }</div></div>) : (<div></div>)}
+                        <div>{ _singleItems }</div>) : (<div></div>)}
                     {(!this.state.isAdmin && this.state.modules == '') ? (   
-                        <div><span>Finished modules:</span><div>No finished modules</div></div>) : (<div></div>)}
-                    <div>
-                        <span><button onClick={this.editProfile}>Edit profile</button></span>
-                        <span><button onClick = {this.changeEmail}>Change email</button></span>
-                        <span><button onClick = {this.changePassword}>Change password</button></span>
+                        <div>No finished modules</div>) : (<div></div>)}
+
+
+
+                    <div className='marginTop'><div>{ this.state.description }</div></div>
+                    
+                    <div className='marginTop'>
+                        <span className='marginRight'><button className='button_example' onClick={this.editProfile}>Edit profile</button></span>
+                        <span className='marginRight'><button className='button_example' onClick = {this.changeEmail}>Change email</button></span>
+                        <span className='marginRight'><button className='button_example' onClick = {this.changePassword}>Change password</button></span>
                     </div>
 				</div>;
 	}
@@ -114,15 +121,11 @@ let ModuleItem = React.createClass({
     render() {
       var module = this.props.module;
     
-      return <ul>
-                  <li>
-                        <span>
-                            <span>Module: {this.state.name} </span>
-                            <span>Points: {this.state.points}</span>
-                        </span>
-                    </li>
-                </ul>;
+      return <div>
+                <span> {this.state.points} - </span>
+                <span> {this.state.name} </span>
+                </div>;
     }
 });
 
-module.exports = MyAccount;
+export default MyAccount;

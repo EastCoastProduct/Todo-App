@@ -143,4 +143,4 @@ let NewModule = React.createClass({
 	}
 });
 
-module.exports = NewModule;
+export default NewModule;

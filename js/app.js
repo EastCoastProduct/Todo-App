@@ -19,6 +19,8 @@ import ChangeEmailHandler from './components/ChangeEmail.js';
 import ChangePasswordHandler from './components/ChangePassword.js';
 import ForgotPasswordHandler from './components/ForgotPassword.js';
 import TaxonomyHandler from './components/Taxonomy.js';
+import HomeHandler from './components/Home.js'
+import PasswordResetSuccessHandler from './components/PasswordResetSuccess.js';
 import '../css/style.css';
 
 let App = React.createClass({ 
@@ -33,7 +35,7 @@ let App = React.createClass({
     setStateOnAuth(loggedIn) {
         this.setState({
             loggedIn: loggedIn,
-            user: auth.getUser(),
+            user: auth.getUser(), //users first name and last name
             admin: auth.isAdmin()
         });
     },
@@ -48,52 +50,43 @@ let App = React.createClass({
 
     render() {
         return (
-            <div>
+            <div className=''>
+            <div id='main'className='clear'>
                 { this.state.loggedIn ? (
                     this.state.admin ? (
-                        <ul>
-                            <li>
-                                {this.state.loggedIn ? (<Link to="/logout">Log out</Link>) : ( <Link to="/login">Login</Link>)}
-                                {this.state.loggedIn ? (
-                                    <div>Admin:&nbsp;{this.state.user}</div> ) : (
-                                    <div>You are not logged in</div>
-                                )}
-                            </li>
-                            <li><Link to="/myaccount">My account</Link></li>
-                            <li><Link to="/users">Users list</Link></li>
-                            <li><Link to="/newuser">New user</Link></li>
-                            <li><Link to="/moduleslist">Modules list</Link></li>
-                            <li><Link to="/newmodule">New module</Link></li>
-                            <li><Link to="/taxonomy">Modules taxonomy</Link></li>
+                        <div className='right'>
+                            <div className='right'>
+                                <span className='marginForNavigation'><Link to="/logout" className='rightLink'>Log out</Link></span>
+                                <span className='marginForNavigation'><Link to="/myaccount" className='rightLink'>My account</Link></span>
+                                <span className='marginForNavigation'><Link to="/users" className='rightLink'>Users list</Link></span>
+                                <span className='marginForNavigation'><Link to="/newuser" className='rightLink'>New user</Link></span>
+                                <span className='marginForNavigation'><Link to="/moduleslist" className='rightLink'>Modules list</Link></span>
+                                <span className='marginForNavigation'><Link to="/newmodule" className='rightLink'>New module</Link></span>
+                                <span><Link to="/taxonomy" className='rightLink'>Modules taxonomy</Link></span>
+                            </div>
                             <RouteHandler />
-                        </ul>
+                        </div>
                         ) : (
-                        <ul>
-                            <li>
-                            {this.state.loggedIn ? (
-                                <Link to="/logout">Log out</Link>
-                            ) : (
-                                <Link to="/login">Login</Link>
-                            )}
-                            {this.state.loggedIn ? (
-                                <div>Student:&nbsp;{this.state.user}</div> 
-                            ) : (
-                                <div>You are not logged in</div>
-                            )}
-                            </li>
-                            <li><Link to="/myaccount">My account</Link></li>
-                            <li><Link to="/users">Users list</Link></li>
-                            <li><Link to="/moduleslist">Modules list</Link></li>
-                            <RouteHandler />
-                        </ul>
+                        <div>
+                            <div className='right'>
+                                <span className='marginForNavigation'><Link to="/users" className='rightLink'>Users </Link></span>
+                                <span className='marginForNavigation'><Link to="/moduleslist" className='rightLink'>Modules </Link></span>
+                                <span><Link to="/logout" className='rightLink'>Logout </Link></span>
+                            </div>
+                            <div id="sidebar"><MyAccountHandler/></div>
+                            <div id="page-wrap"><RouteHandler /></div>
+                        </div>
                         )) : (
-                        <ul>
-                            <li><Link to="/login">Login</Link></li>
-                            <li><Link to="/users">Users list</Link></li>
-                            <RouteHandler />
-                        </ul>
+                        <div className=''>
+                            <div className='right'>
+                                <span><Link to="/users" className='rightLink'>Users list</Link></span>
+                            </div>
+                            <div id="sidebar"><LoginHandler /></div>
+                            <div id="page-wrap"><RouteHandler /></div>
+                        </div>
                     )
                 }
+            </div>
             </div>
         );
     }
@@ -101,6 +94,7 @@ let App = React.createClass({
 
 let routes = (  
     <Route name="app" path="/" handler={App}>
+        <DefaultRoute name="home" handler={HomeHandler}/>
         <Route name="login" path="/login" handler={LoginHandler}/>
         <Route name="logout" path="/logout" handler={LogoutHandler}/>
         <Route name="users" path="/users" handler={UsersHandler}/>
@@ -117,6 +111,7 @@ let routes = (
         <Route name="changepassword" path="/changepassword" handler={ChangePasswordHandler}/>
         <Route name="forgotpassword" path="/forgotpassword" handler={ForgotPasswordHandler}/>
         <Route name="taxonomy" path="/taxonomy" handler={TaxonomyHandler}/>
+        <Route name="passwordresetsuccess" path="/passwordresetsuccess" handler={PasswordResetSuccessHandler}/>
     </Route>
 );
 

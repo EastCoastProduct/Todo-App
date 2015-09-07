@@ -1,5 +1,8 @@
 module.exports = {
 
+//bug on first login
+
+
     login (email, pass, cb) {
         cb = arguments[arguments.length - 1];
         if (localStorage.token) {

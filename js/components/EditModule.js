@@ -150,5 +150,4 @@ let EditModule = React.createClass({
 				</div>;
 	}
 });
-
-module.exports = EditModule;
+export default EditModule;

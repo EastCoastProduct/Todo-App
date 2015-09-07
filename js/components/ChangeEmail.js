@@ -115,4 +115,4 @@ let ChangeEmail = React.createClass({
 	}
 });
 
-module.exports = ChangeEmail;
+export default ChangeEmail;

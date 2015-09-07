@@ -237,4 +237,4 @@ let AdminView = React.createClass({
     }
 });
 
-module.exports = PreviewModule;
+export default PreviewModule;

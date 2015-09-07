@@ -134,4 +134,4 @@ let ModuleItem = React.createClass({
     }
   });
 
-module.exports = UserInfo;
+export default UserInfo;

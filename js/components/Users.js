@@ -99,4 +99,4 @@ let UserItem = React.createClass({
     }
 });
 
-module.exports = UsersList;
+export default UsersList;
