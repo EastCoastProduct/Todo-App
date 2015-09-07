@@ -56,11 +56,11 @@ let App = React.createClass({
                     this.state.admin ? (
                         <div>
                             <div className='right'>
-                                <span className='marginForNavigation'><Link to="/users" className='rightLink'>Users list</Link></span>
+                                <span className='marginForNavigation'><Link to="/users" className='rightLink'>Users</Link></span>
                                 <span className='marginForNavigation'><Link to="/newuser" className='rightLink'>New user</Link></span>
-                                <span className='marginForNavigation'><Link to="/moduleslist" className='rightLink'>Modules list</Link></span>
+                                <span className='marginForNavigation'><Link to="/moduleslist" className='rightLink'>Modules</Link></span>
                                 <span className='marginForNavigation'><Link to="/newmodule" className='rightLink'>New module</Link></span>
-                                <span className='marginForNavigation'><Link to="/taxonomy" className='rightLink'>Modules taxonomy</Link></span>
+                                <span className='marginForNavigation'><Link to="/taxonomy" className='rightLink'>Taxonomy</Link></span>
                                 <span className='marginForNavigation'><Link to="/logout" className='rightLink'>Log out</Link></span>
                             </div>
                             <div id="sidebar"><MyAccountHandler/></div>
@@ -79,7 +79,7 @@ let App = React.createClass({
                         )) : (
                         <div className=''>
                             <div className='right'>
-                                <span><Link to="/users" className='rightLink'>Users list</Link></span>
+                                <span><Link to="/users" className='rightLink'>Users </Link></span>
                             </div>
                             <div id="sidebar"><LoginHandler /></div>
                             <div id="page-wrap"><RouteHandler /></div>

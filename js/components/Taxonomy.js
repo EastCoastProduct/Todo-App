@@ -86,14 +86,17 @@ let Taxonomy = React.createClass({
             _singleItems.push(<TaxonomyItem key={i} taxonomy={taxonomies[i]} onDelete = {fb} change={change}/>);
         });
 
-		return <div id='taxonomy-form'>
+		return <div>
+                <div id='taxonomy-form'>
 				{_singleItems}
 				<form className='paddingTopBig taxonomy' onSubmit={this.createTaxonomy} >
 			       <input type='taxonomy' placeholder='Taxonomy title' value={this.state.name} onChange={this.inputNameTextChange} />
 			       <div className='errorMessage'>{this.state.nameMessage}</div>
                    <input type='submit' value='Add new taxonomy'/>
 				</form>
-			   </div>;
+			   </div>
+               <div className='infoMessage'><span className='errorMessage'>*</span>&nbsp;&nbsp;<span>Taxonomy which is in use cannot be deleted! </span></div>
+               </div>;
 	}
 });
 
