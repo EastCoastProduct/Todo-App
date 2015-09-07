@@ -99,18 +99,18 @@ let UserInfo = React.createClass({
 
 		return <div>
                     {this.state.image != '' ? (<div><img className="usersImage" src={ this.state.image }/></div>) : (<div></div>)}
-					<div><span>First name:</span><div>{ this.state.firstName }</div></div>
-			        <div><span>Last name:</span><div>{ this.state.lastName }</div></div>
-					<div><span>E-mail address:</span><div>{ this.state.email }</div></div>
-                    <div><span>Description:</span><div>{ this.state.description }</div></div>
+					<div className='paddingTop'><div className='infoKey lightFont'>First name</div><div className='infoValue'>{ this.state.firstName }</div></div>
+                    <div><div className='infoKey lightFont'>Last name</div><div className='infoValue'>{ this.state.lastName }</div></div>
+					<div><div className='infoKey lightFont'>E-mail</div><div className='infoValue'>{ this.state.email }</div></div>
+                    {this.state.description ? (<div><div className='infoKey lightFont'>Description</div><div className='infoValue'>{ this.state.description }</div></div>) : (<div></div>)}
                     {(!this.state.isAdmin) ? (
-                        <div><span>Total points:</span><div>{ this.state.totalPoints }</div></div>) : (<div></div>)}
+                    <div><div className='infoKey lightFont'>Total points</div><div className='infoValue'>{ this.state.totalPoints }</div></div>) : (<div></div>)}
                     {(!this.state.isAdmin && this.state.modules != '') ? (   
-                        <div><span>Finished modules:</span><div>{ _singleItems }</div></div>) : 
-                    (<div><span>Finished modules:</span><div>No finished modules</div></div>)}
-                    {auth.isAdmin() ? (<span><button onClick={this.deleteAccount}>Delete account</button>
-                                            <button onClick={this.editAccount}>Edit</button></span>) : (<span></span>)}
-                    <div><span><button onClick={this.showAllUsers}>Show all users</button></span></div>
+                        <div><div className='infoKey paddingTop lightFont'>Finished modules</div><div>{ _singleItems }</div></div>) : 
+                    (<div></div>)}
+                    {auth.isAdmin() ? (<div className='paddingTopBig key'><span className='marginRight'><button className='button_example' onClick={this.deleteAccount}>Delete account</button></span>
+                                       <span className='marginRight'><button className='button_example' onClick={this.editAccount}>Edit account</button></span></div>) : (<span></span>)}
+                    <div className='value'><span className='marginRight'><button className='button_example' onClick={this.showAllUsers}>Show all users</button></span></div>
 				</div>;
 	}
 });
@@ -125,12 +125,11 @@ let ModuleItem = React.createClass({
     render() {
       var module = this.props.module;
     
-      return <ul>
-              <li><span>
-                    <span>Module: {this.state.name} </span>
-                    <span>Points: {this.state.points} </span>
-                </span></li>
-            </ul>;
+      return <div>
+                <span>{this.state.points} - </span>
+                <span>{this.state.name}</span>
+                
+            </div>;
     }
   });
 

@@ -8,9 +8,23 @@ html {
     min-width: 250px;
 }
 
+.lightFont{
+  color: #A4A4A4;
+}
+
 .value{
     display : inline-block;
     min-width: 100px;
+}
+
+.infoKey{
+    display : inline-block;
+    min-width: 100px;
+}
+
+.infoValue{
+    display : inline-block;
+    min-width: 150px;
 }
 
 .adminFont {

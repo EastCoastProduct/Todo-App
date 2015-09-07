@@ -6,8 +6,6 @@ import auth from '../auth';
 import Dropzone from 'react-dropzone';
 
 //add remove image functionality
-//ne radi dobro image upload onChange??
-//kad admin apdejta profil redirectati ga na success msg
 
 let EditUser = React.createClass({
 	mixins: [Router.Navigation],
@@ -85,7 +83,7 @@ let EditUser = React.createClass({
             				this.userFb.update({ description: this.state.description })
             			}
             		} else { this.userFb.update({ description: this.state.description })}
-            		if(auth.isAdmin()){ this.transitionTo('users'); } else { this.transitionTo('changesuccess', null, { successMessage: 'Your user info is successfuly changed!' }); }
+            		this.transitionTo('changesuccess', null, { successMessage: 'User info is successfuly changed!' });
             	}.bind(this))
             }
         })
