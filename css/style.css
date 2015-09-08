@@ -3,6 +3,14 @@ html {
   font-size: 14px;
 }
 
+.itemBackgroundRejected{
+  background-color: #F5A9A9;
+}
+
+.itemBackgroundFinished{
+  background-color: #A9F5D0;
+}
+
 .approved {
   color: #0B610B;
 }

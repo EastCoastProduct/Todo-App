@@ -230,7 +230,7 @@ let ModulesList = React.createClass({
         });
 
         return <div >
-                    {(_singleItemsFor != '' && auth.isAdmin()) ? (<div><b className='errorMessage'>Waiting for review</b> { _singleItemsFor }</div>) : (<div></div>)}
+                    {(_singleItemsFor != '' && auth.isAdmin()) ? (<div><b className='approved'>Waiting for review</b> { _singleItemsFor }</div>) : (<div></div>)}
                     {(_singleItemsFor != '' && !auth.isAdmin()) ? (<div><b>Waiting for review</b> { _singleItemsFor }</div>) : (<div></div>)}
                     {(_singleItemsRejected != '') ? (<div className='marginTop'><b className='errorMessage'>Rejected</b> { _singleItemsRejected }</div>) : (<div></div>)}
                     {(!auth.isAdmin() && _singleItemsFinished != '') ? (<div className='marginTop'><b className='approved'>Finished</b> { _singleItemsFinished }</div>) : (<div></div>)}
@@ -288,7 +288,7 @@ let ModuleItemForA = React.createClass({
         var moduleForA = this.props.moduleForA;
 
         return <div className='marginTop itemBackground' key={ moduleForA.moduleId }>
-                    {auth.isAdmin() ? (<div className='moduleKey errorMessage'> {this.state.nameVal} - <b>{this.state.userVal}</b> </div>) : (
+                    {auth.isAdmin() ? (<div className='moduleKey approved'> {this.state.nameVal} - <b>{this.state.userVal}</b> </div>) : (
                         <div className='moduleKey'> {this.state.nameVal} </div> )}
                         <div className='moduleValue'><button className="button_example" type='button' onClick={this.preview}>Preview</button></div>
                 </div>;
@@ -313,8 +313,8 @@ let ModuleItemFinished = React.createClass({
     render() {
         var finishedModule = this.props.finishedModule;
 
-        return <div className='marginTop itemBackground' key={ finishedModule.moduleId }>
-                    <div className='moduleKey approved'>{this.state.nameVal}</div>
+        return <div className='marginTop itemBackgroundFinished' key={ finishedModule.moduleId }>
+                    <div className='moduleKey'>{this.state.nameVal}</div>
                     {this.state.status == 'active' ? (<div className='moduleValue'><button className="button_example" type='button' onClick={this.preview}>Preview</button></div>) : 
                     (<div></div>)}
                 </div>;
@@ -338,8 +338,8 @@ let ModuleItemRejected = React.createClass({
     render() {
         var rejectedModule = this.props.rejectedModule;
 
-        return <div className='marginTop itemBackground' key={ rejectedModule.moduleId }>
-                    <div className='moduleKey errorMessage'>{this.state.nameVal}</div>
+        return <div className='marginTop itemBackgroundRejected' key={ rejectedModule.moduleId }>
+                    <div className='moduleKey'>{this.state.nameVal}</div>
                     <div className='moduleValue'><button className="button_example" type='button' onClick={this.preview}>Preview</button></div>
                 </div>;
     }   
