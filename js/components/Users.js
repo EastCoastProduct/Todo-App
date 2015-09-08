@@ -64,7 +64,7 @@ let UsersList = React.createClass({
         });
 
         return <div>
-                {_singleItems != '' ? (<div>{ _singleItems } </div> ) : (<div>No users</div> )} 
+                {_singleItems != '' ? (<div>{ _singleItems } </div> ) : (<div></div> )} 
                 {(auth.loggedIn() && auth.isAdmin())? (<div className='paddingTopBig'><button className="button_example" type='button' onClick={this.redirectToNewUser}>Add new user</button></div>) : (<div></div>)}
                </div>;
     }
@@ -90,7 +90,7 @@ let UserItem = React.createClass({
 
         return <div className='marginTop itemBackground' key={ user.id }>
                     <div className='key'>{this.state.firstName}</div>
-                    <div className='value'><button className='button_example' type='button' onClick={this.viewProfile}>View profile</button></div>
+                    <div className='value'><button className='button_example' type='button' onClick={this.viewProfile}>Preview</button></div>
                </div>;
     }
 });

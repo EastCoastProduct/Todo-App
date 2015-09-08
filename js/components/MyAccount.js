@@ -4,7 +4,6 @@ import Router from 'react-router';
 import auth from '../auth';
 
 //na promjenu se ne apdejta 
-//povecati sliku
 
 let MyAccount = React.createClass({
 	mixins: [Router.Navigation],

@@ -230,23 +230,18 @@ let ModulesList = React.createClass({
         });
 
         return <div >
-                    {(_singleItemsFor != '') ? (<div>Modules waiting for approval: { _singleItemsFor }</div>) : 
-                    (<div>Modules waiting for approval: No modules</div>)}
-                    {(_singleItemsRejected != '') ? (<div>Rejected modules: { _singleItemsRejected }</div>) : 
-                    (<div></div>)}
-                    {(!auth.isAdmin() && _singleItemsFinished != '') ? (<div>Finished modules: { _singleItemsFinished }</div>) : (<div></div>)}
-                    {(!auth.isAdmin() && _singleItemsFinished == '') ? (<div>Finished modules: No modules</div>) : (<div></div>)}
-
-                    <div><span>Show:</span>
+                    {(_singleItemsFor != '' && auth.isAdmin()) ? (<div><b className='errorMessage'>Waiting for review</b> { _singleItemsFor }</div>) : (<div></div>)}
+                    {(_singleItemsFor != '' && !auth.isAdmin()) ? (<div><b>Waiting for review</b> { _singleItemsFor }</div>) : (<div></div>)}
+                    {(_singleItemsRejected != '') ? (<div className='marginTop'><b className='errorMessage'>Rejected</b> { _singleItemsRejected }</div>) : (<div></div>)}
+                    {(!auth.isAdmin() && _singleItemsFinished != '') ? (<div className='marginTop'><b className='approved'>Finished</b> { _singleItemsFinished }</div>) : (<div></div>)}
+                    <div className='marginTop'>
                         <select value={this.state.taxonomySelected} onChange={this.inputTaxonomyChange}>
-                            <option value='All'>All</option>
-                            {optionNodes}
+                            <option value='All'>All</option>{optionNodes}
                         </select>
                     </div>
                     {this.state.taxonomySelected == 'All' ? (
-                        _singleItems != '' ? (<div>Modules: { _singleItems }</div>) : (<div>Modules: No modules</div>)
-                    ) : ( _singleItemsSelected != '' ? (<div>Modules: {_singleItemsSelected}</div>) : (<div>Modules: No modules</div>))}
-                    
+                        _singleItems != '' ? (<div>{ _singleItems }</div>) : (<div>No modules</div>)
+                    ) : ( _singleItemsSelected != '' ? (<div>{_singleItemsSelected}</div>) : (<div></div>))}
                     {auth.isAdmin() ? (<AddNewModuleButton />) : (<div></div>)}
                </div>;
     }
@@ -266,16 +261,10 @@ let ModuleItem = React.createClass({
     render() {
         var module = this.props.module;
 
-        return <ul>
-                  <li key={ module.id }>
-                        <span>
-                            <div> {this.state.value} </div>
-                            {this.state.status == 'active' ? (
-                                <div><button type='button' onClick={this.preview}><i> preview </i></button></div>
-                                ) : (<div></div>)}
-                        </span>
-                    </li>
-                </ul>;
+        return <div className='marginTop itemBackground' key={ module.id }>
+                    <div className='key'> {this.state.value} </div>
+                    {this.state.status == 'active' ? (<div className='value'><button className="button_example" type='button' onClick={this.preview}>Preview</button></div>) : (<div></div>)}
+                </div>;
     }   
 });
 
@@ -298,15 +287,11 @@ let ModuleItemForA = React.createClass({
     render() {
         var moduleForA = this.props.moduleForA;
 
-        return <ul>
-                  <li key={ moduleForA.moduleId }>
-                        <span>
-                        {auth.isAdmin() ? (<div> {this.state.nameVal} {this.state.userVal} </div>) : (
-                            <div> {this.state.nameVal} </div> )}
-                            <div><button type='button' onClick={this.preview}><i> preview </i></button></div>
-                        </span>
-                    </li>
-                </ul>;
+        return <div className='marginTop itemBackground' key={ moduleForA.moduleId }>
+                    {auth.isAdmin() ? (<div className='moduleKey errorMessage'> {this.state.nameVal} - <b>{this.state.userVal}</b> </div>) : (
+                        <div className='moduleKey'> {this.state.nameVal} </div> )}
+                        <div className='moduleValue'><button className="button_example" type='button' onClick={this.preview}>Preview</button></div>
+                </div>;
     }   
 });
 
@@ -328,15 +313,11 @@ let ModuleItemFinished = React.createClass({
     render() {
         var finishedModule = this.props.finishedModule;
 
-        return <ul>
-                  <li key={ finishedModule.moduleId }>
-                        <span>
-                        <div> {this.state.nameVal} </div>
-                        {this.state.status == 'active' ? (<div><button type='button' onClick={this.preview}><i> preview </i></button></div>) : 
-                        (<div></div>)}
-                        </span>
-                    </li>
-                </ul>;
+        return <div className='marginTop itemBackground' key={ finishedModule.moduleId }>
+                    <div className='moduleKey approved'>{this.state.nameVal}</div>
+                    {this.state.status == 'active' ? (<div className='moduleValue'><button className="button_example" type='button' onClick={this.preview}>Preview</button></div>) : 
+                    (<div></div>)}
+                </div>;
     }   
 });
 
@@ -357,14 +338,10 @@ let ModuleItemRejected = React.createClass({
     render() {
         var rejectedModule = this.props.rejectedModule;
 
-        return <ul>
-                  <li key={ rejectedModule.moduleId }>
-                        <span>
-                        <div> {this.state.nameVal} </div>
-                            <div><button type='button' onClick={this.preview}><i> preview </i></button></div>
-                        </span>
-                    </li>
-                </ul>;
+        return <div className='marginTop itemBackground' key={ rejectedModule.moduleId }>
+                    <div className='moduleKey errorMessage'>{this.state.nameVal}</div>
+                    <div className='moduleValue'><button className="button_example" type='button' onClick={this.preview}>Preview</button></div>
+                </div>;
     }   
 });
 
@@ -385,14 +362,10 @@ let ModuleItemSelected = React.createClass({
     render() {
         var selectedModule = this.props.selectedModule;
 
-        return <ul>
-                  <li key={ selectedModule.moduleId }>
-                        <span>
-                        <div> {this.state.nameVal} </div>
-                            <div><button type='button' onClick={this.preview}><i> preview </i></button></div>
-                        </span>
-                    </li>
-                </ul>;
+        return <div className='marginTop itemBackground' key={ selectedModule.moduleId }>
+                    <div className='moduleKey'>{this.state.nameVal}</div>
+                    <div className='moduleValue'><button className="button_example" type='button' onClick={this.preview}>Preview</button></div>
+                </div>;
     }   
 });
 
@@ -404,7 +377,7 @@ let AddNewModuleButton = React.createClass({
     },
 
     render(){
-        return <div><button onClick={this.redirectToNewModule}> Add new module </button></div>
+        return <div className='paddingTopBig'><button className="button_example" onClick={this.redirectToNewModule}> Add new module </button></div>
     }
 });
 

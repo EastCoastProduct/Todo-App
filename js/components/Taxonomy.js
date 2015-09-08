@@ -91,7 +91,7 @@ let Taxonomy = React.createClass({
 				<form className='paddingTopBig taxonomy' onSubmit={this.createTaxonomy} >
 			       <input type='taxonomy' placeholder='Taxonomy title' value={this.state.name} onChange={this.inputNameTextChange} />
 			       <div className='errorMessage'>{this.state.nameMessage}</div>
-                   <input type='submit' value='Add new taxonomy'/>
+                   <input type='submit' value='Add'/>
 				</form>
 			   </div>
                <div className='infoMessage'><span className='errorMessage'>*</span>&nbsp;&nbsp;<span>Taxonomy which is in use cannot be deleted! </span></div>
