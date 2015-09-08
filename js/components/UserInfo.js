@@ -102,7 +102,7 @@ let UserInfo = React.createClass({
                     <div><div className='infoKey lightFont'>Last name</div><div className='infoValue'>{ this.state.lastName }</div></div>
 					<div><div className='infoKey lightFont'>E-mail</div><div className='infoValue'>{ this.state.email }</div></div>
                     {this.state.description ? (<div><div className='infoKey lightFont'>Description</div><div className='infoValue'>{ this.state.description }</div></div>) : (<div></div>)}
-                    {(!this.state.isAdmin) ? (
+                    {(!this.state.isAdmin && this.state.totalPoints > 0) ? (
                     <div><div className='infoKey lightFont'>Total points</div><div className='infoValue'>{ this.state.totalPoints }</div></div>) : (<div></div>)}
                     {(!this.state.isAdmin && this.state.modules != '') ? (   
                         <div><div className='infoKey paddingTop lightFont'>Finished modules</div><div>{ _singleItems }</div></div>) : 

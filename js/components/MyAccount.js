@@ -86,9 +86,8 @@ let MyAccount = React.createClass({
                     {this.state.image != '' ? (<div className='imageContainer'><div className='imageBox'><img className='usersImage'src={ this.state.image }/></div></div>) : (<div></div>)}
                     <div className='marginTopBig'><span><b>{ this.state.firstName }</b></span>&nbsp;<span><b>{ this.state.lastName }</b></span></div>
 					<div>{ this.state.email }</div>
-                    {(!this.state.isAdmin) ? (<div><b>{ this.state.totalPoints }</b></div>) : (<div></div>)}
+                    {(!this.state.isAdmin && this.state.totalPoints > 0) ? (<div><b>{ this.state.totalPoints }</b></div>) : (<div></div>)}
                     {(!this.state.isAdmin && this.state.modules != '') ? (<div>{ _singleItems }</div>) : (<div></div>)}
-                    {(!this.state.isAdmin && this.state.modules == '') ? (<div>No finished modules</div>) : (<div></div>)}
                     <div className='marginTopBig'><div>{ this.state.description }</div></div>
                     <div className='marginTopBig marginBottom'>
                         <span className='marginRight'><button className='button_example' onClick={this.editProfile}>Edit profile</button></span>
