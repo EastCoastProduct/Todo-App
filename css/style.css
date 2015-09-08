@@ -3,6 +3,10 @@ html {
   font-size: 14px;
 }
 
+.overflow{
+  overflow: hidden;
+}
+
 .itemBackgroundRejected{
   background-color: #F5A9A9;
 }
@@ -38,13 +42,17 @@ html {
 }
 
 .moduleKey{
-    display : inline-block;
-    min-width: 86%;
+    /*display : inline-block;
+    min-width: 86%;*/
     padding-left: 10px;
+    float: left;
+    padding-top: 5px;
 }
 
 .moduleValue{
-    display : inline-block;
+    /*display : inline-block;*/
+    margin-right: 0;
+    float: right;
 }
 
 .value{

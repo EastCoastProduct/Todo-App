@@ -261,9 +261,9 @@ let ModuleItem = React.createClass({
     render() {
         var module = this.props.module;
 
-        return <div className='marginTop itemBackground' key={ module.id }>
-                    <div className='key'> {this.state.value} </div>
-                    {this.state.status == 'active' ? (<div className='value'><button className="button_example" type='button' onClick={this.preview}>Preview</button></div>) : (<div></div>)}
+        return <div className='marginTop itemBackground overflow' key={ module.id }>
+                    <div className='moduleKey'> {this.state.value} </div>
+                    {this.state.status == 'active' ? (<div className='moduleValue'><button className="button_example" type='button' onClick={this.preview}>Preview</button></div>) : (<div></div>)}
                 </div>;
     }   
 });
@@ -287,7 +287,7 @@ let ModuleItemForA = React.createClass({
     render() {
         var moduleForA = this.props.moduleForA;
 
-        return <div className='marginTop itemBackground' key={ moduleForA.moduleId }>
+        return <div className='marginTop itemBackground overflow' key={ moduleForA.moduleId }>
                     {auth.isAdmin() ? (<div className='moduleKey approved'> {this.state.nameVal} - <b>{this.state.userVal}</b> </div>) : (
                         <div className='moduleKey'> {this.state.nameVal} </div> )}
                         <div className='moduleValue'><button className="button_example" type='button' onClick={this.preview}>Preview</button></div>
@@ -313,7 +313,7 @@ let ModuleItemFinished = React.createClass({
     render() {
         var finishedModule = this.props.finishedModule;
 
-        return <div className='marginTop itemBackgroundFinished' key={ finishedModule.moduleId }>
+        return <div className='marginTop itemBackgroundFinished overflow' key={ finishedModule.moduleId }>
                     <div className='moduleKey'>{this.state.nameVal}</div>
                     {this.state.status == 'active' ? (<div className='moduleValue'><button className="button_example" type='button' onClick={this.preview}>Preview</button></div>) : 
                     (<div></div>)}
@@ -338,7 +338,7 @@ let ModuleItemRejected = React.createClass({
     render() {
         var rejectedModule = this.props.rejectedModule;
 
-        return <div className='marginTop itemBackgroundRejected' key={ rejectedModule.moduleId }>
+        return <div className='marginTop itemBackgroundRejected overflow' key={ rejectedModule.moduleId }>
                     <div className='moduleKey'>{this.state.nameVal}</div>
                     <div className='moduleValue'><button className="button_example" type='button' onClick={this.preview}>Preview</button></div>
                 </div>;
@@ -362,7 +362,7 @@ let ModuleItemSelected = React.createClass({
     render() {
         var selectedModule = this.props.selectedModule;
 
-        return <div className='marginTop itemBackground' key={ selectedModule.moduleId }>
+        return <div className='marginTop itemBackground overflow' key={ selectedModule.moduleId }>
                     <div className='moduleKey'>{this.state.nameVal}</div>
                     <div className='moduleValue'><button className="button_example" type='button' onClick={this.preview}>Preview</button></div>
                 </div>;
