@@ -94,7 +94,7 @@ let Taxonomy = React.createClass({
                    <input type='submit' value='Add'/>
 				</form>
 			   </div>
-               <div className='infoMessage'><span className='errorMessage'>*</span>&nbsp;&nbsp;<span>Taxonomy which is in use cannot be deleted! </span></div>
+               <div className='infoMessage marginTopForTaxonomy'><span className='errorMessage'>*</span>&nbsp;&nbsp;<span>Taxonomy which is in use cannot be deleted! </span></div>
                </div>;
 	}
 });

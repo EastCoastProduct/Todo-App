@@ -6,6 +6,8 @@ import auth from '../auth';
 
 //popraviti brisanje modula
 //show message that module can't be deleted if it is in progress
+//show message that finished unrepeatable module cannot be assignable
+//show message that finished repeatable module can be repeated
 
 var firebaseDb = new Firebase('https://app-todo-list.firebaseio.com/modules/');
 var userFb = new Firebase('https://app-todo-list.firebaseio.com/users/');
@@ -21,9 +23,7 @@ let PreviewModule = React.createClass({
         this.studentModuleFb = new Firebase(userFb + '/' + this.state.userId + '/modules/');
         this.moduleFb = new Firebase(firebaseDb + '/' + this.state.id + '/users/' + this.state.userId);
         this.getBasicModuleData();
-        if(!auth.isAdmin()) {
-            this.getModuleDataForStudent();
-        }
+        if(!auth.isAdmin()) { this.getModuleDataForStudent(); }
     },
 
     componentWillUnmount() {
@@ -42,11 +42,8 @@ let PreviewModule = React.createClass({
             description = data.description;
             taxonomy = data.taxonomy;
             points = data.points;
-            if(data.repeatable) {
-                repeatable = true;
-            } else {
-                repeatable = false;
-            }
+            if(data.repeatable) { repeatable = true;
+            } else { repeatable = false; }
             if(data.users){
                 var userFb = new Firebase(moduleDataFb + '/users/');
                 userFb.on("child_added", function(snap){
@@ -74,40 +71,19 @@ let PreviewModule = React.createClass({
                     if(data.approved) {
                         points = data.points;
                         repeated = data.repeated;
-                        this.setState({
-                            approved: true,
-                            points: points,
-                            submitted: true,
-                            repeated: repeated
-                        })
+                        this.setState({ approved: true, points: points, submitted: true, repeated: repeated })
                     } else if(data.rejected) {
                         this.rejectedDataFb = new Firebase(firebaseDb + '/' + moduleId + '/users/' + userId);
                         this.rejectedDataFb.once("value", function(rData) {
                             var item = rData.val();
-                            this.setState({
-                                submitted: true,
-                                points: points,
-                                approved: false, 
-                                repeated: "0",
-                                rejected: true,
-                                adminComment: item.adminComment
-                            })
+                            this.setState({ submitted: true, points: points, approved: false,  repeated: "0", rejected: true, adminComment: item.adminComment })
                         }.bind(this))
                     } else (
-                        this.setState({
-                            submitted: true,
-                            points: points,
-                            approved: false, 
-                            repeated: "0"
-                        })
+                        this.setState({ submitted: true, points: points, approved: false, repeated: "0" })
                     )
                 }.bind(this));
             } else (
-                this.setState({
-                    submitted: false,
-                    approved: false, 
-                    repeated: "0"
-                })
+                this.setState({ submitted: false, approved: false, repeated: "0" })
             )
         }.bind(this))
     },
@@ -121,22 +97,9 @@ let PreviewModule = React.createClass({
         this.handleValidation(res => {
             if(res){
                 this.modulesApproval = new Firebase(firebaseDb + '/' + this.state.id + '/users/');
-                this.modulesApproval.child(this.state.userId).set({
-                    comment: this.state.comment,
-                    solutionUrl: this.state.solutionUrl,
-                    approved: false
-                });
-                this.studentModuleFb.child(this.state.id).set({
-                    approved: false,
-                    repeated: this.state.repeated
-                });
-                this.setState({
-                    comment: '',
-                    solutionUrl: '',
-                    submitted: true,
-                    approved: false,
-                    rejected: false
-                });
+                this.modulesApproval.child(this.state.userId).set({comment: this.state.comment, solutionUrl: this.state.solutionUrl, approved: false});
+                this.studentModuleFb.child(this.state.id).set({approved: false, repeated: this.state.repeated });
+                this.setState({comment: '', solutionUrl: '', submitted: true, approved: false, rejected: false});
             }
         })
     },
@@ -181,42 +144,45 @@ let PreviewModule = React.createClass({
 
 	render() {
 		return <div>
-					<div><span>Title:</span><div>{ this.state.title }</div></div>
-			        <div><span>Description:</span><div>{ this.state.description }</div></div>
-					<div><span>Taxonomy:</span><div>{ this.state.taxonomy }</div></div>
-                    <div><span>Points:</span><div>{ this.state.points }</div></div>
-			        <div><span>Repeatable:</span><div>{ String(this.state.repeatable) }</div></div>
+					<div className='headlineFont'><span>{this.state.title}</span> {this.state.points} points<span></span></div>
+			        <div className='marginTop'>{this.state.description}</div>
 
                     {auth.isAdmin() ? (<AdminView onDelete = {this.deleteModule} onEdit = {this.editModule} inProgress = {this.state.moduleInProgress} />) : (<div></div>)}
                     {(!auth.isAdmin() && !this.state.approved && this.state.submitted && !this.state.rejected) ? (<div><span>Submitted, waiting for response from admin!</span></div>):(<div></div>)}
                     {this.state.rejected ? (<div>
-                                                <div><span>This module is rejected!</span></div>
-                                                <div><span>Comment from admin: {this.state.adminComment}</span></div>
-                                                <form onSubmit={this.handleModuleSubmit}>
-                                                   <span>Comment:</span>
-                                                   <input type = 'text' value={this.state.comment} onChange={this.commentOnChange}/>
-                                                   <div>{this.state.commentMessage}</div>
-                                                   <span>Solution url:</span>
-                                                   <input type = 'text' value={this.state.solutionUrl} onChange={this.solutionUrlOnChange} />
-                                                   <div>{this.state.solutionUrlMessage}</div>
-                                                   <div><span><button>Submit module</button></span></div>
-                                               </form>
+                                                <div className='paddingTopBig errorMessage'>Your solution is rejected!</div>
+                                                <div className='errorMessage'>Reason: {this.state.adminComment}</div>
+                                                <div className='marginTop approved'>Review your code and submit for review again!</div>
+                                                <div className='paddingTopBig'>
+                                                    <form onSubmit={this.handleModuleSubmit}>
+                                                       <div>Explain why you shoud be awarded points</div>
+                                                       <input type = 'text' value={this.state.comment} onChange={this.commentOnChange}/>
+                                                       <div>{this.state.commentMessage}</div>
+                                                       <div className='marginTop'>URL (if applicable)</div>
+                                                       <input type = 'text' value={this.state.solutionUrl} onChange={this.solutionUrlOnChange} />
+                                                       <div>{this.state.solutionUrlMessage}</div>
+                                                       <div className='marginTop'><button>Submit for review</button></div>
+                                                   </form>
+                                               </div>
                                            </div>
                         ):(<div></div>)}
-                    {(!auth.isAdmin() && this.state.approved && !this.state.repeatable) ? (<div><span>This module is finished!</span></div>):(<div></div>)}
+                    {(!auth.isAdmin() && this.state.approved && !this.state.repeatable) ? (<div className='paddingTopBig approved'>This module is finished!</div>):(<div></div>)}
                     {((!auth.isAdmin() && !this.state.submitted) || (!auth.isAdmin() && this.state.approved && this.state.repeatable)) ? (
                         <div> {(this.state.repeatable && this.state.repeated > 1) ? (<span>Repeated {this.state.repeated} times</span>) : (<span></span>)}
+                           <div className='paddingTopBig'>
                            <form onSubmit={this.handleModuleSubmit}>
-                               <span>Comment:</span>
+                               <div>Explain why you shoud be awarded points</div>
                                <input type = 'text' value={this.state.comment} onChange={this.commentOnChange}/>
                                <div>{this.state.commentMessage}</div>
-                               <span>Solution url:</span>
+                               <div className='marginTop'>URL (if applicable)</div>
                                <input type = 'text' value={this.state.solutionUrl} onChange={this.solutionUrlOnChange} />
                                <div>{this.state.solutionUrlMessage}</div>
-                               <div><span><button>Submit module</button></span></div>
+                               <div className='marginTop'><button>Submit for review</button></div>
                            </form>
+                           </div>
                        </div>) : (<div></div>)}    
-                    <div><span><button onClick={this.showAllModules}>Show all modules</button></span></div>
+                    <div className='marginTop'><button onClick={this.showAllModules}>Show all modules</button></div>
+                    {(!auth.isAdmin() && !this.state.repeatable && this.state.approved) ? (<div className='marginTop infoMessage'><span className='errorMessage'>*</span>&nbsp;&nbsp;<span>This module is not repeatable! </span></div>) : (<div></div>)}
 				</div>;
 	}
 });
