@@ -149,7 +149,7 @@ let PreviewModuleForApproval = React.createClass({
         var emailRegex = /^[a-z][a-zA-Z0-9_]*(\.[a-zA-Z][a-zA-Z0-9_]*)?@[a-z][a-zA-Z-0-9]*\.[a-z]+(\.[a-z]+)?$/;
 
         if(this.state.adminComment.trim().length == 0){
-            this.setState({ adminCommentMessage: 'Enter comment.' });
+            this.setState({ adminCommentMessage: 'Enter reason for rejection.' });
             err = true;
         }
         if(err){ response (false); return; } else { response (true); return; }
@@ -157,48 +157,36 @@ let PreviewModuleForApproval = React.createClass({
 
 	render() {
 		return  <div>
+                    <div className='headlineFont paddingLeft'><span>{this.state.title}</span><span> {this.state.points} points</span><span> {this.state.points} points</span>{auth.isAdmin() ? (<div>{this.state.usersData}</div>):(<div></div>)}</div>
+                    <div className='marginTop paddingLeft'>{this.state.description}</div>
                     <div>
-                        <span>Submission info:</span>
-                        {auth.isAdmin ? (<div><span>Student:</span><div>{this.state.usersData}</div></div>):(<div></div>)}
-                        <div><span>Comment:</span><div>{this.state.comment}</div></div>
-                        {this.state.solutionUrl != '' ? (<div><span>Solution url:</span><div>{this.state.solutionUrl}</div></div>):(<div></div>)}
+                        {(!auth.isAdmin() && !this.state.approved && !this.state.rejected) ? (<div className='marginTopBig paddingLeft approved'>Module submitted, waiting for response from admin!</div>) : (<div></div>)}
+                        <div className='marginTopBig paddingLeft'><b>Submission info</b></div><div className='paddingLeft'>{this.state.comment}</div>
+                        {this.state.solutionUrl != '' ? (<div className='paddingLeft marginTop'>{this.state.solutionUrl}</div>):(<div></div>)}
                         <div>
                         {auth.isAdmin() ? ((!this.state.approved && !this.state.rejected) ? (
-                            <div>
-                                <span><button onClick={this.approveModule}>Approve</button></span>
-                                <form onSubmit={this.rejectModule}>
-                                   <span>Comment:</span>
-                                   <input type = 'text' value={this.state.adminComment} onChange={this.adminCommentOnChange}/>
-                                   {this.state.adminCommentMessage}
-                                   <span><button>Reject</button></span>
-                                </form>
+                            <div className='marginTop'>
+                                <div className='paddingLeft'><button className='button_example' onClick={this.approveModule}>Approve solution</button></div>
+                                <div className='marginTop' id='changeData-form'>
+                                    <fieldset>
+                                        <form onSubmit={this.rejectModule}>
+                                           <div className='fontSmall'>Reason for rejection:</div>
+                                           <textarea rows={8} value={this.state.adminComment} onChange={this.adminCommentOnChange}/>
+                                           <div className='errorMessage'>{this.state.adminCommentMessage}</div>
+                                           <input type='submit' value='Reject solution'/>
+                                        </form>
+                                    </fieldset>
+                                </div>
                             </div>) : (<span></span>)) : (<div></div>)}
                         {auth.isAdmin() ? ((!this.state.approved && this.state.rejected) ? (
-                            <div><span>Module rejected! Comment: {this.state.comment}</span></div>) : (<span></span>)) : (<div></div>)}
+                            <div className='errorMessage paddingLeft marginTop'>Solution is rejected! <div className='errorMessage'><b>Reason:</b> {this.state.comment}</div></div>) : (<span></span>)) : (<div></div>)}
                         {auth.isAdmin() ? (this.state.approved) ? (
-                            <div><span>Module approved!</span></div>) : (<span></span>) : (<div></div>)}
-                        {(!auth.isAdmin() && !this.state.approved && !this.state.rejected) ? (<span>Module submitted, waiting for response from admin!</span>) : (<span></span>)}
+                            <div className='approved paddingLeft marginTop'>Solution is approved!</div>) : (<span></span>) : (<div></div>)}
                         {(!auth.isAdmin() && this.state.approved && !this.state.rejected) ? (<span>Module finished!</span>) : (<span></span>)}
-                        {(!auth.isAdmin() && !this.state.approved && this.state.rejected) ? (
-                            <div>
-                                <span>Module rejected! Comment from admin: { this.state.adminComment }</span>
-                                <form onSubmit={this.handleModuleSubmit}>
-                                   <span>Comment:</span>
-                                   <input type = 'text' value={this.state.comment} onChange={this.commentOnChange}/>
-                                   <span>Solution url:</span>
-                                   <input type = 'text' value={this.state.solutionUrl} onChange={this.solutionUrlOnChange} />
-                                   <div><span><button>Submit module</button></span></div>
-                               </form>
-                           </div>) : (<span></span>)}
                         </div>
                     </div>
                     <div>
-                        <span>Module info:</span><div><span>Title:</span><div>{this.state.title}</div></div>
-    			        <div><span>Description:</span><div>{this.state.description}</div></div>
-    					<div><span>Taxonomy:</span><div>{this.state.taxonomy}</div></div>
-                        <div><span>Points:</span><div>{this.state.points}</div></div>
-    			        <div><span>Repeatable:</span><div>{String(this.state.repeatable)}</div></div>
-                        <div><span><button onClick={this.showAllModules}>Show all modules</button></span></div>
+                        <div className='paddingLeft marginTopBig'><button className="button_example" onClick={this.showAllModules}>Show all modules</button></div>
     				</div>
                 </div>;
 	}

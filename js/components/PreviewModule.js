@@ -135,7 +135,7 @@ let PreviewModule = React.createClass({
 
 	render() {
 		return <div>
-					<div className='headlineFont paddingLeft'><span>{this.state.title}</span> {this.state.points} points<span></span></div>
+					<div className='headlineFont paddingLeft'><span>{this.state.title}</span><span> {this.state.points} points</span></div>
 			        <div className='marginTop paddingLeft'>{this.state.description}</div>
 
                     {auth.isAdmin() ? (<AdminView onDelete = {this.deleteModule} onEdit = {this.editModule} inProgress = {this.state.moduleInProgress} />) : (<div></div>)}
