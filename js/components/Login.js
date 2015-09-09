@@ -52,7 +52,8 @@ let Login = React.createClass({
                                             var err = auth.getLoginError();
                                             return this.setState({ error: true, message: err });
                                         } else {
-                                            var userId = auth.getUserId();
+                                            var userId = k;//auth.getUserId();
+                                            localStorage.userId = k;
                                             this.fb = new Firebase('https://app-todo-list.firebaseio.com/users/' + userId);
                                             this.fb.on("value", function(snap){
                                                 var data = snap.val();

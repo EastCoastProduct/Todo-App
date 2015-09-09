@@ -159,7 +159,7 @@ let PreviewModuleForApproval = React.createClass({
 		return  <div>
                     <div>
                         <span>Submission info:</span>
-                        <div><span>Student:</span><div>{this.state.usersData}</div></div>
+                        {auth.isAdmin ? (<div><span>Student:</span><div>{this.state.usersData}</div></div>):(<div></div>)}
                         <div><span>Comment:</span><div>{this.state.comment}</div></div>
                         <div><span>Solution url:</span><div>{this.state.solutionUrl}</div></div>
                         <div>

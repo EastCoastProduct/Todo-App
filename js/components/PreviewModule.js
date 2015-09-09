@@ -6,7 +6,6 @@ import auth from '../auth';
 
 //popraviti brisanje modula
 //show message that module can't be deleted if it is in progress
-//show message that finished unrepeatable module cannot be assignable
 //show message that finished repeatable module can be repeated
 
 var firebaseDb = new Firebase('https://app-todo-list.firebaseio.com/modules/');
@@ -182,7 +181,7 @@ let PreviewModule = React.createClass({
                            </div>
                        </div>) : (<div></div>)}    
                     <div className='marginTop'><button onClick={this.showAllModules}>Show all modules</button></div>
-                    {(!auth.isAdmin() && !this.state.repeatable && this.state.approved) ? (<div className='marginTop infoMessage'><span className='errorMessage'>*</span>&nbsp;&nbsp;<span>This module is not repeatable! </span></div>) : (<div></div>)}
+                    {(!auth.isAdmin() && !this.state.repeatable && this.state.approved) ? (<div className='marginTop infoMessage'><span className='errorMessage'>*</span>&nbsp;&nbsp;<span>Module is not repeatable! </span></div>) : (<div></div>)}
 				</div>;
 	}
 });
