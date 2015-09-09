@@ -11,7 +11,6 @@ let MyAccount = React.createClass({
 	},
 
 	componentWillMount() {
-        console.log("mounted");
         this.currentUser = auth.getUserId();
         this.allusersFb = new Firebase('https://app-todo-list.firebaseio.com/users/');
         this.userFb = new Firebase('https://app-todo-list.firebaseio.com/users/' + this.currentUser);
@@ -19,7 +18,12 @@ let MyAccount = React.createClass({
         this.getUserData();
         this.getModulesData();
         this.allusersFb.on("child_changed", function(snap){
-            console.log("child changed");
+            this.getUserData();
+        }.bind(this));
+        this.allusersFb.on("child_added", function(snap){
+            this.getUserData();
+        }.bind(this));
+        this.userFb.on("child_removed", function(snap){
             this.getUserData();
         }.bind(this));
     },
@@ -41,7 +45,7 @@ let MyAccount = React.createClass({
             }
             if(data.image){
                 this.setState({ image: data.image })
-            }
+            } else { this.setState({ image: '' })}
         }.bind(this));
     },
 

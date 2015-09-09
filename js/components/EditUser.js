@@ -5,8 +5,6 @@ import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-route
 import auth from '../auth';
 import Dropzone from 'react-dropzone';
 
-//add remove image functionality
-
 let EditUser = React.createClass({
 	mixins: [Router.Navigation],
     
@@ -18,12 +16,26 @@ let EditUser = React.createClass({
 		this.firebaseDb = new Firebase('https://app-todo-list.firebaseio.com/');
         this.userFb = new Firebase('https://app-todo-list.firebaseio.com/users/' + this.state.id);
         this.getUserData();
+        this.userFb.on('child_added', function(snap) {
+            var data = snap.val();
+            var key = snap.key();
+            if (data != null && key == "image") {
+                this.setState({ image: data })
+            } else { this.setState({ image: '' }) }
+        }.bind(this));
         this.userFb.on('child_changed', function(snap) {
             var data = snap.val();
             var key = snap.key();
             if (data != null && key == "image") {
                 this.setState({ image: data })
             } else { this.setState({ image: '' }) }
+        }.bind(this));
+        this.userFb.on('child_removed', function(snap) {
+            var data = snap.val();
+            var key = snap.key();
+            if (key == "image") {
+                this.setState({ image: '' })
+            }
         }.bind(this));
     },
 
@@ -68,13 +80,10 @@ let EditUser = React.createClass({
         this.handleValidation(res => {
             if(res){
     			this.userFb.update({ first_name: this.state.firstName, last_name: this.state.lastName, description: this.state.description })
-                //this.onChange(true);
                 this.transitionTo('changesuccess', null, { successMessage: 'User info is successfuly changed!' });
             }
         })
     },
-
-    //onChange() {},
 
     handleValidation(response){
         response = arguments[arguments.length - 1];
@@ -112,6 +121,12 @@ let EditUser = React.createClass({
         reader.readAsDataURL(f);
     },
 
+    removeImage(e){
+        var imgFb = new Firebase(this.userFb + '/image');
+        imgFb.remove();
+        this.setState({image: ''});
+    },
+
 	render() {
 		return <div id='changeData-form'> 
                 <fieldset>
@@ -121,6 +136,7 @@ let EditUser = React.createClass({
                                 <div className='paddingAll'>Drop file here, or click to select file to upload.</div>
                             ) : (<div><img className="usersImageEdit" src={ this.state.image }/></div>)}
                         </Dropzone>
+                        <div onClick={this.removeImage}>Remove</div>
                     </div>
                     <form className='paddingTop' onSubmit={this.editUser} >
     					<input type='text' placeholder='First name' value={this.state.firstName} onChange = {this.inputFirstNameTextChange} />
