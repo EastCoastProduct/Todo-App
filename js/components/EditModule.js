@@ -4,8 +4,6 @@ import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 import auth from '../auth';
 
-//restrict points to numeric
-
 var firebaseDb = new Firebase('https://app-todo-list.firebaseio.com/modules');
 
 let EditModule = React.createClass({
@@ -74,10 +72,6 @@ let EditModule = React.createClass({
     	this.setState({repeatable: e.target.checked});
 	},
 
-    //cancel() {
-    //    this.transitionTo('moduleslist');
-    //},
-
     editModule(e) {
         e.preventDefault();
         this.handleValidation(res => {
@@ -90,7 +84,7 @@ let EditModule = React.createClass({
                     points: this.state.points,
                     repeatable: this.state.repeatable
                 });
-                this.transitionTo('previewmodule', null, { id: this.state.id });
+                this.transitionTo('previewmodule', { id: this.state.id });
             }
         })
     },
@@ -98,6 +92,7 @@ let EditModule = React.createClass({
     handleValidation(response){
         response = arguments[arguments.length - 1];
         var err = false;
+        var onlyNumeric = /^\d+$/;
 
         if(this.state.title.trim().length == 0){
             this.setState({ titleMessage: 'Enter title.' });
@@ -108,9 +103,14 @@ let EditModule = React.createClass({
             this.setState({ descriptionMessage: 'Enter description.' });
             err = true;
         } 
-
+        
         if(this.state.points.trim().length == 0){
             this.setState({ pointsMessage: 'Enter points.' });
+            err = true;
+        }
+
+        if(!onlyNumeric.test(this.state.points)){
+            this.setState({ pointsMessage: 'Enter numeric value.' });
             err = true;
         }
 

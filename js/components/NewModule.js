@@ -4,8 +4,6 @@ import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 import auth from '../auth';
 
-//restrict points to numeric
-
 let NewModule = React.createClass({
 	mixins: [Router.Navigation],
 
@@ -88,6 +86,7 @@ let NewModule = React.createClass({
     handleValidation(response){
         response = arguments[arguments.length - 1];
         var err = false;
+        var onlyNumeric = /^\d+$/;
 
         if(this.state.title.trim().length == 0){
             this.setState({ titleMessage: 'Enter title.' });
@@ -101,6 +100,11 @@ let NewModule = React.createClass({
 
         if(this.state.points.trim().length == 0){
             this.setState({ pointsMessage: 'Enter points.' });
+            err = true;
+        }
+
+        if(!onlyNumeric.test(this.state.points)){
+            this.setState({ pointsMessage: 'Enter numeric value.' });
             err = true;
         }
 
