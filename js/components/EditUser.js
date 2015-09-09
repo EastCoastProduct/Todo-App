@@ -20,7 +20,8 @@ let EditUser = React.createClass({
         this.getUserData();
         this.userFb.on('child_changed', function(snap) {
             var data = snap.val();
-            if (data != null) {
+            var key = snap.key();
+            if (data != null && key == "image") {
                 this.setState({ image: data })
             } else { this.setState({ image: '' }) }
         }.bind(this));
@@ -34,11 +35,7 @@ let EditUser = React.createClass({
     getUserData() {
         this.userFb.once("value", function(snapshot){
             var data = snapshot.val();
-            this.setState({
-                firstName: data.first_name,
-                lastName: data.last_name,
-                isAdmin: data.isAdmin
-            });
+            this.setState({ firstName: data.first_name, lastName: data.last_name, isAdmin: data.isAdmin });
             if(data.description){
             	this.setState({ description: data.description })
             } 
@@ -70,24 +67,14 @@ let EditUser = React.createClass({
     	e.preventDefault();
         this.handleValidation(res => {
             if(res){
-            	this.userFb.once("value", function(snapshot){
-            		var userData = snapshot.val();
-            		if(userData.first_name != this.state.firstName){
-            			this.userFb.update({ first_name: this.state.firstName })
-            		}
-            		if(userData.last_name != this.state.lastName){
-            			this.userFb.update({ last_name: this.state.lastName })
-            		}
-            		if(userData.description){
-            			if(userData.description != this.state.description){
-            				this.userFb.update({ description: this.state.description })
-            			}
-            		} else { this.userFb.update({ description: this.state.description })}
-            		this.transitionTo('changesuccess', null, { successMessage: 'User info is successfuly changed!' });
-            	}.bind(this))
+    			this.userFb.update({ first_name: this.state.firstName, last_name: this.state.lastName, description: this.state.description })
+                //this.onChange(true);
+                this.transitionTo('changesuccess', null, { successMessage: 'User info is successfuly changed!' });
             }
         })
     },
+
+    //onChange() {},
 
     handleValidation(response){
         response = arguments[arguments.length - 1];
@@ -128,22 +115,22 @@ let EditUser = React.createClass({
 	render() {
 		return <div id='changeData-form'> 
                 <fieldset>
-                <div>
-                    <Dropzone ref="dropzone" onDrop={this.onDrop} >
-                        {this.state.image == '' ? (
-                            <div className='paddingAll'>Drop file here, or click to select file to upload.</div>
-                        ) : (<div><img className="usersImageEdit" src={ this.state.image }/></div>)}
-                    </Dropzone>
-                </div>
-                <form className='paddingTop' onSubmit={this.editUser} >
-					<input type='text' placeholder='First name' value={this.state.firstName} onChange = {this.inputFirstNameTextChange} />
-                    <div className='errorMessage'>{this.state.firstNameMessage}</div>
-					<input type='text' placeholder='Last name' value={this.state.lastName} onChange = {this.inputLastNameTextChange} />
-                    <div className='errorMessage'>{this.state.lastNameMessage}</div>
-					<textarea rows={8} placeholder='Description' value = {this.state.description} onChange = {this.inputDescriptionTextChange} />
-                    <div className='errorMessage'>{this.state.descriptionMessage}</div>
-				    <input type='submit' value='Save'/>
-				</form>
+                    <div>
+                        <Dropzone ref="dropzone" onDrop={this.onDrop} >
+                            {this.state.image == '' ? (
+                                <div className='paddingAll'>Drop file here, or click to select file to upload.</div>
+                            ) : (<div><img className="usersImageEdit" src={ this.state.image }/></div>)}
+                        </Dropzone>
+                    </div>
+                    <form className='paddingTop' onSubmit={this.editUser} >
+    					<input type='text' placeholder='First name' value={this.state.firstName} onChange = {this.inputFirstNameTextChange} />
+                        <div className='errorMessage'>{this.state.firstNameMessage}</div>
+    					<input type='text' placeholder='Last name' value={this.state.lastName} onChange = {this.inputLastNameTextChange} />
+                        <div className='errorMessage'>{this.state.lastNameMessage}</div>
+    					<textarea rows={8} placeholder='Description' value = {this.state.description} onChange = {this.inputDescriptionTextChange} />
+                        <div className='errorMessage'>{this.state.descriptionMessage}</div>
+    				    <input type='submit' value='Save'/>
+    				</form>
                 </fieldset>
 			</div>
 	}

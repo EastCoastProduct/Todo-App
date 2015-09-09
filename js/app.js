@@ -75,6 +75,7 @@ let App = React.createClass({
                             </div>
                             <div id="sidebar"><MyAccountHandler/></div>
                             <div id="page-wrap"><RouteHandler /></div>
+                            <div id="right-sidebar"></div>
                         </div>
                         )) : (
                         <div className=''>

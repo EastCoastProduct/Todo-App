@@ -5,8 +5,6 @@ import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-route
 import auth from '../auth';
 
 //popraviti brisanje modula
-//show message that module can't be deleted if it is in progress
-//show message that finished repeatable module can be repeated
 
 var firebaseDb = new Firebase('https://app-todo-list.firebaseio.com/modules/');
 var userFb = new Firebase('https://app-todo-list.firebaseio.com/users/');
@@ -181,7 +179,8 @@ let PreviewModule = React.createClass({
                            </div>
                        </div>) : (<div></div>)}    
                     <div className='marginTop'><button onClick={this.showAllModules}>Show all modules</button></div>
-                    {(!auth.isAdmin() && !this.state.repeatable && this.state.approved) ? (<div className='marginTop infoMessage'><span className='errorMessage'>*</span>&nbsp;&nbsp;<span>Module is not repeatable! </span></div>) : (<div></div>)}
+                    {(!this.state.repeatable) ? (<div className='marginTop infoMessage'><span className='errorMessage'>*</span>&nbsp;&nbsp;<span>Module is not repeatable! </span></div>) : 
+                    (<div className='marginTop infoMessage'><span className='errorMessage'>*</span>&nbsp;&nbsp;<span>Module is repeatable! </span></div>)}
 				</div>;
 	}
 });
@@ -198,7 +197,8 @@ let AdminView = React.createClass({
     render() {
         return <div>
                     <button type='button' onClick={this.handleEdit}><i> Edit module </i></button>
-                    {this.props.inProgress == "true" ? (<div></div>) : (<button type='button' onClick={this.handleDelete}><i> Delete module </i></button>)}
+                    {this.props.inProgress == "true" ? (<div className='marginTop infoMessage'><span className='errorMessage'>*</span>&nbsp;&nbsp;<span>Module is in progress so it cannot be deleted! </span></div>) : 
+                    (<button type='button' onClick={this.handleDelete}><i> Delete module </i></button>)}
                </div>;
     }
 });

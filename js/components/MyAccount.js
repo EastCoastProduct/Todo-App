@@ -3,8 +3,6 @@ import Firebase from 'firebase';
 import Router from 'react-router';
 import auth from '../auth';
 
-//na promjenu se ne apdejta 
-
 let MyAccount = React.createClass({
 	mixins: [Router.Navigation],
     
@@ -13,10 +11,17 @@ let MyAccount = React.createClass({
 	},
 
 	componentWillMount() {
+        console.log("mounted");
         this.currentUser = auth.getUserId();
+        this.allusersFb = new Firebase('https://app-todo-list.firebaseio.com/users/');
         this.userFb = new Firebase('https://app-todo-list.firebaseio.com/users/' + this.currentUser);
         this.modulesFb = new Firebase('https://app-todo-list.firebaseio.com/modules/');
         this.getUserData();
+        this.getModulesData();
+        this.allusersFb.on("child_changed", function(snap){
+            console.log("child changed");
+            this.getUserData();
+        }.bind(this));
     },
 
     componentWillUnmount() {
@@ -27,12 +32,7 @@ let MyAccount = React.createClass({
     getUserData() {
         this.userFb.once("value", function(snapshot){
             var data = snapshot.val();
-            this.setState({
-                firstName: data.first_name,
-                lastName: data.last_name,
-                email: data.email,
-                isAdmin: data.isAdmin
-            });
+            this.setState({ firstName: data.first_name, lastName: data.last_name, email: data.email, isAdmin: data.isAdmin });
             if (data.total_points) {
                 this.setState({ totalPoints: data.total_points })
             }
@@ -42,6 +42,12 @@ let MyAccount = React.createClass({
             if(data.image){
                 this.setState({ image: data.image })
             }
+        }.bind(this));
+    },
+
+    getModulesData(){
+        this.userFb.once("value", function(snapshot){
+            var data = snapshot.val();
             if (data.modules) {
                 this.userModulesFb = new Firebase(this.userFb + '/modules');
                 var modulesArray = this.state.modules; 
@@ -102,10 +108,7 @@ let ModuleItem = React.createClass({
     mixins: [Router.Navigation],
     
     getInitialState() {
-        return {
-            name: this.props.user.moduleName,
-            points: this.props.user.points
-        }
+        return { name: this.props.user.moduleName, points: this.props.user.points }
     },
 
     render() {
