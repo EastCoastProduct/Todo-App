@@ -114,7 +114,6 @@ let PreviewModule = React.createClass({
         itemForRemoval.update({
             status: 'inactive'
         })
-        //itemForRemoval.remove();
         this.transitionTo('moduleslist');
     },
 
@@ -131,57 +130,55 @@ let PreviewModule = React.createClass({
             this.setState({ commentMessage: 'Enter comment.' });
             err = true;
         }
-
-        if(this.state.solutionUrl.trim().length == 0){
-            this.setState({ solutionUrlMessage: 'Enter solution url.' });
-            err = true;
-        }
         if(err){ response (false); return; } else { response (true); return; }
     },
 
 	render() {
 		return <div>
-					<div className='headlineFont'><span>{this.state.title}</span> {this.state.points} points<span></span></div>
-			        <div className='marginTop'>{this.state.description}</div>
+					<div className='headlineFont paddingLeft'><span>{this.state.title}</span> {this.state.points} points<span></span></div>
+			        <div className='marginTop paddingLeft'>{this.state.description}</div>
 
                     {auth.isAdmin() ? (<AdminView onDelete = {this.deleteModule} onEdit = {this.editModule} inProgress = {this.state.moduleInProgress} />) : (<div></div>)}
                     {(!auth.isAdmin() && !this.state.approved && this.state.submitted && !this.state.rejected) ? (<div><span>Submitted, waiting for response from admin!</span></div>):(<div></div>)}
                     {this.state.rejected ? (<div>
-                                                <div className='paddingTopBig errorMessage'>Your solution is rejected!</div>
-                                                <div className='errorMessage'>Reason: {this.state.adminComment}</div>
-                                                <div className='marginTop approved'>Review your code and submit for review again!</div>
-                                                <div className='paddingTopBig'>
-                                                    <form onSubmit={this.handleModuleSubmit}>
-                                                       <div>Explain why you shoud be awarded points</div>
-                                                       <input type = 'text' value={this.state.comment} onChange={this.commentOnChange}/>
-                                                       <div>{this.state.commentMessage}</div>
-                                                       <div className='marginTop'>URL (if applicable)</div>
-                                                       <input type = 'text' value={this.state.solutionUrl} onChange={this.solutionUrlOnChange} />
-                                                       <div>{this.state.solutionUrlMessage}</div>
-                                                       <div className='marginTop'><button>Submit for review</button></div>
-                                                   </form>
+                                                <div className='paddingTopBig paddingLeft errorMessage'>Your solution is rejected!</div>
+                                                <div className='errorMessage paddingLeft'><b>Reason:</b> {this.state.adminComment}</div>
+                                                <div className='marginTop paddingLeft approved'>Review your code and submit for review again!</div>
+                                                <div className='paddingTopBig' id='changeData-form'>
+                                                    <fieldset>
+                                                        <form onSubmit={this.handleModuleSubmit}>
+                                                           <div className='fontSmall'>Explain why you shoud be awarded points</div>
+                                                           <textarea rows={8} value={this.state.comment} onChange={this.commentOnChange}/>
+                                                           <div className='errorMessage'>{this.state.commentMessage}</div>
+                                                           <div className='marginTop fontSmall'>URL (if applicable)</div>
+                                                           <input type = 'text' value={this.state.solutionUrl} onChange={this.solutionUrlOnChange} />
+                                                           <input type='submit' value='Submit for review'/>
+                                                       </form>
+                                                   </fieldset>
                                                </div>
                                            </div>
                         ):(<div></div>)}
-                    {(!auth.isAdmin() && this.state.approved && !this.state.repeatable) ? (<div className='paddingTopBig approved'>This module is finished!</div>):(<div></div>)}
+                    {(!auth.isAdmin() && this.state.approved && !this.state.repeatable) ? (<div className='paddingTopBig paddingLeft approved'>This module is finished!</div>):(<div></div>)}
                     {((!auth.isAdmin() && !this.state.submitted) || (!auth.isAdmin() && this.state.approved && this.state.repeatable)) ? (
-                        <div> {(this.state.repeatable && this.state.repeated > 1) ? (<span>Repeated {this.state.repeated} times</span>) : (<span></span>)}
-                           <div className='paddingTopBig'>
-                           <form onSubmit={this.handleModuleSubmit}>
-                               <div>Explain why you shoud be awarded points</div>
-                               <input type = 'text' value={this.state.comment} onChange={this.commentOnChange}/>
-                               <div>{this.state.commentMessage}</div>
-                               <div className='marginTop'>URL (if applicable)</div>
-                               <input type = 'text' value={this.state.solutionUrl} onChange={this.solutionUrlOnChange} />
-                               <div>{this.state.solutionUrlMessage}</div>
-                               <div className='marginTop'><button>Submit for review</button></div>
-                           </form>
+                        <div> {(this.state.repeatable && this.state.repeated == 1) ? (<div className='paddingTopBig paddingLeft approved'>This module is finished, you can repeat it!</div>) : (<div></div>)}
+                        {(this.state.repeatable && this.state.repeated > 1) ? (<div className='paddingTopBig paddingLeft approved'>You repeated this module {this.state.repeated} times!</div>) : (<div></div>)}
+                           <div className='paddingTopBig' id='changeData-form'>
+                                <fieldset>
+                                   <form onSubmit={this.handleModuleSubmit}>
+                                       <div className='fontSmall'>Explain why you shoud be awarded points</div>
+                                       <textarea rows={8} value={this.state.comment} onChange={this.commentOnChange}/>
+                                       <div className='errorMessage'>{this.state.commentMessage}</div>
+                                       <div className='marginTop fontSmall'>URL (if applicable)</div>
+                                       <input type = 'text' value={this.state.solutionUrl} onChange={this.solutionUrlOnChange} />
+                                       <input type='submit' value='Submit for review'/>
+                                   </form>
+                               </fieldset>
                            </div>
                        </div>) : (<div></div>)}    
-                    <div className='marginTop'><button onClick={this.showAllModules}>Show all modules</button></div>
-                    {(!this.state.repeatable) ? (<div className='marginTop infoMessage'><span className='errorMessage'>*</span>&nbsp;&nbsp;<span>Module is not repeatable! </span></div>) : 
-                    (<div className='marginTop infoMessage'><span className='errorMessage'>*</span>&nbsp;&nbsp;<span>Module is repeatable! </span></div>)}
-                    {(this.state.moduleInProgress == "true" && auth.isAdmin()) ? (<div className='infoMessage'><span className='errorMessage'>*</span>&nbsp;&nbsp;<span>Module is in progress so it cannot be deleted! </span></div>) : 
+                    <div className='marginTop paddingLeft'><button className='button_example' onClick={this.showAllModules}>Show all modules</button></div>
+                    {(!this.state.repeatable) ? (<div className='marginTop paddingLeft infoMessage'><span className='errorMessage'>*</span>&nbsp;&nbsp;<span>Module is not repeatable! </span></div>) : 
+                    (<div className='marginTop infoMessage paddingLeft'><span className='errorMessage'>*</span>&nbsp;&nbsp;<span>Module is repeatable! </span></div>)}
+                    {(this.state.moduleInProgress == "true" && auth.isAdmin()) ? (<div className='infoMessage paddingLeft'><span className='errorMessage'>*</span>&nbsp;&nbsp;<span>Module is in progress so it cannot be deleted! </span></div>) : 
                     (<div></div>)}
 				</div>;
 	}
@@ -197,9 +194,9 @@ let AdminView = React.createClass({
     },
 
     render() {
-        return <div>
-                    <button type='button' onClick={this.handleEdit}><i> Edit module </i></button>
-                    {this.props.inProgress == "true" ? (<div></div>) : (<button type='button' onClick={this.handleDelete}><i> Delete module </i></button>)}
+        return <div className="paddingLeft paddingTopBig">
+                    <button type='button' className="button_example marginRight" onClick={this.handleEdit}>Edit module</button>
+                    {this.props.inProgress == "true" ? (<div></div>) : (<button type='button' className="button_example" onClick={this.handleDelete}>Delete</button>)}
                </div>;
     }
 });

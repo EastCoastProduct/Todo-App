@@ -8,7 +8,7 @@ let PreviewModuleForApproval = React.createClass({
 	mixins: [Router.Navigation],
 
 	getInitialState() {
-		return { moduleId: this.props.params.moduleId, studentId: this.props.params.studentId, approved: false, adminComment: '' };
+		return { moduleId: this.props.params.moduleId, studentId: this.props.params.studentId, approved: false, adminComment: '', solutionUrl: '' };
 	},
 
 	componentWillMount() {
@@ -161,7 +161,7 @@ let PreviewModuleForApproval = React.createClass({
                         <span>Submission info:</span>
                         {auth.isAdmin ? (<div><span>Student:</span><div>{this.state.usersData}</div></div>):(<div></div>)}
                         <div><span>Comment:</span><div>{this.state.comment}</div></div>
-                        <div><span>Solution url:</span><div>{this.state.solutionUrl}</div></div>
+                        {this.state.solutionUrl != '' ? (<div><span>Solution url:</span><div>{this.state.solutionUrl}</div></div>):(<div></div>)}
                         <div>
                         {auth.isAdmin() ? ((!this.state.approved && !this.state.rejected) ? (
                             <div>

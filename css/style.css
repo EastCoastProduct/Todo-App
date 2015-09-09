@@ -7,6 +7,10 @@ html {
   font-size: 20px;
 }
 
+.fontSmall {
+  font-size: 13px;
+}
+
 .overflow{
   overflow: hidden;
 }
