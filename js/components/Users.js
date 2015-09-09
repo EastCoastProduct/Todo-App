@@ -1,6 +1,7 @@
 import React from 'react';
 import Firebase from 'firebase';
 import Router from 'react-router';
+var Link = Router.Link;
 import auth from '../auth';
 
 //add paging
@@ -77,21 +78,9 @@ let UserItem = React.createClass({
         return { firstName: this.props.user.first_name, email: this.props.user.email }
     },
 
-    edit() {
-        this.transitionTo('edituser', null, { id: this.props.user.id });
-    },
-
-    viewProfile() {
-        this.transitionTo('userinfo', null, { id: this.props.user.id });
-    },
-
     render() {
         var user = this.props.user;
-
-        return <div className='marginTop itemBackground overflow' key={ user.id }>
-                    <div className='moduleKey'>{this.state.firstName}</div>
-                    <div className='moduleValue'><button className='button_example' type='button' onClick={this.viewProfile}>Preview</button></div>
-               </div>;
+        return <Link to="userinfo" params={{ id: this.props.user.id }}><div className='marginTop paddingBottomSmall itemBackground overflow' key={ user.id }><div className='moduleKey'>{this.state.firstName}</div></div></Link>;
     }
 });
 

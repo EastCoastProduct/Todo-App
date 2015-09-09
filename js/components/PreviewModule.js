@@ -13,7 +13,7 @@ let PreviewModule = React.createClass({
 	mixins: [Router.Navigation],
 
 	getInitialState() {
-		return { id: this.props.query.id, userId: auth.getUserId(), submitted: false, moduleInProgress: "false", comment: '', solutionUrl:'' };
+		return { id: this.props.params.id, userId: auth.getUserId(), submitted: false, moduleInProgress: "false", comment: '', solutionUrl:'' };
 	},
 
 	componentWillMount() {

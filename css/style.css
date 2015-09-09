@@ -105,6 +105,10 @@ html {
     padding-bottom: 15px;
 }
 
+.paddingBottomSmall {
+    padding-bottom: 5px;
+}
+
 .paddingAll{
   padding: 10px;
 }

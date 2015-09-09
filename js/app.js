@@ -103,9 +103,9 @@ let routes = (
         <Route name="moduleslist" path="/moduleslist" handler={ModulesListHandler}/>
         <Route name="editmodule" path="/editmodule" handler={EditModuleHandler}/>
         <Route name="newmodule" path="/newmodule" handler={NewModuleHandler}/>
-        <Route name="previewmodule" path="/previewmodule" handler={PreviewModuleHandler}/>
-        <Route name="previewmoduleforapproval" path="/previewmoduleforapproval" handler={PreviewModuleForApprovalHandler}/>
-        <Route name="userinfo" path="/userinfo" handler={UserInfoHandler}/>
+        <Route name="previewmodule" path="/previewmodule/:id" handler={PreviewModuleHandler}/>
+        <Route name="previewmoduleforapproval" path="/previewmoduleforapproval/:moduleId/:studentId" handler={PreviewModuleForApprovalHandler}/>
+        <Route name="userinfo" path="/userinfo/:id" handler={UserInfoHandler}/>
         <Route name="myaccount" path="/myaccount" handler={MyAccountHandler}/>
         <Route name="edituser" path="/edituser" handler={EditUserHandler}/>
         <Route name="changeemail" path="/changeemail" handler={ChangeEmailHandler}/>

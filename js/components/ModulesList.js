@@ -5,7 +5,8 @@ import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-route
 import auth from '../auth';
 
 //ako ima pending ili finished ili rejected module, opcija all nece prikazivati taj module ali ostale opcije hoce
-//add paging
+//provjera dali je module active??
+//ako je rejected i repeatable ne prikazuj ga u donjoj listi
 
 let ModulesList = React.createClass({
     mixins: [Router.Navigation],
@@ -254,17 +255,14 @@ let ModuleItem = React.createClass({
         return { value: this.props.module.title, status: this.props.module.status }
     },
 
-    preview() {
-        this.transitionTo('previewmodule', null, { id: this.props.module.id });
-    },
-
     render() {
         var module = this.props.module;
 
-        return <div className='marginTop itemBackground overflow' key={ module.id }>
-                    <div className='moduleKey'> {this.state.value} </div>
-                    {this.state.status == 'active' ? (<div className='moduleValue'><button className="button_example" type='button' onClick={this.preview}>Preview</button></div>) : (<div></div>)}
-                </div>;
+        return <Link to="previewmodule" params={{ id: this.props.module.id }}>
+                    <div className='marginTop itemBackground overflow paddingBottomSmall' key={ module.id }>
+                        <div className='moduleKey'> {this.state.value} </div>
+                    </div>
+                </Link>;
     }   
 });
 
@@ -280,18 +278,15 @@ let ModuleItemForA = React.createClass({
         }
     },
 
-    preview() {
-        this.transitionTo('previewmoduleforapproval', null, { moduleId: this.state.moduleIdVal, studentId: this.state.studentIdVal });
-    },
-
     render() {
         var moduleForA = this.props.moduleForA;
 
-        return <div className='marginTop itemBackground overflow' key={ moduleForA.moduleId }>
-                    {auth.isAdmin() ? (<div className='moduleKey approved'> {this.state.nameVal} - <b>{this.state.userVal}</b> </div>) : (
-                        <div className='moduleKey'> {this.state.nameVal} </div> )}
-                        <div className='moduleValue'><button className="button_example" type='button' onClick={this.preview}>Preview</button></div>
-                </div>;
+        return <Link to="previewmoduleforapproval" params={{ moduleId: this.state.moduleIdVal, studentId: this.state.studentIdVal  }}>
+                    <div className='marginTop itemBackground overflow paddingBottomSmall' key={ moduleForA.moduleId }>
+                        {auth.isAdmin() ? (<div className='moduleKey approved'> {this.state.nameVal} - <b>{this.state.userVal}</b> </div>) : 
+                        (<div className='moduleKey'> {this.state.nameVal} </div>)}
+                    </div>
+                </Link>;
     }   
 });
 
@@ -306,18 +301,14 @@ let ModuleItemFinished = React.createClass({
         }
     },
 
-    preview() {
-        this.transitionTo('previewmodule', null, { id: this.state.moduleIdVal });
-    },
-
     render() {
         var finishedModule = this.props.finishedModule;
 
-        return <div className='marginTop itemBackgroundFinished overflow' key={ finishedModule.moduleId }>
-                    <div className='moduleKey'>{this.state.nameVal}</div>
-                    {this.state.status == 'active' ? (<div className='moduleValue'><button className="button_example" type='button' onClick={this.preview}>Preview</button></div>) : 
-                    (<div></div>)}
-                </div>;
+        return <Link to="previewmodule" params={{ id: this.state.moduleIdVal }}>
+                    <div className='marginTop itemBackgroundFinished overflow paddingBottomSmall' key={ finishedModule.moduleId }>
+                        <div className='moduleKey'> {this.state.nameVal} </div>
+                    </div>
+                </Link>;
     }   
 });
 
@@ -331,17 +322,14 @@ let ModuleItemRejected = React.createClass({
         }
     },
 
-    preview() {
-        this.transitionTo('previewmodule', null, { id: this.state.moduleIdVal });
-    },
-
     render() {
         var rejectedModule = this.props.rejectedModule;
 
-        return <div className='marginTop itemBackgroundRejected overflow' key={ rejectedModule.moduleId }>
-                    <div className='moduleKey'>{this.state.nameVal}</div>
-                    <div className='moduleValue'><button className="button_example" type='button' onClick={this.preview}>Preview</button></div>
-                </div>;
+        return <Link to="previewmodule" params={{ id: this.state.moduleIdVal }}>
+                    <div className='marginTop itemBackgroundRejected overflow paddingBottomSmall' key={ rejectedModule.moduleId }>
+                        <div className='moduleKey'> {this.state.nameVal} </div>
+                    </div>
+                </Link>;
     }   
 });
 
@@ -355,17 +343,14 @@ let ModuleItemSelected = React.createClass({
         }
     },
 
-    preview() {
-        this.transitionTo('previewmodule', null, { id: this.state.moduleIdVal });
-    },
-
     render() {
         var selectedModule = this.props.selectedModule;
 
-        return <div className='marginTop itemBackground overflow' key={ selectedModule.moduleId }>
-                    <div className='moduleKey'>{this.state.nameVal}</div>
-                    <div className='moduleValue'><button className="button_example" type='button' onClick={this.preview}>Preview</button></div>
-                </div>;
+        return <Link to="previewmodule" params={{ id: this.state.moduleIdVal }}>
+                    <div className='marginTop itemBackground overflow paddingBottomSmall' key={ selectedModule.moduleId }>
+                        <div className='moduleKey'> {this.state.nameVal} </div>
+                    </div>
+                </Link>;
     }   
 });
 

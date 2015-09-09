@@ -8,7 +8,7 @@ let PreviewModuleForApproval = React.createClass({
 	mixins: [Router.Navigation],
 
 	getInitialState() {
-		return { moduleId: this.props.query.moduleId, studentId: this.props.query.studentId, approved: false, adminComment: '' };
+		return { moduleId: this.props.params.moduleId, studentId: this.props.params.studentId, approved: false, adminComment: '' };
 	},
 
 	componentWillMount() {

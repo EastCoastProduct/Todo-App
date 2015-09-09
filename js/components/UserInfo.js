@@ -10,7 +10,7 @@ let UserInfo = React.createClass({
 	mixins: [Router.Navigation],
     
 	getInitialState() {
-		return { id: this.props.query.id, modules: [], totalPoints: '0', image: '' };
+		return { id: this.props.params.id, modules: [], totalPoints: '0', image: '' };
 	},
 
 	componentWillMount() {
