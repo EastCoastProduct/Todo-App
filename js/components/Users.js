@@ -4,7 +4,6 @@ import Router from 'react-router';
 var Link = Router.Link;
 import auth from '../auth';
 
-//add paging
 //add created users, active users and deleted(inactive) users for admin
 
 let UsersList = React.createClass({

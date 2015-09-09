@@ -181,6 +181,8 @@ let PreviewModule = React.createClass({
                     <div className='marginTop'><button onClick={this.showAllModules}>Show all modules</button></div>
                     {(!this.state.repeatable) ? (<div className='marginTop infoMessage'><span className='errorMessage'>*</span>&nbsp;&nbsp;<span>Module is not repeatable! </span></div>) : 
                     (<div className='marginTop infoMessage'><span className='errorMessage'>*</span>&nbsp;&nbsp;<span>Module is repeatable! </span></div>)}
+                    {(this.state.moduleInProgress == "true" && auth.isAdmin()) ? (<div className='infoMessage'><span className='errorMessage'>*</span>&nbsp;&nbsp;<span>Module is in progress so it cannot be deleted! </span></div>) : 
+                    (<div></div>)}
 				</div>;
 	}
 });
@@ -197,8 +199,7 @@ let AdminView = React.createClass({
     render() {
         return <div>
                     <button type='button' onClick={this.handleEdit}><i> Edit module </i></button>
-                    {this.props.inProgress == "true" ? (<div className='marginTop infoMessage'><span className='errorMessage'>*</span>&nbsp;&nbsp;<span>Module is in progress so it cannot be deleted! </span></div>) : 
-                    (<button type='button' onClick={this.handleDelete}><i> Delete module </i></button>)}
+                    {this.props.inProgress == "true" ? (<div></div>) : (<button type='button' onClick={this.handleDelete}><i> Delete module </i></button>)}
                </div>;
     }
 });

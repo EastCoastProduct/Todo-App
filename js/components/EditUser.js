@@ -21,7 +21,7 @@ let EditUser = React.createClass({
             var key = snap.key();
             if (data != null && key == "image") {
                 this.setState({ image: data })
-            } else { this.setState({ image: '' }) }
+            }
         }.bind(this));
         this.userFb.on('child_changed', function(snap) {
             var data = snap.val();
