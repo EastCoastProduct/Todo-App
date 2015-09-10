@@ -1,6 +1,9 @@
-html {
+html, body {
   font-family: Helvetica, Arial, sans-serif;
   font-size: 14px;
+  height:100%;
+  margin: 0;
+  padding: 0;
 }
 
 .linkFont {
@@ -297,27 +300,27 @@ fieldset {
     margin: 0 auto;
     width: 100%;
     height: 100%;
-    overflow: hidden; 
+    overflow: hidden;
 }
 
 #sidebar {
     background: #dcdbda;
     float: left;
-    height: 100%;
+    height: 100vh;
     padding: 1%;
     max-width: 300px;
-    margin-bottom: -99999px;
-    padding-bottom: 99999px;
+    /*margin-bottom: -99999px;
+    padding-bottom: 99999px;*/
 }
 
 #sidebarEmpty {
     background: #dcdbda;
     float: left;
-    height: 100%;
+    height: 100vh;
     padding: 1%;
     width: 300px;
-    margin-bottom: -99999px;
-    padding-bottom: 99999px;
+    /*margin-bottom: -99999px;
+    padding-bottom: 99999px;*/
 }
 
 #page-wrap  {
