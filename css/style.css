@@ -221,6 +221,13 @@ fieldset {
   border-radius: 3px 3px 0 0;
 }
 
+.selectDropdown {
+  border: 1px solid #dcdcdc;
+  width: 50%;
+  height:30px;
+  border-radius: 3px 3px 0 0;
+}
+
 #forgotPassword-form input[type="submit"], #changeData-form input[type="submit"] {
   background: #555252;
   border-radius: 1px;

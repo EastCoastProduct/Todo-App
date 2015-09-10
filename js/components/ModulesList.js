@@ -253,8 +253,8 @@ let ModulesList = React.createClass({
                     {(_singleItemsFor != '' && !auth.isAdmin()) ? (<div><b>Waiting for review</b> { _singleItemsFor }</div>) : (<div></div>)}
                     {(_singleItemsRejected != '') ? (<div className='marginTop'><b className='errorMessage'>Rejected</b> { _singleItemsRejected }</div>) : (<div></div>)}
                     {(!auth.isAdmin() && _singleItemsFinished != '') ? (<div className='marginTop'><b className='approved'>Finished</b> { _singleItemsFinished }</div>) : (<div></div>)}
-                    <div className='marginTop'>
-                        <select value={this.state.taxonomySelected} onChange={this.inputTaxonomyChange}>
+                    <div className='paddingTopBig'>
+                        <select className='selectDropdown adminFont' value={this.state.taxonomySelected} onChange={this.inputTaxonomyChange}>
                             <option value='All'>All</option>{optionNodes}
                         </select>
                     </div>
