@@ -14,7 +14,6 @@ let MyAccount = React.createClass({
         this.currentUser = auth.getUserId();
         this.allusersFb = new Firebase('https://app-todo-list.firebaseio.com/users/');
         this.userFb = new Firebase('https://app-todo-list.firebaseio.com/users/' + this.currentUser);
-        this.modulesFb = new Firebase('https://app-todo-list.firebaseio.com/modules/');
         this.getUserData();
         this.getModulesData();
         this.allusersFb.on("child_changed", function(snap){
@@ -30,7 +29,7 @@ let MyAccount = React.createClass({
 
     componentWillUnmount() {
         this.userFb.off();
-        this.modulesFb.off();
+        this.allusersFb.off();
     },
 
     getUserData() {
@@ -59,13 +58,9 @@ let MyAccount = React.createClass({
                     var id = snap.key();
                     var userModuleData = snap.val();
                     if(userModuleData.approved) {
-                        this.moduleUserFb = new Firebase(this.modulesFb + '/' + id);
-                        this.moduleUserFb.once("value", function(snap2) {
-                            var data2 = snap2.val();
-                            var moduleInfo = {moduleName: data2.title, points: userModuleData.points};
-                            modulesArray.push(moduleInfo);
-                            this.setState({ modules: modulesArray });
-                        }.bind(this))
+                        var moduleInfo = {moduleName: userModuleData.title, points: userModuleData.points, repeated: userModuleData.repeated};
+                        modulesArray.push(moduleInfo);
+                        this.setState({ modules: modulesArray });
                     }
                 }.bind(this))
             }
@@ -112,7 +107,7 @@ let ModuleItem = React.createClass({
     mixins: [Router.Navigation],
     
     getInitialState() {
-        return { name: this.props.user.moduleName, points: this.props.user.points }
+        return { name: this.props.user.moduleName, points: this.props.user.points, repeated: this.props.user.repeated }
     },
 
     render() {
@@ -121,6 +116,7 @@ let ModuleItem = React.createClass({
       return <div>
                 <span> {this.state.points} - </span>
                 <span> {this.state.name} </span>
+                {this.state.repeated > 1 ? (<span className='fontExtraSmall'> - repeated {this.state.repeated} times</span>) : (<span></span>)}
              </div>;
     }
 });

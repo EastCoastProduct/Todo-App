@@ -5,7 +5,6 @@ import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-route
 import auth from '../auth';
 
 //ako ima pending ili finished ili rejected module, opcija all nece prikazivati taj module ali ostale opcije hoce
-//provjera dali je module active??
 //ako je rejected i repeatable ne prikazuj ga u donjoj listi
 
 let ModulesList = React.createClass({
@@ -15,12 +14,8 @@ let ModulesList = React.createClass({
         var userStatus = auth.getStatus();
         var userId = auth.getUserId();
 
-        if (!auth.loggedIn()) {
-            this.transitionTo('login');
-        };
-        if (userStatus == "created") {
-            this.transitionTo('changepassword', null, {id: userId});
-        };
+        if (!auth.loggedIn()) { this.transitionTo('login'); };
+        if (userStatus == "created") { this.transitionTo('changepassword', null, {id: userId});};
         return { modules: [], modulesForApproval: [], finishedModules: [], rejectedModules: [], taxonomy: [], taxonomySelected: 'All', modulesSelected: [] };
     },
 
@@ -30,11 +25,15 @@ let ModulesList = React.createClass({
         this.taxonomyDb = new Firebase("https://app-todo-list.firebaseio.com/taxonomy/");
         this.getTaxonomy();
 
-        if (!auth.isAdmin()) {
-            this.getAllModulesForStudent();
-        } else {
-            this.getAllModulesForAdmin();
-        }
+        if (!auth.isAdmin()) { this.getAllModulesForStudent();
+                               this.getFinishedModulesForStudent();
+        } else { this.getAllModulesForAdmin(); }
+    },
+
+    componentWillUnmount() {
+        this.firebaseDb.off();
+        this.usersFb.off();
+        this.taxonomyDb.off();
     },
 
     getTaxonomy(){
@@ -53,7 +52,6 @@ let ModulesList = React.createClass({
             var userName = auth.getUser();
             var modulesArray = this.state.modules;
             var modulesForApprovalArray = this.state.modulesForApproval;
-            var finishedModulesArray = this.state.finishedModules;
             var rejectedModulesArray = this.state.rejectedModules;
             var items = data.val();
             var itemsKey = data.key();
@@ -64,9 +62,7 @@ let ModulesList = React.createClass({
                     if(!snap.hasChild(userId)){
                         items.id = itemsKey;
                         modulesArray.push(items);
-                        this.setState({
-                            modules: modulesArray
-                        });
+                        this.setState({ modules: modulesArray });
                     }
                 }.bind(this));
                 this.approvalDb.on("child_added", function(snap) {
@@ -77,41 +73,83 @@ let ModulesList = React.createClass({
                         data.studentId = userId;
                         data.userName = userName;
                         modulesForApprovalArray.push(data);
-                        this.setState({
-                            modulesForApproval: modulesForApprovalArray
-                        })
-                    }
-                    if (snap.key() == userId && data.approved) {
-                        data.id = itemsKey;
-                        data.title = items.title;
-                        data.status = items.status;
-                        finishedModulesArray.push(data);
-                        this.setState({
-                            finishedModules: finishedModulesArray
-                        })
+                        this.setState({ modulesForApproval: modulesForApprovalArray })
                     }
                     if (snap.key() == userId && data.approved && items.repeatable){
                         items.id = itemsKey;
                         modulesArray.push(items);
-                        this.setState({
-                            modules: modulesArray
-                        });
+                        this.setState({ modules: modulesArray });
                     }
                     if (snap.key() == userId && data.rejected){
                         data.id = itemsKey;
                         data.title = items.title;
                         rejectedModulesArray.push(data);
-                        this.setState({
-                            rejectedModules: rejectedModulesArray
-                        });
+                        this.setState({ rejectedModules: rejectedModulesArray });
                     }
                 }.bind(this))
             } else {
                 items.id = itemsKey;
                 modulesArray.push(items);
-                this.setState({
-                    modules: modulesArray
-                });
+                this.setState({ modules: modulesArray });
+            }
+        }.bind(this));
+    },
+
+    getFinishedModulesForStudent(){
+        var userId = auth.getUserId();
+        var finishedModulesArray = this.state.finishedModules;
+        var thisStudentFb = new Firebase(this.usersFb + '/' + userId);
+        thisStudentFb.once('value', function(snapshot){
+            if(snapshot.hasChild('modules')){
+                var fb = new Firebase(thisStudentFb + '/modules');
+                fb.on('child_added', function(data){
+                    var item = data.val();
+                    item.key = data.key();
+                    var itemsKey = data.key();
+                    if(item.approved){
+                        this.firebaseDb.once("value", function(snap) {
+                            if(snap.hasChild(itemsKey)){
+                                item.deleted = false;
+                                finishedModulesArray.push(item);
+                                this.setState({ finishedModules: finishedModulesArray })
+                            } else {
+                                item.deleted = true;
+                                finishedModulesArray.push(item);
+                                this.setState({ finishedModules: finishedModulesArray })
+                            }
+                        }.bind(this))
+                        
+                    }
+                }.bind(this))
+            }
+        }.bind(this))
+    },
+
+    inputTaxonomyChange(e) {
+        this.setState({taxonomySelected: e.target.value});
+
+        var userId = auth.getUserId();
+        var selected = e.target.value;
+        var selectedModules = [];
+        var selectedModulesArray = [];
+
+        this.firebaseDb.orderByChild('taxonomy').startAt(selected).endAt(selected).once('value', function(snapshot){ 
+            var data = snapshot.val();
+            if(data == null) {
+                this.setState({ modulesSelected: [] })
+            } else {
+                for (var k in data){
+                    var moduleFb = new Firebase(this.firebaseDb + '/' + k);
+                    moduleFb.once('value', function(snap){
+                        var item = snap.val();
+                        item.id = snap.key();
+
+                        if (snap.key() == userId && !data.approved && !data.rejected) {
+                            selectedModulesArray.push(item);
+                            this.setState({ modulesSelected: selectedModulesArray })
+                        }
+                    }.bind(this))
+                }
             }
         }.bind(this));
     },
@@ -137,9 +175,7 @@ let ModulesList = React.createClass({
                             data.id = itemsKey;
                             data.title = items.title;
                             modulesForApprovalArray.push(data);
-                            this.setState({
-                                modulesForApproval: modulesForApprovalArray
-                            })
+                            this.setState({ modulesForApproval: modulesForApprovalArray })
                         }.bind(this))
 
                     }
@@ -147,38 +183,7 @@ let ModulesList = React.createClass({
             }
             items.id = data.key();
             modulesArray.push(items);
-            this.setState({
-                modules: modulesArray
-            });
-        }.bind(this));
-    },
-
-    componentWillUnmount() {
-        this.firebaseDb.off();
-    },
-
-    inputTaxonomyChange(e) {
-        this.setState({taxonomySelected: e.target.value});
-
-        var selected = e.target.value;
-        var selectedModules = [];
-        var selectedModulesArray = [];
-
-        this.firebaseDb.orderByChild('taxonomy').startAt(selected).endAt(selected).once('value', function(snapshot){ 
-            var data = snapshot.val();
-            if(data == null) {
-                this.setState({ modulesSelected: [] })
-            } else {
-                for (var k in data){
-                    var moduleFb = new Firebase(this.firebaseDb + '/' + k);
-                    moduleFb.once('value', function(snap){
-                        var item = snap.val();
-                        item.id = snap.key();
-                        selectedModulesArray.push(item);
-                        this.setState({ modulesSelected: selectedModulesArray })
-                    }.bind(this))
-                }
-            }
+            this.setState({ modules: modulesArray });
         }.bind(this));
     },
 
@@ -195,15 +200,11 @@ let ModulesList = React.createClass({
         var _singleItemsSelected = [];
 
         modules.forEach(function (module, i) {
-            if(module.status == 'active'){ //ne radi dobro, staviti ovdje sve module
-                _singleItems.push(<ModuleItem key={i} module={modules[i]}  />);
-            }
+            _singleItems.push(<ModuleItem key={i} module={modules[i]}  />);
         });
 
         modulesForA.forEach(function (moduleForA, i) {
-            //if(module.status == 'active'){
-                _singleItemsFor.push(<ModuleItemForA key={i} moduleForA={modulesForA[i]}  />);
-            //}
+            _singleItemsFor.push(<ModuleItemForA key={i} moduleForA={modulesForA[i]}  />);
         });
 
         if(!auth.isAdmin()){
@@ -213,9 +214,7 @@ let ModulesList = React.createClass({
         }
 
         rejectedModules.forEach(function (rejectedModule, i) {
-            //if(module.status == 'active'){
-                _singleItemsRejected.push(<ModuleItemRejected key={i} rejectedModule={rejectedModules[i]} />);
-            //}
+            _singleItemsRejected.push(<ModuleItemRejected key={i} rejectedModule={rejectedModules[i]} />);
         });
 
         if(this.state.taxonomy != ''){ //remove this if
@@ -225,9 +224,7 @@ let ModulesList = React.createClass({
         }
 
         sModules.forEach(function (selectedModule, i) {
-            if(selectedModule.status == 'active'){ //ne radi dobro
-                _singleItemsSelected.push(<ModuleItemSelected key={i} selectedModule={sModules[i]}  />);
-            }
+            _singleItemsSelected.push(<ModuleItemSelected key={i} selectedModule={sModules[i]}  />);
         });
 
         return <div >
@@ -252,7 +249,7 @@ let ModuleItem = React.createClass({
     mixins: [Router.Navigation],
 
     getInitialState() {
-        return { value: this.props.module.title, status: this.props.module.status }
+        return { value: this.props.module.title }
     },
 
     render() {
@@ -295,20 +292,28 @@ let ModuleItemFinished = React.createClass({
 
     getInitialState() {
         return {
-            moduleIdVal: this.props.finishedModule.id,
+            moduleIdVal: this.props.finishedModule.key,
             nameVal: this.props.finishedModule.title,
-            status: this.props.finishedModule.status
+            deleted: this.props.finishedModule.deleted
         }
     },
 
     render() {
         var finishedModule = this.props.finishedModule;
 
-        return <Link to="previewmodule" params={{ id: this.state.moduleIdVal }}>
-                    <div className='marginTop itemBackgroundFinished overflow paddingBottomSmall' key={ finishedModule.moduleId }>
-                        <div className='moduleKey'> {this.state.nameVal} </div>
+        return <div>
+                {this.state.deleted ? (
+                    <div className='marginTop paddingBottomSmall itemBackgroundFinished overflow' key={ this.state.moduleIdVal }>
+                        <div className='moduleKey linkFont'> {this.state.nameVal} <span className='fontExtraSmall paddingLeft'>(no longer available)</span> </div>
                     </div>
-                </Link>;
+                ) : (
+                    <Link to="previewmodule" params={{ id: this.state.moduleIdVal }}>
+                        <div className='marginTop itemBackgroundFinished overflow paddingBottomSmall' key={ finishedModule.moduleId }>
+                            <div className='moduleKey'> {this.state.nameVal} </div>
+                        </div>
+                    </Link>
+                )}
+                </div>
     }   
 });
 

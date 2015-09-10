@@ -4,8 +4,6 @@ import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 import auth from '../auth';
 
-//popraviti brisanje modula
-
 var firebaseDb = new Firebase('https://app-todo-list.firebaseio.com/modules/');
 var userFb = new Firebase('https://app-todo-list.firebaseio.com/users/');
 
@@ -111,9 +109,7 @@ let PreviewModule = React.createClass({
 
     deleteModule() {
         var itemForRemoval = new Firebase(firebaseDb + '/' + this.state.id);
-        itemForRemoval.update({
-            status: 'inactive'
-        })
+        itemForRemoval.remove();
         this.transitionTo('moduleslist');
     },
 
@@ -139,7 +135,7 @@ let PreviewModule = React.createClass({
 			        <div className='marginTop paddingLeft'>{this.state.description}</div>
 
                     {auth.isAdmin() ? (<AdminView onDelete = {this.deleteModule} onEdit = {this.editModule} inProgress = {this.state.moduleInProgress} />) : (<div></div>)}
-                    {(!auth.isAdmin() && !this.state.approved && this.state.submitted && !this.state.rejected) ? (<div><span>Submitted, waiting for response from admin!</span></div>):(<div></div>)}
+                    {(!auth.isAdmin() && !this.state.approved && this.state.submitted && !this.state.rejected) ? (<div className='marginTopBig paddingLeft approved'>Module submitted, waiting for response from administrator!</div>):(<div></div>)}
                     {this.state.rejected ? (<div>
                                                 <div className='paddingTopBig paddingLeft errorMessage'>Your solution is rejected!</div>
                                                 <div className='errorMessage paddingLeft'><b>Reason:</b> {this.state.adminComment}</div>

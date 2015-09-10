@@ -70,8 +70,7 @@ let NewModule = React.createClass({
 					description: this.state.description,
 					taxonomy: this.state.taxonomySelected,
 					repeatable: this.state.repeatable,
-					points: this.state.points,
-                    status: 'active'
+					points: this.state.points
 	            });
 	            this.setState({title: '', description: '', taxonomy: '', taxonomySelected: 'General', repeatable: '', points: ''});
 				this.transitionTo('moduleslist'); //show message?

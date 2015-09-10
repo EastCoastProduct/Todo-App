@@ -3,12 +3,20 @@ html {
   font-size: 14px;
 }
 
+.linkFont {
+  color: #999;
+}
+
 .headlineFont{
   font-size: 20px;
 }
 
 .fontSmall {
   font-size: 13px;
+}
+
+.fontExtraSmall {
+  font-size: 11px;
 }
 
 .overflow{
@@ -160,13 +168,13 @@ fieldset {
   width: 60%;
 }
 
-#login-form fieldset, #forgotPassword-form fieldset, #changeData-form fieldset {
+#forgotPassword-form fieldset, #changeData-form fieldset {
   background: #fff;
   border-radius: 0 0 5px 5px;
   padding: 20px;
 }
 
-#login-form fieldset:before, #forgotPassword-form fieldset:before, #changeData-form  fieldset:before {
+#forgotPassword-form fieldset:before, #changeData-form  fieldset:before {
   background-color: #fff;
   content: "";
   height: 8px;
@@ -180,20 +188,10 @@ fieldset {
   width: 8px;
 }
 
-#login-form input, #forgotPassword-form input, #changeData-form input, #changeData-form textarea, #taxonomy-form input {
+#forgotPassword-form input, #changeData-form input, #changeData-form textarea, #taxonomy-form input {
   font-size: 14px;
 }
 
-#login-form input[type="email"],
-#login-form input[type="password"] {
-  border: 1px solid #dcdcdc;
-  padding: 10px 5px;
-  width: 95%;
-}
-
-#login-form input[type="email"] {
-  border-radius: 3px 3px 0 0;
-}
 
 #forgotPassword-form input[type="emailReset"], #changeData-form input[type="email"], #changeData-form input[type="password"], #changeData-form input[type="text"]  {
   border: 1px solid #dcdcdc;
@@ -223,11 +221,7 @@ fieldset {
   border-radius: 3px 3px 0 0;
 }
 
-#login-form input[type="password"] {
-  border-radius: 0px 0px 3px 3px;
-}
-
-#login-form input[type="submit"], #forgotPassword-form input[type="submit"], #changeData-form input[type="submit"] {
+#forgotPassword-form input[type="submit"], #changeData-form input[type="submit"] {
   background: #555252;
   border-radius: 1px;
   color: #fff;
@@ -246,18 +240,8 @@ fieldset {
   margin-top: 10px;
 }
 
-#login-form input[type="submit"]:hover {
-  background: #7A7A7C;
-  color: #fff;
-}
-
 #changeData-form input[type="checkbox"]{
   float: right;
-}
-
-#login-form footer {
-  font-size: 12px;
-  margin-top: 16px;
 }
 
 .infoMessage {

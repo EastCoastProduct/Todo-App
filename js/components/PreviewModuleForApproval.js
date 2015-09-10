@@ -79,7 +79,8 @@ let PreviewModuleForApproval = React.createClass({
                 this.studentFb.set({
                     approved: true,
                     points: this.state.points,
-                    repeated: newRepeate
+                    repeated: newRepeate,
+                    title: this.state.title
                 });
                 this.setState({ approved: true })
             } else {
@@ -91,7 +92,8 @@ let PreviewModuleForApproval = React.createClass({
                 this.studentFb.set({
                     approved: true,
                     points: this.state.points,
-                    repeated: "1"
+                    repeated: "1",
+                    title: this.state.title
                 });
                 this.setState({ approved: true,  })
             }
@@ -160,7 +162,7 @@ let PreviewModuleForApproval = React.createClass({
                     <div className='headlineFont paddingLeft'><span>{this.state.title}</span><span> {this.state.points} points</span><span> {this.state.points} points</span>{auth.isAdmin() ? (<div>{this.state.usersData}</div>):(<div></div>)}</div>
                     <div className='marginTop paddingLeft'>{this.state.description}</div>
                     <div>
-                        {(!auth.isAdmin() && !this.state.approved && !this.state.rejected) ? (<div className='marginTopBig paddingLeft approved'>Module submitted, waiting for response from admin!</div>) : (<div></div>)}
+                        {(!auth.isAdmin() && !this.state.approved && !this.state.rejected) ? (<div className='marginTopBig paddingLeft approved'>Module submitted, waiting for response from administrator!</div>) : (<div></div>)}
                         <div className='marginTopBig paddingLeft'><b>Submission info</b></div><div className='paddingLeft'>{this.state.comment}</div>
                         {this.state.solutionUrl != '' ? (<div className='paddingLeft marginTop'>{this.state.solutionUrl}</div>):(<div></div>)}
                         <div>

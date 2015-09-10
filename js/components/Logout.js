@@ -8,9 +8,6 @@ let Logout = React.createClass({
 
     componentDidMount() {
         auth.logout();
-    },
-
-    redirectToLogin() {
         this.transitionTo('login');
     },
 
