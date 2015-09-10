@@ -159,7 +159,7 @@ let PreviewModuleForApproval = React.createClass({
 
 	render() {
 		return  <div>
-                    <div className='headlineFont paddingLeft'><span>{this.state.title}</span><span> {this.state.points} points</span><span> {this.state.points} points</span>{auth.isAdmin() ? (<div>{this.state.usersData}</div>):(<div></div>)}</div>
+                    <div className='headlineFont paddingLeft'><span>{this.state.title}</span><span> {this.state.points} points</span>{auth.isAdmin() ? (<div>{this.state.usersData}</div>):(<div></div>)}</div>
                     <div className='marginTop paddingLeft'>{this.state.description}</div>
                     <div>
                         {(!auth.isAdmin() && !this.state.approved && !this.state.rejected) ? (<div className='marginTopBig paddingLeft approved'>Module submitted, waiting for response from administrator!</div>) : (<div></div>)}

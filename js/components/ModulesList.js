@@ -4,7 +4,6 @@ import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 import auth from '../auth';
 
-
 let ModulesList = React.createClass({
     mixins: [Router.Navigation],
 
@@ -197,8 +196,10 @@ let ModulesList = React.createClass({
                             data.studentId = userId;
                             data.id = itemsKey;
                             data.title = items.title;
-                            modulesForApprovalArray.push(data);
-                            this.setState({ modulesForApproval: modulesForApprovalArray })
+                            if(user.status != "inactive"){
+                                modulesForApprovalArray.push(data);
+                                this.setState({ modulesForApproval: modulesForApprovalArray })
+                            }
                         }.bind(this))
                     }
                 }.bind(this))

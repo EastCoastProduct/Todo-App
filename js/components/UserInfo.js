@@ -4,8 +4,6 @@ import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 import auth from '../auth';
 
-//ako izbrisemo usera koji ima pending module za approval, module ce osrtati pending
-
 let UserInfo = React.createClass({
 	mixins: [Router.Navigation],
     
