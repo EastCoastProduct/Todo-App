@@ -4,7 +4,6 @@ import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 import auth from '../auth';
 
-
 //user se moze ulogirati sa starim pass
 
 let ForgotPassword = React.createClass({

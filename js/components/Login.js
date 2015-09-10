@@ -52,7 +52,7 @@ let Login = React.createClass({
                                             var err = auth.getLoginError();
                                             return this.setState({ error: true, message: err });
                                         } else {
-                                            var userId = k;//auth.getUserId();
+                                            var userId = k;
                                             localStorage.userId = k;
                                             this.fb = new Firebase('https://app-todo-list.firebaseio.com/users/' + userId);
                                             this.fb.on("value", function(snap){

@@ -241,7 +241,7 @@ let ModulesList = React.createClass({
                         </select>
                     </div>
                     {this.state.taxonomySelected == 'All' ? (
-                        _singleItems != '' ? (<div>{ _singleItems }</div>) : (<div>No modules</div>)
+                        _singleItems != '' ? (<div>{ _singleItems }</div>) : (<div></div>)
                     ) : ( _singleItemsSelected != '' ? (<div>{_singleItemsSelected}</div>) : (<div></div>))}
                     {auth.isAdmin() ? (<AddNewModuleButton />) : (<div></div>)}
                </div>;

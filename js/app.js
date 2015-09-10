@@ -80,9 +80,10 @@ let App = React.createClass({
                         )) : (
                         <div className=''>
                             <div className='right'>
-                                <span><Link to="/users" className='rightLink'>Users </Link></span>
+                                <span className='marginForNavigation'><Link to="/users" className='rightLink'>Users </Link></span>
+                                <span className='marginForNavigation'><Link to="/login" className='rightLink'>Login </Link></span>
                             </div>
-                            <div id="sidebar"><LoginHandler /></div>
+                            <div id="sidebarEmpty"></div>
                             <div id="page-wrap"><RouteHandler /></div>
                         </div>
                     )
