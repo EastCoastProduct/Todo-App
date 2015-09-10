@@ -4,8 +4,6 @@ import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 import auth from '../auth';
 
-//ako ima pending ili finished ili rejected module, opcija all nece prikazivati taj module ali ostale opcije hoce
-//ako je rejected i repeatable ne prikazuj ga u donjoj listi
 
 let ModulesList = React.createClass({
     mixins: [Router.Navigation],
@@ -130,8 +128,8 @@ let ModulesList = React.createClass({
 
         var userId = auth.getUserId();
         var selected = e.target.value;
-        var selectedModules = [];
         var selectedModulesArray = [];
+        this.setState({ modulesSelected: [] })
 
         this.firebaseDb.orderByChild('taxonomy').startAt(selected).endAt(selected).once('value', function(snapshot){ 
             var data = snapshot.val();
@@ -143,10 +141,35 @@ let ModulesList = React.createClass({
                     moduleFb.once('value', function(snap){
                         var item = snap.val();
                         item.id = snap.key();
-
-                        if (snap.key() == userId && !data.approved && !data.rejected) {
-                            selectedModulesArray.push(item);
-                            this.setState({ modulesSelected: selectedModulesArray })
+                        if(auth.isAdmin()){
+                            if(item.taxonomy == selected){
+                                selectedModulesArray.push(item);
+                                this.setState({ modulesSelected: selectedModulesArray })
+                            }
+                        } else {
+                            if(item.taxonomy == selected){
+                                if(snap.hasChild('users')){
+                                    var moduleUserFb = new Firebase(moduleFb + '/users');
+                                    moduleUserFb.once('value', function(snapshot){
+                                        if (snapshot.hasChild(userId)){
+                                            var thisUserData = new Firebase(moduleUserFb + '/' + userId);
+                                            thisUserData.once('value', function(sna){
+                                                var moduleUserData = sna.val();
+                                                if(item.repeatable && moduleUserData.approved){
+                                                    selectedModulesArray.push(item);
+                                                    this.setState({ modulesSelected: selectedModulesArray })
+                                                }
+                                            }.bind(this))
+                                        } else {
+                                            selectedModulesArray.push(item);
+                                            this.setState({ modulesSelected: selectedModulesArray })
+                                        }
+                                    }.bind(this))
+                                } else {
+                                    selectedModulesArray.push(item);
+                                    this.setState({ modulesSelected: selectedModulesArray })
+                                }
+                            }
                         }
                     }.bind(this))
                 }
@@ -177,7 +200,6 @@ let ModulesList = React.createClass({
                             modulesForApprovalArray.push(data);
                             this.setState({ modulesForApproval: modulesForApprovalArray })
                         }.bind(this))
-
                     }
                 }.bind(this))
             }
@@ -217,11 +239,9 @@ let ModulesList = React.createClass({
             _singleItemsRejected.push(<ModuleItemRejected key={i} rejectedModule={rejectedModules[i]} />);
         });
 
-        if(this.state.taxonomy != ''){ //remove this if
-            var optionNodes = this.state.taxonomy.map(function(option){
-                return <option value={option.value}>{option.name}</option>;
-            });
-        }
+        var optionNodes = this.state.taxonomy.map(function(option){
+            return <option value={option.value}>{option.name}</option>;
+        });
 
         sModules.forEach(function (selectedModule, i) {
             _singleItemsSelected.push(<ModuleItemSelected key={i} selectedModule={sModules[i]}  />);
@@ -341,19 +361,12 @@ let ModuleItemRejected = React.createClass({
 let ModuleItemSelected = React.createClass({
     mixins: [Router.Navigation],
 
-    getInitialState() {
-        return {
-            moduleIdVal: this.props.selectedModule.id,
-            nameVal: this.props.selectedModule.title
-        }
-    },
-
     render() {
         var selectedModule = this.props.selectedModule;
 
-        return <Link to="previewmodule" params={{ id: this.state.moduleIdVal }}>
-                    <div className='marginTop itemBackground overflow paddingBottomSmall' key={ selectedModule.moduleId }>
-                        <div className='moduleKey'> {this.state.nameVal} </div>
+        return <Link to="previewmodule" params={{ id: selectedModule.id }}>
+                    <div className='marginTop itemBackground overflow paddingBottomSmall' key={ selectedModule.id }>
+                        <div className='moduleKey'> {selectedModule.title} </div>
                     </div>
                 </Link>;
     }   
