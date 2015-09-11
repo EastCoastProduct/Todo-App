@@ -64,7 +64,7 @@ let UsersList = React.createClass({
         });
 
         return <div>
-                {_singleItems != '' ? (<div>{ _singleItems } </div> ) : (<div></div> )} 
+                {_singleItems != '' ? (<div>{ _singleItems } </div> ) : (<div></div> )}
                 {(auth.loggedIn() && auth.isAdmin())? (<div className='paddingTopBig'><button className="button_example" type='button' onClick={this.redirectToNewUser}>Add new user</button></div>) : (<div></div>)}
                </div>;
     }
@@ -79,7 +79,7 @@ let UserItem = React.createClass({
 
     render() {
         var user = this.props.user;
-        return <Link to="userinfo" params={{ id: this.props.user.id }}><div className='marginTop paddingBottomSmall itemBackground overflow' key={ user.id }><div className='moduleKey'>{this.state.firstName}</div></div></Link>;
+        return <Link to="userinfo" params={{ id: this.props.user.id }}><div className='userItem marginTop paddingBottomSmall itemBackground overflow' key={ user.id }><div className='moduleKey'>{this.state.firstName}</div></div></Link>;
     }
 });
 

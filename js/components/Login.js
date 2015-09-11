@@ -4,7 +4,7 @@ import Router from 'react-router';
 import auth from '../auth';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 
-let Login = React.createClass({ 
+let Login = React.createClass({
 	mixins: [Router.Navigation],
 
 	getInitialState() {
@@ -79,7 +79,7 @@ let Login = React.createClass({
         var err = false;
         var emailRegex = /^[a-z][a-zA-Z0-9_]*(\.[a-zA-Z][a-zA-Z0-9_]*)?@[a-z][a-zA-Z-0-9]*\.[a-z]+(\.[a-z]+)?$/;
         if(!emailRegex.test(this.state.email)){
-            this.setState({ emailMessage: 'Enter a valid email address.' }); 
+            this.setState({ emailMessage: 'Enter a valid email address.' });
             err = true;
         }
         if(this.state.password.trim().length == 0){
@@ -91,6 +91,7 @@ let Login = React.createClass({
 
     render() {
         return (
+
                 <div id="changeData-form" className='paddingBottom'>
                     <fieldset>
                         <form onSubmit={this.loginUser}>
@@ -110,4 +111,4 @@ let Login = React.createClass({
     }
 });
 
-export default Login;  
+export default Login;

@@ -1,3 +1,12 @@
+@font-face {
+    font-family: 'league gothic';
+    src: url('/f/LeagueGothic.otf');
+}
+@font-face {
+    font-family: 'brix';
+    src: url('/f/BrixSlab-Medium.otf');
+}
+
 html, body {
   font-family: Helvetica, Arial, sans-serif;
   font-size: 14px;
@@ -5,6 +14,30 @@ html, body {
   margin: 0;
   padding: 0;
 }
+
+h2 {
+  margin-top: 40px;
+  font-family: 'league gothic';
+  font-size: 2em;
+  text-transform: uppercase;
+  letter-spacing: .03em;
+
+}
+
+
+*:hover {
+    transition: all 0.3s ease 0.0s;
+		-moz-transition: all 0.3s ease 0.0s;
+		-webkit-transition: all 0.3s ease 0.0s;
+		-o-transition: all 0.3s ease 0.0s;
+		-ms-transition: all 0.3s ease 0.0s;
+}
+
+.header {display:none; height:0;}
+
+.firstname {font-size: 1.4em;}
+.lastname {font-size: .8em; line-height: 1;}
+
 
 .linkFont {
   color: #999;
@@ -24,14 +57,6 @@ html, body {
 
 .overflow{
   overflow: hidden;
-}
-
-.itemBackgroundRejected{
-  background-color: #F6CECE;
-}
-
-.itemBackgroundFinished{
-  background-color: #A9F5D0;
 }
 
 .approved {
@@ -104,50 +129,6 @@ html, body {
   color: #B63131;
 }
 
-.paddingTop{
-  padding-top: 20px;
-}
-
-.paddingTopBig{
-  padding-top: 50px;
-}
-
-.paddingLeft{
-  padding-left: 20px;
-}
-
-.paddingBottom {
-    padding-bottom: 15px;
-}
-
-.paddingBottomSmall {
-    padding-bottom: 5px;
-}
-
-.paddingAll{
-  padding: 10px;
-}
-
-.marginForNavigation{
-  margin-right: 15px;
-}
-
-.marginTopBig{
-  margin-top: 40px;
-}
-
-.marginTop{
-  margin-top: 20px;
-}
-
-.marginBottom{
-  margin-bottom: 20px;
-}
-
-.marginRight{
-  margin-right: 5px;
-}
-
 .taxonomy {
   width:70%;
 
@@ -159,7 +140,7 @@ a {
 }
 
 a:hover {
-  color: #555252;
+  /* color: #555252; */
 }
 
 fieldset {
@@ -265,8 +246,8 @@ fieldset {
 }
 
 .usersImage {
-	width: 150px;
-	height: 150px;
+	width: 100%;
+	height: auto;
 }
 
 .usersImageEdit {
@@ -275,25 +256,16 @@ fieldset {
 }
 
 .imageContainer {
-  height: 160px;
-  width: 99%;
-  margin: 10px auto;
+  height: 280px;
+  width: 100%;
+  margin: 0 auto;
   position: relative;
-}
-
-.imageBox {
-  margin-left: 20%;
-  left: 50%;
+  overflow:hidden;
 }
 
 .right {
     float: right;
     padding: 10px;
-}
-
-.rightLink {
-    color: #545D61;
-    text-decoration: none;
 }
 
 #main {
@@ -304,23 +276,78 @@ fieldset {
 }
 
 #sidebar {
-    background: #dcdbda;
+    background: #333;
     float: left;
-    height: 100vh;
-    padding: 1%;
     max-width: 300px;
+    color: #ededed;
     /*margin-bottom: -99999px;
     padding-bottom: 99999px;*/
 }
 
+#sidebar .content {padding: 10px;}
+
+#sidebar .description {
+    color: #999;
+    padding: 30px 0 0 0;
+    border-top: 1px solid #4d4d4d;
+    margin-top: 30px;
+}
+
+a.rightLink,
+#sidebar .meta {
+    color: #999;
+    font-size:.8em;
+}
+
+a.rightLink {
+  display:inline-block;
+  margin: 0 8px;
+}
+
+button {
+  font-size: 1em;
+  border:0;
+  width: 100%;
+  border-radius: 4px;
+  margin: 5px 0;
+  cursor:pointer;
+}
+
+#sidebar button {
+  background: #ededed;
+  color: #333;
+  font-size: 1em;
+  padding: 12px 0;
+}
+
+#sidebar button:hover {
+    background:#ccc;
+  }
+
 #sidebarEmpty {
-    background: #dcdbda;
-    float: left;
-    height: 100vh;
-    padding: 1%;
-    width: 300px;
-    /*margin-bottom: -99999px;
-    padding-bottom: 99999px;*/
+    display:none;
+}
+
+.points_total, .points_modules {
+  display:inline-block;
+}
+.points_total {
+  font-family: 'league gothic';
+    font-size: 2.2em;
+    text-transform: uppercase;
+    border-radius: 42px;
+    border: 1px solid #D4E9BE;
+    /* background: #D4E9BE; */
+    color: #D4E9BE;
+    padding: 12px 0;
+    width: 20%;
+    margin: 0 4% 0 0;
+    vertical-align: top;
+    text-align: center;
+}
+
+.points_modules {
+  width: 75%;
 }
 
 #page-wrap  {
@@ -343,9 +370,40 @@ fieldset {
     content: "";
 }
 
+.userItem,
+.moduleItem {
+  padding: 8px 0 14px 0;
+  width:90%;
+  margin: 5px 0;
+  cursor:pointer;
+}
+
 .itemBackground {
+  border-left:4px solid #EBEBEC;
+  color: #5e5e5e;
+}
+
+.itemBackground:hover {
   background-color: #EBEBEC;
 }
+
+.itemBackgroundRejected:hover,
+.itemBackgroundRejected:hover a {
+  background-color: #F6CECE;
+}
+
+.itemBackgroundFinished {
+  border-left: 4px solid #D4E9BE;
+  color: #297A54;
+}
+
+.itemBackgroundFinished:hover,
+.itemBackgroundFinished:hover a {
+  background-color: #D4E9BE;
+  color: #297A54;
+}
+
+.userItem.itemBackground {border:0;}
 
 .button_example{
  font-size:10px;font-family:helvetica, sans-serif; padding: 5px 5px 5px 5px; text-decoration:none; display:inline-block; color: #FFFFFF;

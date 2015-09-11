@@ -115,7 +115,7 @@ let ModulesList = React.createClass({
                                 this.setState({ finishedModules: finishedModulesArray })
                             }
                         }.bind(this))
-                        
+
                     }
                 }.bind(this))
             }
@@ -130,7 +130,7 @@ let ModulesList = React.createClass({
         var selectedModulesArray = [];
         this.setState({ modulesSelected: [] })
 
-        this.firebaseDb.orderByChild('taxonomy').startAt(selected).endAt(selected).once('value', function(snapshot){ 
+        this.firebaseDb.orderByChild('taxonomy').startAt(selected).endAt(selected).once('value', function(snapshot){
             var data = snapshot.val();
             if(data == null) {
                 this.setState({ modulesSelected: [] })
@@ -251,8 +251,8 @@ let ModulesList = React.createClass({
         return <div >
                     {(_singleItemsFor != '' && auth.isAdmin()) ? (<div><b className='approved'>Waiting for review</b> { _singleItemsFor }</div>) : (<div></div>)}
                     {(_singleItemsFor != '' && !auth.isAdmin()) ? (<div><b>Waiting for review</b> { _singleItemsFor }</div>) : (<div></div>)}
-                    {(_singleItemsRejected != '') ? (<div className='marginTop'><b className='errorMessage'>Rejected</b> { _singleItemsRejected }</div>) : (<div></div>)}
-                    {(!auth.isAdmin() && _singleItemsFinished != '') ? (<div className='marginTop'><b className='approved'>Finished</b> { _singleItemsFinished }</div>) : (<div></div>)}
+                    {(_singleItemsRejected != '') ? (<div className='moduleItem marginTop'><b className='errorMessage'>Rejected</b> { _singleItemsRejected }</div>) : (<div></div>)}
+                    {(!auth.isAdmin() && _singleItemsFinished != '') ? (<div className='moduleItem marginTop'><b className='approved'>Finished</b> { _singleItemsFinished }</div>) : (<div></div>)}
                     <div className='paddingTopBig'>
                         <select className='selectDropdown adminFont' value={this.state.taxonomySelected} onChange={this.inputTaxonomyChange}>
                             <option value='All'>All</option>{optionNodes}
@@ -277,11 +277,11 @@ let ModuleItem = React.createClass({
         var module = this.props.module;
 
         return <Link to="previewmodule" params={{ id: this.props.module.id }}>
-                    <div className='marginTop itemBackground overflow paddingBottomSmall' key={ module.id }>
+                    <div className='moduleItem marginTop itemBackground overflow paddingBottomSmall' key={ module.id }>
                         <div className='moduleKey'> {this.state.value} </div>
                     </div>
                 </Link>;
-    }   
+    }
 });
 
 let ModuleItemForA = React.createClass({
@@ -300,12 +300,12 @@ let ModuleItemForA = React.createClass({
         var moduleForA = this.props.moduleForA;
 
         return <Link to="previewmoduleforapproval" params={{ moduleId: this.state.moduleIdVal, studentId: this.state.studentIdVal  }}>
-                    <div className='marginTop itemBackground overflow paddingBottomSmall' key={ moduleForA.moduleId }>
-                        {auth.isAdmin() ? (<div className='moduleKey approved'> {this.state.nameVal} - <b>{this.state.userVal}</b> </div>) : 
+                    <div className='moduleItem marginTop itemBackground overflow paddingBottomSmall' key={ moduleForA.moduleId }>
+                        {auth.isAdmin() ? (<div className='moduleKey approved'> {this.state.nameVal} - <b>{this.state.userVal}</b> </div>) :
                         (<div className='moduleKey'> {this.state.nameVal} </div>)}
                     </div>
                 </Link>;
-    }   
+    }
 });
 
 let ModuleItemFinished = React.createClass({
@@ -324,18 +324,18 @@ let ModuleItemFinished = React.createClass({
 
         return <div>
                 {this.state.deleted ? (
-                    <div className='marginTop paddingBottomSmall itemBackgroundFinished overflow' key={ this.state.moduleIdVal }>
-                        <div className='moduleKey linkFont'> {this.state.nameVal} <span className='fontExtraSmall paddingLeft'>(no longer available)</span> </div>
+                    <div className='moduleItem marginTop paddingBottomSmall itemBackgroundFinished overflow' key={ this.state.moduleIdVal }>
+                        <div className='moduleKey'> {this.state.nameVal} <span className='fontExtraSmall paddingLeft'>(no longer available)</span> </div>
                     </div>
                 ) : (
                     <Link to="previewmodule" params={{ id: this.state.moduleIdVal }}>
-                        <div className='marginTop itemBackgroundFinished overflow paddingBottomSmall' key={ finishedModule.moduleId }>
+                        <div className='moduleItem marginTop itemBackgroundFinished overflow paddingBottomSmall' key={ finishedModule.moduleId }>
                             <div className='moduleKey'> {this.state.nameVal} </div>
                         </div>
                     </Link>
                 )}
                 </div>
-    }   
+    }
 });
 
 let ModuleItemRejected = React.createClass({
@@ -352,11 +352,11 @@ let ModuleItemRejected = React.createClass({
         var rejectedModule = this.props.rejectedModule;
 
         return <Link to="previewmodule" params={{ id: this.state.moduleIdVal }}>
-                    <div className='marginTop itemBackgroundRejected overflow paddingBottomSmall' key={ rejectedModule.moduleId }>
+                    <div className='moduleItem marginTop itemBackgroundRejected overflow paddingBottomSmall' key={ rejectedModule.moduleId }>
                         <div className='moduleKey'> {this.state.nameVal} </div>
                     </div>
                 </Link>;
-    }   
+    }
 });
 
 let ModuleItemSelected = React.createClass({
@@ -366,11 +366,11 @@ let ModuleItemSelected = React.createClass({
         var selectedModule = this.props.selectedModule;
 
         return <Link to="previewmodule" params={{ id: selectedModule.id }}>
-                    <div className='marginTop itemBackground overflow paddingBottomSmall' key={ selectedModule.id }>
+                    <div className='moduleItem marginTop itemBackground overflow paddingBottomSmall' key={ selectedModule.id }>
                         <div className='moduleKey'> {selectedModule.title} </div>
                     </div>
                 </Link>;
-    }   
+    }
 });
 
 let AddNewModuleButton = React.createClass({

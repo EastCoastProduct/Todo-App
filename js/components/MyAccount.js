@@ -5,7 +5,7 @@ import auth from '../auth';
 
 let MyAccount = React.createClass({
 	mixins: [Router.Navigation],
-    
+
 	getInitialState() {
 		return { modules: [], totalPoints: '0', image: '' };
 	},
@@ -53,7 +53,7 @@ let MyAccount = React.createClass({
             var data = snapshot.val();
             if (data.modules) {
                 this.userModulesFb = new Firebase(this.userFb + '/modules');
-                var modulesArray = this.state.modules; 
+                var modulesArray = this.state.modules;
                 this.userModulesFb.on("child_added", function(snap) {
                     var id = snap.key();
                     var userModuleData = snap.val();
@@ -89,30 +89,32 @@ let MyAccount = React.createClass({
 
 		return <div>
                     {this.state.image != '' ? (<div className='imageContainer'><div className='imageBox'><img className='usersImage'src={ this.state.image }/></div></div>) : (<div></div>)}
-                    <div className='marginTopBig'><span><b>{ this.state.firstName }</b></span>&nbsp;<span><b>{ this.state.lastName }</b></span></div>
-					<div>{ this.state.email }</div>
-                    {(!this.state.isAdmin && this.state.totalPoints > 0) ? (<div><b>{ this.state.totalPoints }</b></div>) : (<div></div>)}
-                    {(!this.state.isAdmin && this.state.modules != '') ? (<div>{ _singleItems }</div>) : (<div></div>)}
-                    <div className='marginTopBig'><div>{ this.state.description }</div></div>
+										<div className='content'>
+										<h2><span className='firstname'>{ this.state.firstName }</span><br /><span className='lastname'>{ this.state.lastName }</span></h2>
+                    {(!this.state.isAdmin && this.state.totalPoints > 0) ? (<div className='points_total'>{ this.state.totalPoints }</div>) : (<div></div>)}
+                    {(!this.state.isAdmin && this.state.modules != '') ? (<div className='points_modules'>{ _singleItems }</div>) : (<div></div>)}
+                    <p className='description'>{ this.state.description }</p>
+										<p className='meta'>{ this.state.email }</p>
                     <div className='marginTopBig marginBottom'>
                         <span className='marginRight'><button className='button_example' onClick={this.editProfile}>Edit profile</button></span>
                         <span className='marginRight'><button className='button_example' onClick = {this.changeEmail}>Change email</button></span>
                         <span className='marginRight'><button className='button_example' onClick = {this.changePassword}>Change password</button></span>
                     </div>
+										</div>
 				</div>;
 	}
 });
 
 let ModuleItem = React.createClass({
     mixins: [Router.Navigation],
-    
+
     getInitialState() {
         return { name: this.props.user.moduleName, points: this.props.user.points, repeated: this.props.user.repeated }
     },
 
     render() {
       var module = this.props.module;
-    
+
       return <div>
                 <span> {this.state.points} - </span>
                 <span> {this.state.name} </span>
