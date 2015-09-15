@@ -4,44 +4,51 @@ import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 import auth from '../auth';
 
+//kad se approva module, ostane u listi waiting do refresha (update moduleslist component na promjenu)
+
 let PreviewModuleForApproval = React.createClass({
 	mixins: [Router.Navigation],
 
-	getInitialState() {
-		return { moduleId: this.props.params.moduleId, studentId: this.props.params.studentId, approved: false, adminComment: '', solutionUrl: '' };
+	getInitialState: function(props){
+        props = props || this.props;
+		return { moduleId: props.params.moduleId, studentId: props.params.studentId, approved: false, adminComment: '', solutionUrl: '' };
 	},
 
+    componentWillReceiveProps: function(nextProps) {
+      if ((nextProps.params.moduleId !== this.props.params.moduleId) || (nextProps.params.studentId !== this.props.params.studentId)){
+         this.getModuleData(nextProps.params.moduleId, nextProps.params.studentId);
+      }
+    },
+
 	componentWillMount() {
-        this.moduleFb = new Firebase('https://app-todo-list.firebaseio.com/modules/' + this.state.moduleId);
-        this.usersFb = new Firebase('https://app-todo-list.firebaseio.com/users/' + this.state.studentId);
-        this.moduleApprovalFb = new Firebase(this.moduleFb + '/users/' + this.state.studentId);
-        this.pointsFb = new Firebase('https://app-todo-list.firebaseio.com/users/' + this.state.studentId + '/modules/');
-        this.studentFb = new Firebase(this.pointsFb + '/' + this.state.moduleId);
-        this.getModuleData();
+        this.getModuleData(this.state.moduleId, this.state.studentId);
     },
 
     componentWillUnmount() {
-        this.moduleFb.off();
-        this.moduleApprovalFb.off();
+        //this.moduleFb.off();
+        //this.moduleApprovalFb.off();
     },
 
-    getModuleData() {
-        this.usersFb.once('value', function(snap){
+    getModuleData(moduleid, studentid) {
+        this.setState({moduleId: moduleid, studentId: studentid, comment: '', solutionUrl: '', adminComment: '', 
+            rejected: '', approved: '', adminCommentMessage: '', submitted: ''});
+        var usersFb = new Firebase('https://app-todo-list.firebaseio.com/users/' + studentid);
+        var moduleFb = new Firebase('https://app-todo-list.firebaseio.com/modules/' + moduleid);
+        var moduleApprovalFb = new Firebase(moduleFb + '/users/' + studentid);
+
+        usersFb.once('value', function(snap){
             var user = snap.val();
             this.setState({usersData: user.first_name + ' ' + user.last_name});
         }.bind(this))
-        this.moduleFb.once('value', function(snapshot){
+        moduleFb.once('value', function(snapshot){
             var data = snapshot.val();
             this.setState({ title: data.title, description: data.description, taxonomy: data.taxonomy, points:data.points, repeatable: data.repeatable });
         }.bind(this));
-        this.moduleApprovalFb.once('value', function(snapshot){
+        moduleApprovalFb.once('value', function(snapshot){
             var data = snapshot.val();
             this.setState({ comment: data.comment, solutionUrl: data.solutionUrl });
             if (data.adminComment) {
-                this.setState({
-                    adminComment: data.adminComment,
-                    rejected: true
-                })
+                this.setState({ adminComment: data.adminComment, rejected: true })
             }
         }.bind(this));
     }, 
@@ -50,77 +57,64 @@ let PreviewModuleForApproval = React.createClass({
         this.transitionTo('moduleslist');
     },
 
-    approveModule() {
-        this.usersFb.once("value", function(snapshot) {
+    /*approveModule() {
+        var usersFb = new Firebase('https://app-todo-list.firebaseio.com/users/' + this.state.studentId);
+        var pointsFb = new Firebase('https://app-todo-list.firebaseio.com/users/' + this.state.studentId + '/modules/');
+        var studentFb = new Firebase(pointsFb + '/' + this.state.moduleId);
+        var moduleFb = new Firebase('https://app-todo-list.firebaseio.com/modules/' + this.state.moduleId);
+        var moduleApprovalFb = new Firebase(moduleFb + '/users/' + this.state.studentId);
+
+        usersFb.once("value", function(snapshot) {
             var pointsData = snapshot.val();
             if(snapshot.hasChild("total_points")){
                 var oldPoints = parseInt(pointsData.total_points);
                 var newPoints = String(oldPoints + parseInt(this.state.points));
-                this.usersFb.update({
-                    total_points: newPoints
-                })
+                usersFb.update({ total_points: newPoints })
             } else (
-                this.usersFb.update({
-                    total_points: this.state.points
-                })
+                usersFb.update({ total_points: this.state.points })
             )
         }.bind(this))
 
-        this.studentFb.once("value", function(snap){
+        studentFb.once("value", function(snap){
             var data = snap.val();
             if (snap.hasChild("repeated")){
                 var oldRepeated = parseInt(data.repeated);
                 var newRepeate = String(oldRepeated + 1);
-                this.moduleApprovalFb.set({ //put here update and only approved:true
-                    approved: true,
-                    comment: this.state.comment,
-                    solutionUrl: this.state.solutionUrl
-                });
-                this.studentFb.set({
-                    approved: true,
-                    points: this.state.points,
-                    repeated: newRepeate,
-                    title: this.state.title
-                });
+                moduleApprovalFb.set({ approved: true, comment: this.state.comment, solutionUrl: this.state.solutionUrl });
+                studentFb.set({ approved: true, points: this.state.points, repeated: newRepeate, title: this.state.title });
                 this.setState({ approved: true })
+                data.onChange(true);
             } else {
-                this.moduleApprovalFb.set({
-                    approved: true,
-                    comment: this.state.comment,
-                    solutionUrl: this.state.solutionUrl
-                });
-                this.studentFb.set({
-                    approved: true,
-                    points: this.state.points,
-                    repeated: "1",
-                    title: this.state.title
-                });
-                this.setState({ approved: true,  })
+                moduleApprovalFb.set({ approved: true, comment: this.state.comment, solutionUrl: this.state.solutionUrl });
+                studentFb.set({ approved: true, points: this.state.points, repeated: "1", title: this.state.title });
+                this.setState({ approved: true })
+                data.onChange(true);
             }
         }.bind(this))
-    },
+    },*/
 
     adminCommentOnChange(e) {
         this.setState({adminComment: e.target.value, adminCommentMessage:''});
     },
-
+/*
     rejectModule(e) {
+        var pointsFb = new Firebase('https://app-todo-list.firebaseio.com/users/' + this.state.studentId + '/modules/');
+        var studentFb = new Firebase(pointsFb + '/' + this.state.moduleId);
+        var moduleFb = new Firebase('https://app-todo-list.firebaseio.com/modules/' + this.state.moduleId);
+        var moduleApprovalFb = new Firebase(moduleFb + '/users/' + this.state.studentId);
+
         e.preventDefault();
         this.handleValidation(res => {
             if(res){
-                this.moduleApprovalFb.update({
-                    approved: false,
-                    adminComment: this.state.adminComment,
-                    rejected: true
+                moduleApprovalFb.update({
+                    approved: false, adminComment: this.state.adminComment, rejected: true
                 });
-                this.studentFb.update({
-                    rejected: true
-                })
+                studentFb.update({ rejected: true })
                 this.setState({ approved: false, adminComment: '', rejected: true })
             }
         })
     },
-
+*/
     commentOnChange(e) {
         this.setState({comment: e.target.value});
     },
@@ -130,18 +124,15 @@ let PreviewModuleForApproval = React.createClass({
     },
 
     handleModuleSubmit(e) {
+        var moduleFb = new Firebase('https://app-todo-list.firebaseio.com/modules/' + moduleid);
+        var moduleApprovalFb = new Firebase(moduleFb + '/users/' + this.state.studentId);
+
         e.preventDefault();
-        this.moduleApprovalFb.update({
-            comment: this.state.comment,
-            solutionUrl: this.state.solutionUrl,
-            approved: false
+        moduleApprovalFb.update({
+            comment: this.state.comment, solutionUrl: this.state.solutionUrl, approved: false
         });
         this.setState({
-            comment: '',
-            solutionUrl: '',
-            submitted: true,
-            approved: false,
-            rejected: false
+            comment: '', solutionUrl: '', submitted: true, approved: false, rejected: false
         });
     },
 
@@ -188,7 +179,7 @@ let PreviewModuleForApproval = React.createClass({
                         </div>
                     </div>
                     <div>
-                        <div className='paddingLeft marginTopBig'><button className="button_example" onClick={this.showAllModules}>Show all modules</button></div>
+                        <div className='paddingLeft marginTopBig'><button className="button_example" onClick={this.showAllModules}>Close</button></div>
     				</div>
                 </div>;
 	}

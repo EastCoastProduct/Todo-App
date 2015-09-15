@@ -84,7 +84,7 @@ let EditModule = React.createClass({
                     points: this.state.points,
                     repeatable: this.state.repeatable
                 });
-                this.transitionTo('previewmodule', { id: this.state.id });
+                this.transitionTo('moduleslist');
             }
         })
     },

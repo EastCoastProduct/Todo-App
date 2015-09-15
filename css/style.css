@@ -272,7 +272,7 @@ fieldset {
     margin: 0 auto;
     width: 100%;
     height: 100%;
-    overflow: hidden;
+    /*overflow: hidden;*/
 }
 
 #sidebar {
@@ -351,17 +351,21 @@ button {
 }
 
 #page-wrap  {
-    width: 40%;
-    /*width:700px;*/
+    width: 70%;
     float: left;
     padding: 3%;
 }
 
-#right-sidebar  {
-    width: 25%;
+.right-sidebar  {
+    max-width: 400px;
     /*width:400px;*/
     float: left;
-    padding: 3%;
+    /*padding: 3%;*/
+}
+
+.list{
+  width: 500px;
+  float: left;
 }
 
 .clear:after {

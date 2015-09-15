@@ -10,8 +10,6 @@ import UsersHandler from './components/Users.js';
 import ModulesListHandler from './components/ModulesList.js';
 import NewModuleHandler from './components/NewModule.js';
 import EditModuleHandler from './components/EditModule.js';
-import PreviewModuleHandler from './components/PreviewModule.js';
-import PreviewModuleForApprovalHandler from './components/PreviewModuleForApproval.js';
 import UserInfoHandler from './components/UserInfo.js';
 import MyAccountHandler from './components/MyAccount.js';
 import EditUserHandler from './components/EditUser.js';
@@ -24,6 +22,10 @@ import ChangeSuccessHandler from './components/ChangeSuccess.js';
 import '../css/style.css';
 
 let App = React.createClass({ 
+    contextTypes: {
+        router: React.PropTypes.func.isRequired
+    },
+
     getInitialState() {
         return {
             loggedIn: auth.loggedIn(),
@@ -50,7 +52,6 @@ let App = React.createClass({
 
     render() {
         return (
-            <div className=''>
             <div id='main'className='clear'>
                 { this.state.loggedIn ? (
                     this.state.admin ? (
@@ -65,7 +66,6 @@ let App = React.createClass({
                             </div>
                             <div id="sidebar"><MyAccountHandler/></div>
                             <div id="page-wrap"><RouteHandler /></div>
-                            <div id="right-sidebar"></div>
                         </div>
                         ) : (
                         <div>
@@ -76,7 +76,6 @@ let App = React.createClass({
                             </div>
                             <div id="sidebar"><MyAccountHandler/></div>
                             <div id="page-wrap"><RouteHandler /></div>
-                            <div id="right-sidebar"></div>
                         </div>
                         )) : (
                         <div className=''>
@@ -90,14 +89,12 @@ let App = React.createClass({
                     )
                 }
             </div>
-            </div>
         );
     }
 });
 
 let routes = (  
     <Route name="app" path="/" handler={App}>
-        <DefaultRoute name="home" handler={HomeHandler}/>
         <Route name="login" path="/login" handler={LoginHandler}/>
         <Route name="logout" path="/logout" handler={LogoutHandler}/>
         <Route name="users" path="/users" handler={UsersHandler}/>
@@ -105,8 +102,6 @@ let routes = (
         <Route name="moduleslist" path="/moduleslist" handler={ModulesListHandler}/>
         <Route name="editmodule" path="/editmodule" handler={EditModuleHandler}/>
         <Route name="newmodule" path="/newmodule" handler={NewModuleHandler}/>
-        <Route name="previewmodule" path="/previewmodule/:id" handler={PreviewModuleHandler}/>
-        <Route name="previewmoduleforapproval" path="/previewmoduleforapproval/:moduleId/:studentId" handler={PreviewModuleForApprovalHandler}/>
         <Route name="userinfo" path="/userinfo/:id" handler={UserInfoHandler}/>
         <Route name="myaccount" path="/myaccount" handler={MyAccountHandler}/>
         <Route name="edituser" path="/edituser" handler={EditUserHandler}/>

@@ -3,6 +3,8 @@ import Firebase from 'firebase';
 import Router from 'react-router';
 import auth from '../auth';
 
+//opet se ne refresha na data change
+
 let MyAccount = React.createClass({
 	mixins: [Router.Navigation],
 

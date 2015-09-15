@@ -5,6 +5,8 @@ import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-route
 import auth from '../auth';
 import Dropzone from 'react-dropzone';
 
+//when admin changes his data (image), he is redirected to wrong page, and left side dont update
+
 let EditUser = React.createClass({
 	mixins: [Router.Navigation],
     

@@ -67,9 +67,9 @@ let ChangePassword = React.createClass({
 											status: "active"
 										})
 										localStorage.userStatus = "active";
-										this.transitionTo('changesuccess', null, { successMessage: 'Your password is successfuly changed!' });
+										this.transitionTo('changesuccess', null, { successMessage: 'Your password is successfully changed!' });
 									} else {
-										this.transitionTo('changesuccess', null, { successMessage: 'Your password is successfuly changed!' });
+										this.transitionTo('changesuccess', null, { successMessage: 'Your password is successfully changed!' });
 									}
 								}.bind(this))
 							}
