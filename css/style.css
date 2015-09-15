@@ -7,23 +7,26 @@
     src: url('/f/BrixSlab-Medium.otf');
 }
 
+* {margin:0; padding:0; }
+
 html, body {
   font-family: Helvetica, Arial, sans-serif;
   font-size: 14px;
-  height:100%;
   margin: 0;
   padding: 0;
 }
 
-h2 {
+h2, .headlineFont {
   margin-top: 40px;
   font-family: 'league gothic';
   font-size: 2em;
   text-transform: uppercase;
   letter-spacing: .03em;
-
 }
 
+.headlineFont {
+  font-size:2.2em;
+}
 
 *:hover {
     transition: all 0.3s ease 0.0s;
@@ -41,10 +44,6 @@ h2 {
 
 .linkFont {
   color: #999;
-}
-
-.headlineFont{
-  font-size: 20px;
 }
 
 .fontSmall {
@@ -148,18 +147,11 @@ fieldset {
   margin: 0;
 }
 
-#forgotPassword-form, #changeData-form ,#taxonomy-form  {
-  width: 60%;
-}
-
 #forgotPassword-form fieldset, #changeData-form fieldset {
-  background: #fff;
   border-radius: 0 0 5px 5px;
-  padding: 20px;
 }
 
 #forgotPassword-form fieldset:before, #changeData-form  fieldset:before {
-  background-color: #fff;
   content: "";
   height: 8px;
   left: 50%;
@@ -178,10 +170,12 @@ fieldset {
 
 
 #forgotPassword-form input[type="emailReset"], #changeData-form input[type="email"], #changeData-form input[type="password"], #changeData-form input[type="text"]  {
+/*
   border: 1px solid #dcdcdc;
   padding: 10px 5px;
   width: 95%;
   border-radius: 3px 3px 0 0;
+  */
 }
 
 #taxonomy-form input[type="taxonomy"]  {
@@ -213,6 +207,7 @@ fieldset {
 }
 
 #forgotPassword-form input[type="submit"], #changeData-form input[type="submit"] {
+  /*
   background: #555252;
   border-radius: 1px;
   color: #fff;
@@ -220,6 +215,7 @@ fieldset {
   font-weight: bold;
   margin-top: 20px;
   padding: 5px 20px;
+  */
 }
 
 #taxonomy-form input[type="submit"] {
@@ -256,9 +252,9 @@ fieldset {
 }
 
 .imageContainer {
-  height: 280px;
-  width: 100%;
-  margin: 0 auto;
+  /* width: 50%; */
+  width:100%;
+  max-height:280px;
   position: relative;
   overflow:hidden;
 }
@@ -271,15 +267,14 @@ fieldset {
 #main {
     margin: 0 auto;
     width: 100%;
-    height: 100%;
     /*overflow: hidden;*/
 }
 
 #sidebar {
-    background: #333;
     float: left;
-    max-width: 300px;
+    width:25%;
     color: #ededed;
+    display:none;
     /*margin-bottom: -99999px;
     padding-bottom: 99999px;*/
 }
@@ -333,7 +328,7 @@ button {
 }
 .points_total {
   font-family: 'league gothic';
-    font-size: 2.2em;
+    font-size: 1.8em;
     text-transform: uppercase;
     border-radius: 42px;
     border: 1px solid #D4E9BE;
@@ -341,30 +336,45 @@ button {
     color: #D4E9BE;
     padding: 12px 0;
     width: 20%;
+    max-width: 55px;
     margin: 0 4% 0 0;
     vertical-align: top;
     text-align: center;
 }
 
 .points_modules {
-  width: 75%;
+  width: 72%;
 }
 
 #page-wrap  {
-    width: 70%;
+    width: 69%;
     float: left;
     padding: 3%;
+    background:#efefef;
 }
 
 .right-sidebar  {
-    max-width: 400px;
-    /*width:400px;*/
+    width:34%;
+    padding-left:3%;
+    margin-left:2%;
     float: left;
-    /*padding: 3%;*/
+    height: 100%;
+    border-left: 1px solid #d9d9d9;
+}
+
+.right-sidebar p {
+  padding: 12px 0;
+}
+
+
+.right-sidebar .points_total {
+  background: #333;
+  border:0;
+  color: #efefef;
 }
 
 .list{
-  width: 500px;
+  width: 60%;
   float: left;
 }
 
@@ -377,18 +387,18 @@ button {
 .userItem,
 .moduleItem {
   padding: 8px 0 14px 0;
-  width:90%;
+  width:100%;
   margin: 5px 0;
   cursor:pointer;
 }
 
 .itemBackground {
-  border-left:4px solid #EBEBEC;
+  border-left:4px solid #d9d9d9;
   color: #5e5e5e;
 }
 
 .itemBackground:hover {
-  background-color: #EBEBEC;
+  background-color: #d9d9d9;
 }
 
 .itemBackgroundRejected:hover,
@@ -426,4 +436,66 @@ button {
  background-image: -ms-linear-gradient(top, #646464, #282828);
  background-image: -o-linear-gradient(top, #646464, #282828);
  background-image: linear-gradient(to bottom, #646464, #282828);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#646464, endColorstr=#282828);
+}
+
+body.login {
+  background-image: url(https://resilientcoders.s3.amazonaws.com/i/kai_grovehall.jpg);
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+body.login .right {display:none;}
+
+body.login #page-wrap {
+  background: transparent;
+  margin-top:300px;
+}
+
+body.login #main {background: transparent;}
+
+body.login #changeData-form input[type="email"],
+body.login #changeData-form input[type="password"],
+body.login #changeData-form input[type="text"],
+body.login #changeData-form input[type="submit"] {
+  margin-right: 2%;
+  width: 200px;
+  display:inline-block;
+  padding: 12px 0;
+  border:1px solid #fff;
+  border-radius:8px;
+}
+
+body.login .clearfix {margin-top:12px;}
+
+body.login #changeData-form input[type="email"],
+body.login #changeData-form input[type="password"],
+body.login #changeData-form input[type="text"] {
+  background: transparent;
+  padding-left:12px;
+  color: white;
+}
+
+body.login #changeData-form input[type="submit"] {
+  background:white;
+  cursor:pointer;
+}
+
+body.login #changeData-form input[type="submit"]:hover {
+background:transparent;
+color: white;
+cursor:pointer;
+}
+
+@media screen and (min-width: 1050px) {
+    #sidebar {
+        display:inline-block;
+    }
+    #main {
+      background:#333;
+    }
+}
+@media screen and (max-width: 1050px) {
+    #main {
+      background:#efefef;
+    }
 }

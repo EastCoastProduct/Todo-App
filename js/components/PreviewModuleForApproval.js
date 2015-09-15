@@ -30,7 +30,7 @@ let PreviewModuleForApproval = React.createClass({
     },
 
     getModuleData(moduleid, studentid) {
-        this.setState({moduleId: moduleid, studentId: studentid, comment: '', solutionUrl: '', adminComment: '', 
+        this.setState({moduleId: moduleid, studentId: studentid, comment: '', solutionUrl: '', adminComment: '',
             rejected: '', approved: '', adminCommentMessage: '', submitted: ''});
         var usersFb = new Firebase('https://app-todo-list.firebaseio.com/users/' + studentid);
         var moduleFb = new Firebase('https://app-todo-list.firebaseio.com/modules/' + moduleid);
@@ -51,7 +51,7 @@ let PreviewModuleForApproval = React.createClass({
                 this.setState({ adminComment: data.adminComment, rejected: true })
             }
         }.bind(this));
-    }, 
+    },
 
     showAllModules() {
         this.transitionTo('moduleslist');

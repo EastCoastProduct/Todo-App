@@ -112,3 +112,6 @@ let Login = React.createClass({
 });
 
 export default Login;
+
+var element = document.body;
+element.className="login";

@@ -5,7 +5,7 @@ import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-route
 import auth from '../auth';
 
 //ako user submita module i ne refresha i klikne na iduci, ispisuje mu isto
-//kad admin odabere module iz dropdowna, prikazuje se botun delete i kad nebi trebao 
+//kad admin odabere module iz dropdowna, prikazuje se botun delete i kad nebi trebao
 //admin comment ne radi kod rejectanja modula s adminove strane
 
 let ModulesList = React.createClass({
@@ -106,7 +106,7 @@ let ModulesList = React.createClass({
                     }
                 }
             }
-            modulesArray.filter(function(e){return e}); 
+            modulesArray.filter(function(e){return e});
             this.setState({modules: modulesArray})
         }.bind(this))
     },
@@ -157,7 +157,7 @@ let ModulesList = React.createClass({
 
 
             modulesForApprovalArray.push(item);
-            //modulesForApprovalArray.filter(function(e){return e}); 
+            //modulesForApprovalArray.filter(function(e){return e});
             this.setState({modulesForApproval: modulesForApprovalArray})
         }.bind(this))
     },
@@ -207,7 +207,7 @@ let ModulesList = React.createClass({
                     }
                 }
             }
-            rejectedModulesArray.filter(function(e){return e}); 
+            rejectedModulesArray.filter(function(e){return e});
             this.setState({rejectedModules: rejectedModulesArray})
         }.bind(this))
     },
@@ -319,7 +319,7 @@ let ModulesList = React.createClass({
                     }
                 }
             }
-            selectedModulesArray.filter(function(e){return e}); 
+            selectedModulesArray.filter(function(e){return e});
             this.setState({selectedModules: selectedModulesArray})
         }.bind(this))
         this.firebaseDb.on('child_removed', function(snap){
@@ -332,7 +332,7 @@ let ModulesList = React.createClass({
                     }
                 }
             }
-            selectedModulesArray.filter(function(e){return e}); 
+            selectedModulesArray.filter(function(e){return e});
             this.setState({selectedModules: selectedModulesArray})
         }.bind(this))
     },
@@ -391,7 +391,7 @@ let ModulesList = React.createClass({
                     }
                 }
             }
-            modulesArray.filter(function(e){return e}); 
+            modulesArray.filter(function(e){return e});
             this.setState({modules: modulesArray})
         }.bind(this))
         this.firebaseDb.on('child_changed', function(snap){
@@ -404,7 +404,7 @@ let ModulesList = React.createClass({
                     }
                 }
             }
-            modulesForApprovalArray.filter(function(e){return e}); 
+            modulesForApprovalArray.filter(function(e){return e});
             this.setState({modulesForApproval: modulesForApprovalArray})
         }.bind(this))
     },
@@ -499,9 +499,9 @@ let ModulesList = React.createClass({
                     <div className="list">
                         {(_singleItemsFor != '' && auth.isAdmin()) ? (<div><b className='approved'>Waiting for review</b> { _singleItemsFor }</div>) : (<div></div>)}
                         {(_singleItemsFor != '' && !auth.isAdmin()) ? (<div><b>Waiting for review</b> { _singleItemsFor }</div>) : (<div></div>)}
-                        {(_singleItemsRejected != '') ? (<div className='moduleItem marginTop'><b className='errorMessage'>Rejected</b> { _singleItemsRejected }</div>) : (<div></div>)}
-                        {(!auth.isAdmin() && _singleItemsFinished != '') ? (<div className='moduleItem marginTop'><b className='approved'>Finished</b> { _singleItemsFinished }</div>) : (<div></div>)}
-                        <div className='paddingTopBig'>
+                        {(_singleItemsRejected != '') ? (<div className='moduleItem '><b className='errorMessage'>Rejected</b> { _singleItemsRejected }</div>) : (<div></div>)}
+                        {(!auth.isAdmin() && _singleItemsFinished != '') ? (<div className='moduleItem '><b className='approved'>Finished</b> { _singleItemsFinished }</div>) : (<div></div>)}
+                        <div className=''>
                             <select className='selectDropdown adminFont' value={this.state.taxonomySelected} onChange={this.inputTaxonomyChange}>
                                 <option value='All'>All</option>{optionNodes}
                             </select>
@@ -648,31 +648,33 @@ let ModuleItemPreview = React.createClass({
     render() {
         var data = this.props.data;
         return <div>
-                    <div className='headlineFont paddingLeft'><span>{data.title}</span><span> {data.points} points</span>{(auth.isAdmin() && data.status == "waitingForApproval") ? (<div>{data.userName}</div>) : (<span></span>)}</div>
-                    <div className='marginTop paddingLeft'>{data.description}</div>
+                    <div className='points_total'>{data.points}</div>
+                    <div className='headlineFont '>{data.title}</div>
+                    <p>{(auth.isAdmin() && data.status == "waitingForApproval") ? (<div>{data.userName}</div>) : (<span></span>)}</p>
+                    <p>{data.description}</p>
 
                     {!auth.isAdmin() ? (
                         <div>
-                            {this.state.submittedAndWaiting ? (<div className='marginTopBig paddingLeft approved'>Module submitted, waiting for response from administrator!</div>):(<div></div>)}
-                    
-                            {(data.approved && data.repeatable && data.repeated == 1 && !this.state.submittedAndWaiting) ? 
-                                (<div className='paddingTopBig paddingLeft approved'>This module is finished, you can repeat it!</div>) : (<div></div>)}
-                            
-                            {(data.approved && data.repeatable && data.repeated > 1 && !this.state.submittedAndWaiting) ? 
-                                (<div><div className='paddingTopBig paddingLeft approved'>This module is finished, you can repeat it!</div>
-                                 <div className='paddingTopBig paddingLeft approved'>You repeated this module {data.repeated} times!</div></div>) : (<div></div>)}
+                            {this.state.submittedAndWaiting ? (<p className='Big  approved'>Module submitted, waiting for response.</p>):(<div></div>)}
 
-                            {(data.approved && !data.repeatable) ? (<div className='paddingTopBig paddingLeft approved'>This module is finished!</div>) : (<div></div>)}
-                                
+                            {(data.approved && data.repeatable && data.repeated == 1 && !this.state.submittedAndWaiting) ?
+                                (<p className='  approved'>This module is finished, you can repeat it!</p>) : (<div></div>)}
+
+                            {(data.approved && data.repeatable && data.repeated > 1 && !this.state.submittedAndWaiting) ?
+                                (<div><p className='  approved'>This module is finished, you can repeat it!</p>
+                                 <p className='  approved'>You have repeated this module {data.repeated} times.</p></div>) : (<div></div>)}
+
+                            {(data.approved && !data.repeatable) ? (<p className='  approved'>This module is finished!</p>) : (<div></div>)}
+
                             {/*OVO MOZDA JOS NIJE DOBRO*/}
-                            {!this.state.submittedAndWaiting && ((data.approved && data.repeatable) || data.status == "open") ? 
-                            (<div className='paddingTopBig' id='changeData-form'>
+                            {!this.state.submittedAndWaiting && ((data.approved && data.repeatable) || data.status == "open") ?
+                            (<div className='' id='changeData-form'>
                                 <fieldset>
                                     <form onSubmit={this.onModuleSubmit}>
-                                       <div className='fontSmall'>Explain why you shoud be awarded points</div>
+                                       <div className='fontSmall'>Why should you be awarded points?</div>
                                        <textarea rows={8} value={this.state.comment} onChange={this.commentOnChange}/>
                                        <div className='errorMessage'>{this.state.commentMessage}</div>
-                                       <div className='marginTop fontSmall'>URL (if applicable)</div>
+                                       <div className=' fontSmall'>URL (if applicable)</div>
                                        <input type = 'text' value={this.state.solutionUrl} onChange={this.solutionUrlOnChange} />
                                        <input type='submit' value='Submit for review'/>
                                    </form>
@@ -681,23 +683,23 @@ let ModuleItemPreview = React.createClass({
 
                             {(!data.approved && !data.rejected && data.status == "waitingForApproval") ? (
                                 <div>
-                                    <div className='marginTopBig paddingLeft approved'>Module submitted, waiting for response from administrator!</div>
-                                    <div className='marginTopBig paddingLeft'><b>Submission info</b></div><div className='paddingLeft'>{data.comment}</div>
-                                    {data.solutionUrl != '' ? (<div className='paddingLeft marginTop'>{data.solutionUrl}</div>):(<div></div>)}
+                                    <p className='approved'>Module submitted, waiting for response from administrator!</p>
+                                    <p className=''><b>Submission info</b></p><p className=''>{data.comment}</p>
+                                    {data.solutionUrl != '' ? (<p className=' '>{data.solutionUrl}</p>):(<div></div>)}
                                 </div>
                             ) : (<div></div>)}
 
                             {(data.rejected && !this.state.submittedAndWaiting) ? (<div>
-                                        <div className='paddingTopBig paddingLeft errorMessage'>Your solution is rejected!</div>
-                                        <div className='errorMessage paddingLeft'><b>Reason:</b> {data.adminComment}</div>
-                                        <div className='marginTop paddingLeft approved'>Review your code and submit for review again!</div>
-                                        <div className='paddingTopBig' id='changeData-form'>
+                                        <div className='  errorMessage'>Not quite there yet.</div>
+                                        <div className='errorMessage '><b>Reason:</b> {data.adminComment}</div>
+                                        <div className='  approved'>Review your code and submit for review again!</div>
+                                        <div className='' id='changeData-form'>
                                             <fieldset>
                                                 <form onSubmit={this.onModuleSubmit}>
                                                    <div className='fontSmall'>Explain why you shoud be awarded points</div>
                                                    <textarea rows={8} value={this.state.comment} onChange={this.commentOnChange}/>
                                                    <div className='errorMessage'>{this.state.commentMessage}</div>
-                                                   <div className='marginTop fontSmall'>URL (if applicable)</div>
+                                                   <div className=' fontSmall'>URL (if applicable)</div>
                                                    <input type = 'text' value={this.state.solutionUrl} onChange={this.solutionUrlOnChange} />
                                                    <input type='submit' value='Submit for review'/>
                                                </form>
@@ -712,12 +714,12 @@ let ModuleItemPreview = React.createClass({
                             {data.status == "waitingForApproval" && !this.state.approved && !this.state.rejected ? (
                                 <div>
                                     <div>
-                                        <div className='marginTopBig paddingLeft'><b>Submission info</b></div><div className='paddingLeft'>{data.comment}</div>
-                                        {data.solutionUrl != '' ? (<div className='paddingLeft marginTop'>{data.solutionUrl}</div>):(<div></div>)}
+                                        <div className='Big '><b>Submission info</b></div><div className=''>{data.comment}</div>
+                                        {data.solutionUrl != '' ? (<div className=' '>{data.solutionUrl}</div>):(<div></div>)}
                                     </div>
-                                    <div className='marginTop'>
-                                        <div className='paddingLeft'><button className='button_example' onClick={this.approveModule}>Approve solution</button></div>
-                                        <div className='marginTop' id='changeData-form'>
+                                    <div className=''>
+                                        <div className=''><button className='button_example' onClick={this.approveModule}>Approve solution</button></div>
+                                        <div className='' id='changeData-form'>
                                             <fieldset>
                                                 <form onSubmit={this.rejectModule}>
                                                     <div className='fontSmall'>Reason for rejection:</div>
@@ -731,12 +733,12 @@ let ModuleItemPreview = React.createClass({
                                 </div>
                             ) : (
                                 <div>
-                                    {this.state.approved ? (<div className='approved paddingLeft marginTop'>Solution is approved!</div>) : (<div></div>)}
+                                    {this.state.approved ? (<div className='approved  '>Solution is approved!</div>) : (<div></div>)}
                                     {(!this.state.approved && this.state.rejected) ? (
-                                        <div className='errorMessage paddingLeft marginTop'>Solution is rejected! <div className='errorMessage'><b>Reason:</b> {this.state.adminComment}</div></div>) : (<span></span>)}
-                                    
+                                        <div className='errorMessage  '>Solution is rejected! <div className='errorMessage'><b>Reason:</b> {this.state.adminComment}</div></div>) : (<span></span>)}
+
                                     {data.status != "waitingForApproval" ? (
-                                        <div className="paddingLeft paddingTopBig">
+                                        <div className=" ">
                                             <button type='button' className="button_example marginRight" onClick={this.handleEdit}>Edit module</button>
                                             {data.inProgress == "true" ? (<div></div>) : (<button type='button' className="button_example" onClick={this.handleDelete}>Delete</button>)}
                                         </div>
@@ -746,10 +748,10 @@ let ModuleItemPreview = React.createClass({
                         </div>
                     )}
 
-                    <div className='marginTop paddingLeft'><button className='button_example' onClick={this.showAllModules}>Close</button></div>
-                    {(!data.repeatable) ? (<div className='marginTop paddingLeft infoMessage'><span className='errorMessage'>*</span>&nbsp;&nbsp;<span>Module is not repeatable! </span></div>) : 
-                    (<div className='marginTop infoMessage paddingLeft'><span className='errorMessage'>*</span>&nbsp;&nbsp;<span>Module is repeatable! </span></div>)}
-                    {(data.inProgress == "true") ? (<div className='infoMessage paddingLeft'><span className='errorMessage'>*</span>&nbsp;&nbsp;<span>Module is in progress so it cannot be deleted! </span></div>) : 
+                    <div className=' '><button className='button_example' onClick={this.showAllModules}>Close</button></div>
+                    {(!data.repeatable) ? (<div className='  infoMessage'><span className='errorMessage'>*</span>&nbsp;&nbsp;<span>Module is not repeatable! </span></div>) :
+                    (<div className=' infoMessage '><span className='errorMessage'>*</span>&nbsp;&nbsp;<span>Module is repeatable! </span></div>)}
+                    {(data.inProgress == "true") ? (<div className='infoMessage '><span className='errorMessage'>*</span>&nbsp;&nbsp;<span>Module is in progress so it cannot be deleted! </span></div>) :
                     (<div></div>)}
                 </div>;
     }
@@ -770,7 +772,7 @@ let ModuleItem = React.createClass({
         var module = this.props.module;
 
         return <a onClick={this.handleShowModuleInfo}>
-                    <div className='moduleItem marginTop itemBackground overflow paddingBottomSmall' key={ module.id }>
+                    <div className='moduleItem  itemBackground overflow paddingBottomSmall' key={ module.id }>
                         <div className='moduleKey'> {this.state.value} </div>
                     </div>
                 </a>;
@@ -795,7 +797,7 @@ let ModuleItemRejected = React.createClass({
         var rejectedModule = this.props.rejectedModule;
 
         return <a onClick={this.handleShowModuleInfo}>
-                    <div className='moduleItem marginTop itemBackgroundRejected overflow paddingBottomSmall' key={ rejectedModule.moduleId }>
+                    <div className='moduleItem  itemBackgroundRejected overflow paddingBottomSmall' key={ rejectedModule.moduleId }>
                         <div className='moduleKey'> {this.state.nameVal} </div>
                     </div>
                 </a>;
@@ -822,12 +824,12 @@ let ModuleItemFinished = React.createClass({
 
         return <div>
                 {this.state.deleted ? (
-                    <div className='moduleItem marginTop paddingBottomSmall itemBackgroundFinished overflow' key={ this.state.moduleIdVal }>
-                        <div className='moduleKey'> {this.state.nameVal} <span className='fontExtraSmall paddingLeft'>(no longer available)</span> </div>
+                    <div className='moduleItem  paddingBottomSmall itemBackgroundFinished overflow' key={ this.state.moduleIdVal }>
+                        <div className='moduleKey'> {this.state.nameVal} <span className='fontExtraSmall '>(no longer available)</span> </div>
                     </div>
                 ) : (
                     <a onClick={this.handleShowModuleInfo}>
-                        <div className='moduleItem marginTop itemBackgroundFinished overflow paddingBottomSmall' key={ finishedModule.moduleId }>
+                        <div className='moduleItem  itemBackgroundFinished overflow paddingBottomSmall' key={ finishedModule.moduleId }>
                             <div className='moduleKey'> {this.state.nameVal} </div>
                         </div>
                     </a>
@@ -856,7 +858,7 @@ let ModuleItemForA = React.createClass({
         var moduleForA = this.props.moduleForA;
 
         return <a onClick={this.handleShowModuleInfo}>
-                    <div className='moduleItem marginTop itemBackground overflow paddingBottomSmall' key={ moduleForA.moduleId }>
+                    <div className='moduleItem  itemBackground overflow paddingBottomSmall' key={ moduleForA.moduleId }>
                         {auth.isAdmin() ? (<div className='moduleKey approved'> {this.state.nameVal} - <b>{this.state.userVal}</b> </div>) :
                         (<div className='moduleKey'> {this.state.nameVal} </div>)}
                     </div>
@@ -875,7 +877,7 @@ let ModuleItemSelected = React.createClass({
         var selectedModule = this.props.selectedModule;
 
         return <a onClick={this.handleShowModuleInfo}>
-                    <div className='moduleItem marginTop itemBackground overflow paddingBottomSmall' key={ selectedModule.id }>
+                    <div className='moduleItem  itemBackground overflow paddingBottomSmall' key={ selectedModule.id }>
                         <div className='moduleKey'> {selectedModule.title} </div>
                     </div>
                 </a>;
@@ -890,7 +892,7 @@ let AddNewModuleButton = React.createClass({
     },
 
     render(){
-        return <div className='paddingTopBig'><button className="button_example" onClick={this.redirectToNewModule}> Add new module </button></div>
+        return <div className=''><button className="button_example" onClick={this.redirectToNewModule}> Add new module </button></div>
     }
 })
 
