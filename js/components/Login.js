@@ -16,7 +16,6 @@ let Login = React.createClass({
 
         var currentRoutes = this.context.router.getCurrentRoutes();
         var lastRoute = currentRoutes[currentRoutes.length - 1];
-        console.log(lastRoute.name);
         if(lastRoute.name == "login"){
             var element = document.body;
             element.className="login";

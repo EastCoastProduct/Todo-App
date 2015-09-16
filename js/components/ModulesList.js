@@ -4,10 +4,13 @@ import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 import auth from '../auth';
 
-//ako user submita module i ne refresha i klikne na iduci, ispisuje mu isto
+//nakon approvanja/rejectanja module, prvi klik na module ispod dropdowna ne radi
 //admin comment ne radi kod rejectanja modula s adminove strane
 //studentov comment i solution url prazni kad submitaju module
-//rejected je true kod submitanja modula prvi put
+//rejected je true kod submitanja modula prvi put?
+
+//moduli se ne prebacuju u waiting for approval za studenta
+//state pri prebacivanju ostaje pa se prikazuje prijasnji comment i solution url
 
 let ModulesList = React.createClass({
     mixins: [Router.Navigation],
@@ -19,7 +22,6 @@ let ModulesList = React.createClass({
     getInitialState() {
         var currentRoutes = this.context.router.getCurrentRoutes();
         var lastRoute = currentRoutes[currentRoutes.length - 1];
-        console.log(lastRoute.name);
         if(lastRoute.name != "login"){
             var element = document.body;
             element.className="";
@@ -162,9 +164,6 @@ let ModulesList = React.createClass({
             var userName = auth.getUser();
             var item = snap.val();
             item.id = snap.key();
-
-            modulesForApprovalArray.push(item);
-            this.setState({modulesForApproval: modulesForApprovalArray})
 
             var moduserFb = new Firebase(this.approvalDb + '/' + userId);
             var userModFb = new Firebase(this.usersFb + '/' + userId + '/modules/' + snap.key());
@@ -482,10 +481,8 @@ let ModulesList = React.createClass({
         userFb.on("child_added", function(snap){
             var checkUser = snap.val();
             if(!checkUser.approved){
-                //return true;
                 this.setState({ moduleInProgress: "true" })
             } else {
-                //return false;
                 this.setState({ moduleInProgress: "false" })
             }
         }.bind(this))
@@ -566,11 +563,16 @@ let ModulesList = React.createClass({
 let ModuleItemPreview = React.createClass({
     mixins: [Router.Navigation],
 
-    //za admina postaviti initial approved = false
-    //za usera isto kad submita mora se promijeniti state ako prelazi na iduci module
+    getInitialState(props){
+        props = props || this.props;
+        return({comment: '', solutionUrl: '', commentMessage: '', submittedAndWaiting: false, adminComment: '', adminCommentMessage: '', data: props.data, approved: false, rejected: false})
+    },
 
-    getInitialState(){
-        return({comment: '', solutionUrl: '', commentMessage: '', submittedAndWaiting: false, adminComment: '', adminCommentMessage: ''})
+    componentWillReceiveProps: function(nextProps, nextState) {
+      if (nextProps.data.id !== this.props.data.id){
+         this.setState({comment: '', solutionUrl: '', commentMessage: '', submittedAndWaiting: false, adminComment: '', adminCommentMessage: '', data: nextProps.data, approved: false, rejected: false})
+         //this.getInitialState(nextProps);
+      }
     },
 
     commentOnChange(e){
@@ -699,7 +701,7 @@ let ModuleItemPreview = React.createClass({
 
                     {!auth.isAdmin() ? (
                         <div>
-                            {this.state.submittedAndWaiting ? (<p className='Big  approved'>Module submitted, waiting for response.</p>):(<div></div>)}
+                            {/*this.state.submittedAndWaiting ? (<p className='Big  approved'>Module submitted, waiting for response.</p>):(<div></div>)*/}
 
                             {(data.approved && data.repeatable && data.repeated == 1 && !this.state.submittedAndWaiting) ?
                                 (<p className='  approved'>This module is finished, you can repeat it!</p>) : (<div></div>)}
@@ -725,7 +727,7 @@ let ModuleItemPreview = React.createClass({
                                </fieldset>
                             </div>) : (<div></div>)}
 
-                            {(!data.approved && !data.rejected && data.status == "waitingForApproval") ? (
+                            {(!data.approved && !data.rejected && data.status == "waitingForApproval") || this.state.submittedAndWaiting ? (
                                 <div>
                                     <p className='approved'>Module submitted, waiting for response from administrator!</p>
                                     <p className=''><b>Submission info</b></p><p className=''>{data.comment}</p>
