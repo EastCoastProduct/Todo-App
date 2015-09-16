@@ -13,6 +13,14 @@ let Login = React.createClass({
 
     componentWillMount() {
         this.userFb = new Firebase('https://app-todo-list.firebaseio.com/users/');
+
+        var currentRoutes = this.context.router.getCurrentRoutes();
+        var lastRoute = currentRoutes[currentRoutes.length - 1];
+        console.log(lastRoute.name);
+        if(lastRoute.name == "login"){
+            var element = document.body;
+            element.className="login";
+        }
     },
 
     componentWillUnmount(){
@@ -113,5 +121,5 @@ let Login = React.createClass({
 
 export default Login;
 
-var element = document.body;
-element.className="login";
+//var element = document.body;
+//element.className="login";

@@ -7,6 +7,8 @@ import auth from '../auth';
 //ako user submita module i ne refresha i klikne na iduci, ispisuje mu isto
 //kad admin odabere module iz dropdowna, prikazuje se botun delete i kad nebi trebao
 //admin comment ne radi kod rejectanja modula s adminove strane
+//studentov comment i solution url prazni kad submitaju module
+//rejected je true kod submitanja modula prvi put
 
 let ModulesList = React.createClass({
     mixins: [Router.Navigation],
@@ -16,6 +18,14 @@ let ModulesList = React.createClass({
     },
 
     getInitialState() {
+        var currentRoutes = this.context.router.getCurrentRoutes();
+        var lastRoute = currentRoutes[currentRoutes.length - 1];
+        console.log(lastRoute.name);
+        if(lastRoute.name != "login"){
+            var element = document.body;
+            element.className="";
+        }
+
         var userStatus = auth.getStatus();
         var userId = auth.getUserId();
 
@@ -111,7 +121,6 @@ let ModulesList = React.createClass({
         }.bind(this))
     },
 
-    //dohvatiti sve podatke za module koji je naknadno ubacen u listu
     getWaitingForApprovalModulesForStudent() {
         this.firebaseDb.on('child_added', function(data){
             var userId = auth.getUserId();
@@ -155,10 +164,24 @@ let ModulesList = React.createClass({
             var item = snap.val();
             item.id = snap.key();
 
-
             modulesForApprovalArray.push(item);
-            //modulesForApprovalArray.filter(function(e){return e});
             this.setState({modulesForApproval: modulesForApprovalArray})
+
+            var moduserFb = new Firebase(this.approvalDb + '/' + userId);
+            var userModFb = new Firebase(this.usersFb + '/' + userId + '/modules/' + snap.key());
+            moduserFb.once('value', function(snap){
+                var userData = snap.val();
+                if(userData.rejected){ //ili approved = false?
+                    item.studentId = userId;
+                    item.userName = userName;
+                    item.rejected = false;
+                    item.status = "waitingForApproval";
+                    item.comment = userData.comment;
+                    item.solutionUrl = userData.solutionUrl;
+                    modulesForApprovalArray.push(item);
+                    this.setState({ modulesForApproval: modulesForApprovalArray })
+                }
+            }.bind(this))
         }.bind(this))
     },
 
@@ -249,7 +272,19 @@ let ModulesList = React.createClass({
                 }.bind(this))
             }
         }.bind(this))
-        //ako je repeatable i opet se assigna, maknuti ga odavde
+        this.firebaseDb.on('child_changed', function(snap){
+            var finishedModulesArray = this.state.finishedModules;
+            var item = snap.key();
+            for (var i=0; i < finishedModulesArray.length; i++) {
+                if (finishedModulesArray[i] != undefined && (finishedModulesArray[i].id === item)) {
+                    if(i>-1){
+                        delete finishedModulesArray[i]
+                    }
+                }
+            }
+            finishedModulesArray.filter(function(e){return e}); 
+            this.setState({finishedModules: finishedModulesArray})
+        }.bind(this))
     },
 
     inputTaxonomyChange(e) {
@@ -268,8 +303,11 @@ let ModulesList = React.createClass({
                 for (var k in data){
                     var moduleFb = new Firebase(this.firebaseDb + '/' + k);
                     moduleFb.once('value', function(snap){
+                        //this.getProgressInfo(snap.key());
                         var item = snap.val();
                         item.id = snap.key();
+                        //ne radi
+                        //item.inProgress = this.state.moduleInProgress;
                         if(auth.isAdmin()){
                             if(item.taxonomy == selected){
                                 selectedModulesArray.push(item);
@@ -438,9 +476,11 @@ let ModulesList = React.createClass({
         var userFb = new Firebase('https://app-todo-list.firebaseio.com/modules/' + id + '/users/');
         userFb.on("child_added", function(snap){
             var checkUser = snap.val();
-            if(checkUser.approved == false){
+            if(!checkUser.approved){
+                //return true;
                 this.setState({ moduleInProgress: "true" })
             } else {
+                //return false;
                 this.setState({ moduleInProgress: "false" })
             }
         }.bind(this))
@@ -574,13 +614,12 @@ let ModuleItemPreview = React.createClass({
                 this.modulesApproval = new Firebase("https://app-todo-list.firebaseio.com/modules/" + this.props.data.id + '/users/');
                 this.modulesApproval.child(userId).set({comment: this.state.comment, solutionUrl: this.state.solutionUrl, approved: false});
                 this.studentModuleFb.child(this.props.data.id).set({approved: false, repeated: repeated });
-                this.setState({submittedAndWaiting: true});
-                //updateati liste lijevo
+                this.setState({submittedAndWaiting: true, comment: this.state.comment, solutionUrl: this.state.solutionUrl});
             }
         })
     },
 
-    approveModule(){ //change view and refresh left list
+    approveModule(){
         var usersFb = new Firebase('https://app-todo-list.firebaseio.com/users/' + this.props.data.studentId);
         var pointsFb = new Firebase(usersFb + '/modules/');
         var studentFb = new Firebase(pointsFb + '/' + this.props.data.id);
@@ -625,7 +664,7 @@ let ModuleItemPreview = React.createClass({
         if(err){ response (false); return; } else { response (true); return; }
     },
 
-    rejectModule(e){ //change view, refresh left list
+    rejectModule(e){
         var pointsFb = new Firebase('https://app-todo-list.firebaseio.com/users/' + this.props.data.studentId + '/modules/');
         var studentFb = new Firebase(pointsFb + '/' + this.props.data.id);
         var moduleFb = new Firebase('https://app-todo-list.firebaseio.com/modules/' + this.props.data.id);
