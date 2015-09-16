@@ -4,7 +4,7 @@ import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 import auth from '../auth';
 
-//ako user submita module i ne refresha i klikne na iduci, ispisuje mu isto
+//nakon approvanja/rejectanja module, prvi klik na module ispod dropdowna ne radi
 //admin comment ne radi kod rejectanja modula s adminove strane
 //studentov comment i solution url prazni kad submitaju module
 //rejected je true kod submitanja modula prvi put?
@@ -162,9 +162,6 @@ let ModulesList = React.createClass({
             var userName = auth.getUser();
             var item = snap.val();
             item.id = snap.key();
-
-            //modulesForApprovalArray.push(item);
-            //this.setState({modulesForApproval: modulesForApprovalArray})
 
             var moduserFb = new Firebase(this.approvalDb + '/' + userId);
             var userModFb = new Firebase(this.usersFb + '/' + userId + '/modules/' + snap.key());
@@ -567,8 +564,16 @@ let ModuleItemPreview = React.createClass({
     //za admina postaviti initial approved = false
     //za usera isto kad submita mora se promijeniti state ako prelazi na iduci module
 
-    getInitialState(){
-        return({comment: '', solutionUrl: '', commentMessage: '', submittedAndWaiting: false, adminComment: '', adminCommentMessage: ''})
+    getInitialState(props){
+        props = props || this.props;
+        return({comment: '', solutionUrl: '', commentMessage: '', submittedAndWaiting: false, adminComment: '', adminCommentMessage: '', data: props.data, approved: false, rejected: false})
+    },
+
+    componentWillReceiveProps: function(nextProps, nextState) {
+      if (nextProps.data.id !== this.props.data.id){
+         this.setState({submittedAndWaiting: false, approved: false, rejected: false})
+         this.getInitialState(nextProps);
+      }
     },
 
     commentOnChange(e){
@@ -697,7 +702,7 @@ let ModuleItemPreview = React.createClass({
 
                     {!auth.isAdmin() ? (
                         <div>
-                            {this.state.submittedAndWaiting ? (<p className='Big  approved'>Module submitted, waiting for response.</p>):(<div></div>)}
+                            {/*this.state.submittedAndWaiting ? (<p className='Big  approved'>Module submitted, waiting for response.</p>):(<div></div>)*/}
 
                             {(data.approved && data.repeatable && data.repeated == 1 && !this.state.submittedAndWaiting) ?
                                 (<p className='  approved'>This module is finished, you can repeat it!</p>) : (<div></div>)}
@@ -723,7 +728,7 @@ let ModuleItemPreview = React.createClass({
                                </fieldset>
                             </div>) : (<div></div>)}
 
-                            {(!data.approved && !data.rejected && data.status == "waitingForApproval") ? (
+                            {(!data.approved && !data.rejected && data.status == "waitingForApproval") || this.state.submittedAndWaiting ? (
                                 <div>
                                     <p className='approved'>Module submitted, waiting for response from administrator!</p>
                                     <p className=''><b>Submission info</b></p><p className=''>{data.comment}</p>
