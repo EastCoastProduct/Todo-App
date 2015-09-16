@@ -5,7 +5,6 @@ import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-route
 import auth from '../auth';
 
 //ako user submita module i ne refresha i klikne na iduci, ispisuje mu isto
-//kad admin odabere module iz dropdowna, prikazuje se botun delete i kad nebi trebao
 //admin comment ne radi kod rejectanja modula s adminove strane
 //studentov comment i solution url prazni kad submitaju module
 //rejected je true kod submitanja modula prvi put
@@ -303,13 +302,19 @@ let ModulesList = React.createClass({
                 for (var k in data){
                     var moduleFb = new Firebase(this.firebaseDb + '/' + k);
                     moduleFb.once('value', function(snap){
-                        //this.getProgressInfo(snap.key());
                         var item = snap.val();
                         item.id = snap.key();
-                        //ne radi
-                        //item.inProgress = this.state.moduleInProgress;
                         if(auth.isAdmin()){
                             if(item.taxonomy == selected){
+                                var userFb = new Firebase('https://app-todo-list.firebaseio.com/modules/' + snap.key() + '/users/');
+                                userFb.on("child_added", function(snap){
+                                    var checkUser = snap.val();
+                                    if(!checkUser.approved){
+                                        item.inProgress = "true";
+                                    } else {
+                                        item.inProgress = "false";
+                                    }
+                                }.bind(this))
                                 selectedModulesArray.push(item);
                                 this.setState({ modulesSelected: selectedModulesArray })
                             }
