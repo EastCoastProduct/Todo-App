@@ -281,7 +281,7 @@ let ModulesList = React.createClass({
                     }
                 }
             }
-            finishedModulesArray.filter(function(e){return e}); 
+            finishedModulesArray.filter(function(e){return e});
             this.setState({finishedModules: finishedModulesArray})
         }.bind(this))
     },
@@ -792,7 +792,7 @@ let ModuleItemPreview = React.createClass({
                         </div>
                     )}
 
-                    <div className=' '><button className='button_example' onClick={this.showAllModules}>Close</button></div>
+                    <div className=' '><button className='close' onClick={this.showAllModules}>Close</button></div>
                     {(!data.repeatable) ? (<div className='  infoMessage'><span className='errorMessage'>*</span>&nbsp;&nbsp;<span>Module is not repeatable! </span></div>) :
                     (<div className=' infoMessage '><span className='errorMessage'>*</span>&nbsp;&nbsp;<span>Module is repeatable! </span></div>)}
                     {(data.inProgress == "true") ? (<div className='infoMessage '><span className='errorMessage'>*</span>&nbsp;&nbsp;<span>Module is in progress so it cannot be deleted! </span></div>) :

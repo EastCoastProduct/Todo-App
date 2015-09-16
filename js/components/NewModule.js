@@ -17,7 +17,7 @@ let NewModule = React.createClass({
                 this.transitionTo('changepassword', null, {id: userId});
             }
         }
-    
+
 	  	return { title: '', description: '', taxonomy: [], taxonomySelected: 'General', points: '', repeatable: false, module: {}};
 	},
 
@@ -115,7 +115,7 @@ let NewModule = React.createClass({
             var optionNodes = this.state.taxonomy.map(function(option){
                     return <option value={option.value}>{option.name}</option>;
             });
-        }    
+        }
 
 		return <div id='changeData-form'>
                 <fieldset>
@@ -127,7 +127,7 @@ let NewModule = React.createClass({
     		            <textarea rows={8} placeholder='Description' value={this.state.description} onChange={this.inputDescriptionTextChange} />
     		            <div className='errorMessage'>{this.state.descriptionMessage}</div>
                         <select className='adminFont' value={this.state.taxonomySelected} onChange={this.inputTaxonomyChange}>{optionNodes}</select>
-                        <div className='paddingAll'><span className='adminFont'>Repeatable</span>
+                        <div className='checkbox'><span className='adminFont'>Repeatable</span>
         		            <input type ='checkbox' checked={this.state.repeatable} onChange={this.checkboxRepeatableChange} />
         		        </div>
                         <input type='submit' value='Add new module'/>

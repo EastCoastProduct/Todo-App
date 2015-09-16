@@ -101,19 +101,22 @@ let Login = React.createClass({
         return (
 
                 <div id="changeData-form" className='paddingBottom'>
+								<img src="https://resilientcoders.s3.amazonaws.com/i/white-skull.png" />
                     <fieldset>
                         <form onSubmit={this.loginUser}>
                             <input type='email' placeholder="Email" onChange={this.handleEmailChange} />
-                            <div className='errorMessage'>{this.state.emailMessage}</div>
                             <input type="password" placeholder="Password" onChange={this.handlePasswordChange}/>
+														<input type="submit" value="Login" />
+														<div className='errorMessage'>{this.state.emailMessage}</div>
                             <div className='errorMessage'>{this.state.passwordMessage}</div>
-                            <input type="submit" value="Login" />
+
                             <footer className="clearfix">
                                 <p><a href='/#/forgotpassword'>Forgot Password</a></p>
                             </footer>
                         </form>
                         <div className='errorMessage paddingTop'>{this.state.message}</div>
                     </fieldset>
+
                 </div>
         );
     }

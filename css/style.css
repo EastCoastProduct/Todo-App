@@ -24,6 +24,8 @@ h2, .headlineFont {
   letter-spacing: .03em;
 }
 
+.clr {clear:both; width: 100%;}
+
 .headlineFont {
   font-size:2.2em;
 }
@@ -218,17 +220,14 @@ fieldset {
   */
 }
 
-#taxonomy-form input[type="submit"] {
-  background: #555252;
-  border-radius: 1px;
-  color: #fff;
-  float: right;
-  font-weight: normal;
-  margin-top: 10px;
+#changeData-form input[type="checkbox"]{
+  float: left;
+  margin: 3px 8px 0 0;
 }
 
-#changeData-form input[type="checkbox"]{
-  float: right;
+.checkbox {
+  margin:12px 0;
+
 }
 
 .infoMessage {
@@ -306,6 +305,17 @@ button {
   border-radius: 4px;
   margin: 5px 0;
   cursor:pointer;
+}
+
+#page-wrap button {
+  background: #333;
+  color: #ededed;
+  font-size: 1em;
+  padding: 12px 0;
+}
+
+#page-wrap button:hover {
+  background: #666;
 }
 
 #sidebar button {
@@ -419,24 +429,95 @@ button {
 
 .userItem.itemBackground {border:0;}
 
-.button_example{
- font-size:10px;font-family:helvetica, sans-serif; padding: 5px 5px 5px 5px; text-decoration:none; display:inline-block; color: #FFFFFF;
- background-color: #7d7e7d; background-image: -webkit-gradient(linear, left top, left bottom, from(#7d7e7d), to(#0e0e0e));
- background-image: -webkit-linear-gradient(top, #7d7e7d, #0e0e0e);
- background-image: -moz-linear-gradient(top, #7d7e7d, #0e0e0e);
- background-image: -ms-linear-gradient(top, #7d7e7d, #0e0e0e);
- background-image: -o-linear-gradient(top, #7d7e7d, #0e0e0e);
- background-image: linear-gradient(to bottom, #7d7e7d, #0e0e0e);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#7d7e7d, endColorstr=#0e0e0e);
+#page-wrap button.close {
+background-image: url(https://resilientcoders.s3.amazonaws.com/i/x.png);
+background-repeat: no-repeat;
+background-size: 100% auto;
+background-color: transparent;
+font-size: 0;
+text-indent: -999;
+overflow: hidden;
+width: 30px;
+height: 50px;
+position: absolute;
+top: 65px;
+right: 50px;
 }
 
-.button_example:hover{
- background-color: #646464; background-image: -webkit-gradient(linear, left top, left bottom, from(#646464), to(#282828));
- background-image: -webkit-linear-gradient(top, #646464, #282828);
- background-image: -moz-linear-gradient(top, #646464, #282828);
- background-image: -ms-linear-gradient(top, #646464, #282828);
- background-image: -o-linear-gradient(top, #646464, #282828);
- background-image: linear-gradient(to bottom, #646464, #282828);filter:progid:DXImageTransform.Microsoft.gradient(GradientType=0,startColorstr=#646464, endColorstr=#282828);
+#page-wrap .taxonomyKey {
+  display: inline-block;
+    min-width: 22%;
+    padding-left: 10px;
+    margin: 12px 0;
+    color: #999;
 }
+
+#page-wrap .taxonomyValue .close {
+  position: relative;
+  top:0;
+  right: auto;
+  width:18px;
+  height: 18px;
+}
+
+
+#changeData-form input[type="email"],
+#changeData-form input[type="password"],
+#changeData-form input[type="text"],
+#changeData-form input[type="submit"],
+#changeData-form textarea,
+#page-wrap button.pages,
+#taxonomy-form input[type="submit"] {
+  margin-right: 2%;
+  width: 300px;
+  display:inline-block;
+  padding: 12px 0 12px 12px;
+  border-radius:8px;
+  border:1px solid #ccc;
+  margin-top: 12px;
+  margin-bottom: 4px;
+  background: transparent;
+  color:#666;
+}
+
+#changeData-form textarea {
+  width: 100%;
+}
+
+#changeData-form input[type="submit"]:hover,
+#changeData-form textarea:hover,
+#page-wrap button.pages:hover,
+#taxonomy-form input[type="submit"]:hover {
+  background: white;
+
+}
+
+/*
+:::::::::::::::
+:: USER PROFILE
+:::::::::::::::
+*/
+
+.profile_usersImage {
+  float: left;
+  display: block;
+  width: 25%;
+  margin-right: 25px;
+}
+
+.profile_usersImage img {
+  width: 100%;
+}
+
+.profile .description {
+  margin: 20px 0 0 0;
+}
+
+/*
+:::::::::::::::
+:: LOGIN ::::::
+:::::::::::::::
+*/
 
 body.login {
   background-image: url(https://resilientcoders.s3.amazonaws.com/i/kai_grovehall.jpg);
@@ -444,44 +525,63 @@ body.login {
   background-repeat: no-repeat;
 }
 
+body.login img {
+  width: 80px;
+  margin: 0 0 50px 0;
+  display:inline-block;
+  /*
+  position: absolute;
+  top:0px;
+  left:0px;
+  */
+}
+
+body.login fieldset {
+  /*
+  width: 70%;
+  display: inline-block;
+  */
+}
+
 body.login .right {display:none;}
 
 body.login #page-wrap {
   background: transparent;
-  margin-top:300px;
+  width: 90%;
+  text-align: center;
+  margin-top: 330px;
 }
 
 body.login #main {background: transparent;}
-
-body.login #changeData-form input[type="email"],
-body.login #changeData-form input[type="password"],
-body.login #changeData-form input[type="text"],
-body.login #changeData-form input[type="submit"] {
-  margin-right: 2%;
-  width: 200px;
-  display:inline-block;
-  padding: 12px 0;
-  border:1px solid #fff;
-  border-radius:8px;
-}
 
 body.login .clearfix {margin-top:12px;}
 
 body.login #changeData-form input[type="email"],
 body.login #changeData-form input[type="password"],
 body.login #changeData-form input[type="text"] {
-  background: transparent;
+  background: white;
   padding-left:12px;
-  color: white;
+  color: #666;
+  border:1px solid #fff;
+}
+
+#changeData-form input[type="submit"] {
+  background:transparent;
+  cursor:pointer;
+  padding:12px 0;
+  color:#666
 }
 
 body.login #changeData-form input[type="submit"] {
-  background:white;
-  cursor:pointer;
+border:1px solid #ed1b24;
+background: #ed1b24;
+color: white;
+width: 100px;
 }
 
 body.login #changeData-form input[type="submit"]:hover {
-background:transparent;
+background:black;
+border:1px solid black;
 color: white;
 cursor:pointer;
 }

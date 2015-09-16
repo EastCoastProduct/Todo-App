@@ -46,7 +46,7 @@ let Taxonomy = React.createClass({
 		            }
 		        }
 		    }
-		    taxonomyArray.filter(function(e){return e}); 
+		    taxonomyArray.filter(function(e){return e});
     		this.setState({taxonomies: taxonomyArray})
     	}.bind(this))
     },
@@ -123,7 +123,7 @@ let TaxonomyItem = React.createClass({
                     }.bind(this))
                 }
             }
-        }.bind(this))    
+        }.bind(this))
     },
 
     delete(){
@@ -136,10 +136,11 @@ let TaxonomyItem = React.createClass({
         var taxonomy = this.props.taxonomy;
 
         return <div className='marginTop' key={ this.state.id }>
+				<div className='taxonomyValue'>{!this.state.error ? (<button type='button' className='close' onClick={this.delete}>Delete</button>) : (<div></div>)}</div>
+
                     <div className='taxonomyKey'>{this.state.value}</div>
-                    <div className='taxonomyValue'>{!this.state.error ? (<button type='button' className='button_example' onClick={this.delete}>Delete</button>) : (<div></div>)}</div>
                 </div>;
-    }   
+    }
 });
 
 export default Taxonomy;

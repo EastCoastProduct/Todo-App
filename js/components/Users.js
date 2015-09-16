@@ -65,7 +65,7 @@ let UsersList = React.createClass({
 
         return <div>
                 {_singleItems != '' ? (<div>{ _singleItems } </div> ) : (<div></div> )}
-                {(auth.loggedIn() && auth.isAdmin())? (<div className='paddingTopBig'><button className="button_example" type='button' onClick={this.redirectToNewUser}>Add new user</button></div>) : (<div></div>)}
+                {(auth.loggedIn() && auth.isAdmin())? (<div className='paddingTopBig'><button className="pages" type='button' onClick={this.redirectToNewUser}>Add new user</button></div>) : (<div></div>)}
                </div>;
     }
 });

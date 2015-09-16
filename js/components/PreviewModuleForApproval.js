@@ -179,7 +179,7 @@ let PreviewModuleForApproval = React.createClass({
                         </div>
                     </div>
                     <div>
-                        <div className='paddingLeft marginTopBig'><button className="button_example" onClick={this.showAllModules}>Close</button></div>
+                        <div className='paddingLeft marginTopBig'><button className="close" onClick={this.showAllModules}>Close</button></div>
     				</div>
                 </div>;
 	}
