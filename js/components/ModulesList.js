@@ -7,7 +7,7 @@ import auth from '../auth';
 //ako user submita module i ne refresha i klikne na iduci, ispisuje mu isto
 //admin comment ne radi kod rejectanja modula s adminove strane
 //studentov comment i solution url prazni kad submitaju module
-//rejected je true kod submitanja modula prvi put
+//rejected je true kod submitanja modula prvi put?
 
 let ModulesList = React.createClass({
     mixins: [Router.Navigation],
@@ -163,8 +163,8 @@ let ModulesList = React.createClass({
             var item = snap.val();
             item.id = snap.key();
 
-            modulesForApprovalArray.push(item);
-            this.setState({modulesForApproval: modulesForApprovalArray})
+            //modulesForApprovalArray.push(item);
+            //this.setState({modulesForApproval: modulesForApprovalArray})
 
             var moduserFb = new Firebase(this.approvalDb + '/' + userId);
             var userModFb = new Firebase(this.usersFb + '/' + userId + '/modules/' + snap.key());
@@ -482,10 +482,8 @@ let ModulesList = React.createClass({
         userFb.on("child_added", function(snap){
             var checkUser = snap.val();
             if(!checkUser.approved){
-                //return true;
                 this.setState({ moduleInProgress: "true" })
             } else {
-                //return false;
                 this.setState({ moduleInProgress: "false" })
             }
         }.bind(this))
