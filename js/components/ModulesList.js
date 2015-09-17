@@ -4,13 +4,13 @@ import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 import auth from '../auth';
 
+//kod svakog child_addded i child_changed eventa treba provjeeriti user id i module id za prebacivanje iz liste u listu jer ce na aplikaciji raditi vise usera odjednom pa da se ne pobrka
+
 //nakon approvanja/rejectanja module, prvi klik na module ispod dropdowna ne radi
 //admin comment ne radi kod rejectanja modula s adminove strane
-//studentov comment i solution url prazni kad submitaju module
 //rejected je true kod submitanja modula prvi put?
 
 //moduli se ne prebacuju u waiting for approval za studenta
-//state pri prebacivanju ostaje pa se prikazuje prijasnji comment i solution url
 
 let ModulesList = React.createClass({
     mixins: [Router.Navigation],
@@ -107,18 +107,34 @@ let ModulesList = React.createClass({
                 }.bind(this))
             }
         }.bind(this));
+    //brisanje iz glavne liste modula za usera:
+    //1. u moduleid/users se doda ovaj userid
+    //2. u module/users/userid se nesto promijeni - stavi se approved:false
+    //ovo je ok
         this.firebaseDb.on('child_changed', function(snap){
-            var modulesArray = this.state.modules;
+            var userId = auth.getUserId();
             var item = snap.key();
-            for (var i=0; i < modulesArray.length; i++) {
-                if (modulesArray[i] != undefined && (modulesArray[i].id === item)) {
-                    if(i>-1){
-                        delete modulesArray[i]
-                    }
+            var changedFb = new Firebase(this.firebaseDb + '/' + item + '/users/');
+            changedFb.once('value', function(snapshot){
+                if(snapshot.hasChild(userId)){
+                    var thisUserFb = new Firebase(changedFb + '/' + userId);
+                    thisUserFb.once('value', function(snap){
+                        var data = snap.val();
+                        if(!data.approved){
+                            var modulesArray = this.state.modules;
+                            for (var i=0; i < modulesArray.length; i++) {
+                                if (modulesArray[i] != undefined && (modulesArray[i].id === item)) {
+                                    if(i>-1){
+                                        delete modulesArray[i]
+                                    }
+                                }
+                            }
+                            modulesArray.filter(function(e){return e});
+                            this.setState({modules: modulesArray})
+                        }
+                    }.bind(this))
                 }
-            }
-            modulesArray.filter(function(e){return e});
-            this.setState({modules: modulesArray})
+            }.bind(this))
         }.bind(this))
     },
 
@@ -165,11 +181,11 @@ let ModulesList = React.createClass({
             var item = snap.val();
             item.id = snap.key();
 
-            var moduserFb = new Firebase(this.approvalDb + '/' + userId);
+            var moduserFb = new Firebase(this.firebaseDb + '/' + snap.key() + '/users/' + userId);
             var userModFb = new Firebase(this.usersFb + '/' + userId + '/modules/' + snap.key());
             moduserFb.once('value', function(snap){
                 var userData = snap.val();
-                if(userData.rejected){ //ili approved = false?
+                if(userData.rejected || !userData.approved){ //ili approved = false?
                     item.studentId = userId;
                     item.userName = userName;
                     item.rejected = false;
@@ -571,7 +587,6 @@ let ModuleItemPreview = React.createClass({
     componentWillReceiveProps: function(nextProps, nextState) {
       if (nextProps.data.id !== this.props.data.id){
          this.setState({comment: '', solutionUrl: '', commentMessage: '', submittedAndWaiting: false, adminComment: '', adminCommentMessage: '', data: nextProps.data, approved: false, rejected: false})
-         //this.getInitialState(nextProps);
       }
     },
 
@@ -730,8 +745,8 @@ let ModuleItemPreview = React.createClass({
                             {(!data.approved && !data.rejected && data.status == "waitingForApproval") || this.state.submittedAndWaiting ? (
                                 <div>
                                     <p className='approved'>Module submitted, waiting for response from administrator!</p>
-                                    <p className=''><b>Submission info</b></p><p className=''>{data.comment}</p>
-                                    {data.solutionUrl != '' ? (<p className=' '>{data.solutionUrl}</p>):(<div></div>)}
+                                    <p className=''><b>Submission info</b></p><p className=''>{data.comment ? (data.comment) : (this.state.comment)}</p>
+                                    {data.solutionUrl != '' ? (<p className=' '>{data.solutionUrl ? (data.solutionUrl) : (this.state.solutionUrl)}</p>):(<div></div>)}
                                 </div>
                             ) : (<div></div>)}
 
