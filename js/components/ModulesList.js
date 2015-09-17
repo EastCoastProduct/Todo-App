@@ -235,17 +235,29 @@ let ModulesList = React.createClass({
             }
         }.bind(this))
         this.firebaseDb.on('child_changed', function(snap){
-            var rejectedModulesArray = this.state.rejectedModules;
+            var userId = auth.getUserId();
             var item = snap.key();
-            for (var i=0; i < rejectedModulesArray.length; i++) {
-                if (rejectedModulesArray[i] != undefined && (rejectedModulesArray[i].id === item)) {
-                    if(i>-1){
-                        delete rejectedModulesArray[i]
-                    }
+            var changedFb = new Firebase(this.firebaseDb + '/' + item + '/users/');
+            changedFb.once('value', function(snapshot){
+                if(snapshot.hasChild(userId)){
+                    var thisUserFb = new Firebase(changedFb + '/' + userId);
+                    thisUserFb.once('value', function(snap){
+                        var data = snap.val();
+                        if(!data.approved){
+                            var rejectedModulesArray = this.state.rejectedModules;
+                            for (var i=0; i < rejectedModulesArray.length; i++) {
+                                if (rejectedModulesArray[i] != undefined && (rejectedModulesArray[i].id === item)) {
+                                    if(i>-1){
+                                        delete rejectedModulesArray[i]
+                                    }
+                                }
+                            }
+                            rejectedModulesArray.filter(function(e){return e});
+                            this.setState({rejectedModules: rejectedModulesArray})
+                        }
+                    }.bind(this))
                 }
-            }
-            rejectedModulesArray.filter(function(e){return e});
-            this.setState({rejectedModules: rejectedModulesArray})
+            }.bind(this))
         }.bind(this))
     },
 
