@@ -4,10 +4,9 @@ import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 import auth from '../auth';
 
-//kad user odabere finished module iz dropdowna, nema state finished
-//nakon approvanja/rejectanja module, prvi klik na module ispod dropdowna ne radi
 //admin comment ne radi kod rejectanja modula s adminove strane
-//rejected je true kod submitanja modula prvi put?
+//testirati sa 2 usera u isto vrijeme
+//testirati admina i usera u isto vrijeme
 
 let ModulesList = React.createClass({
     mixins: [Router.Navigation],
@@ -486,18 +485,25 @@ let ModulesList = React.createClass({
             modulesArray.filter(function(e){return e});
             this.setState({modules: modulesArray})
         }.bind(this))
+        //testirati ovo
         this.firebaseDb.on('child_changed', function(snap){
-            var modulesForApprovalArray = this.state.modulesForApproval;
-            var item = snap.key();
-            for (var i=0; i < modulesForApprovalArray.length; i++) {
-                if (modulesForApprovalArray[i] != undefined && (modulesForApprovalArray[i].id === item)) {
-                    if(i>-1){
-                        delete modulesForApprovalArray[i]
+                var item = snap.key();
+                var changedFb = new Firebase(this.firebaseDb + '/' + item + '/users/');
+                changedFb.on('child_added', function(snapshot){
+                    var data = snapshot.val();
+                    if(data.approved || (!data.approved && data.rejected && data.adminComment)){
+                        var modulesForApprovalArray = this.state.modulesForApproval;
+                        for (var i=0; i < modulesForApprovalArray.length; i++) {
+                            if (modulesForApprovalArray[i] != undefined && (modulesForApprovalArray[i].id === item)) {
+                                if(i>-1){
+                                    delete modulesForApprovalArray[i]
+                                }
+                            }
+                        }
+                        modulesForApprovalArray.filter(function(e){return e});
+                        this.setState({modulesForApproval: modulesForApprovalArray})
                     }
-                }
-            }
-            modulesForApprovalArray.filter(function(e){return e});
-            this.setState({modulesForApproval: modulesForApprovalArray})
+                }.bind(this))
         }.bind(this))
     },
 
@@ -619,8 +625,12 @@ let ModuleItemPreview = React.createClass({
     },
 
     componentWillReceiveProps: function(nextProps, nextState) {
-      if (nextProps.data.id !== this.props.data.id){
-         this.setState({comment: '', solutionUrl: '', commentMessage: '', submittedAndWaiting: false, adminComment: '', adminCommentMessage: '', data: nextProps.data, approved: false, rejected: false})
+      if (nextProps.data !== this.props.data){
+        if(auth.isAdmin()){
+            this.setState({ adminComment: '', adminCommentMessage: '', approved: false, comment: '', commentMessage: '', data: nextProps.data, rejected: false, solutionUrl: '', submittedAndWaiting: false });
+        } else {
+            this.setState({comment: '', solutionUrl: '', commentMessage: '', submittedAndWaiting: false, adminComment: '', adminCommentMessage: '', data: nextProps.data, approved: false, rejected: false});
+        }
       }
     },
 
@@ -745,13 +755,11 @@ let ModuleItemPreview = React.createClass({
         return <div>
                     <div className='points_total'>{data.points}</div>
                     <div className='headlineFont '>{data.title}</div>
-                    <p>{(auth.isAdmin() && data.status == "waitingForApproval") ? (<div>{data.userName}</div>) : (<span></span>)}</p>
+                    {(auth.isAdmin() && data.status == "waitingForApproval") ? (<p>{data.userName}</p>) : (<div></div>)}
                     <p>{data.description}</p>
 
                     {!auth.isAdmin() ? (
                         <div>
-                            {/*this.state.submittedAndWaiting ? (<p className='Big  approved'>Module submitted, waiting for response.</p>):(<div></div>)*/}
-
                             {(data.approved && data.repeatable && data.repeated == 1 && !this.state.submittedAndWaiting) ?
                                 (<p className='  approved'>This module is finished, you can repeat it!</p>) : (<div></div>)}
 
@@ -761,7 +769,7 @@ let ModuleItemPreview = React.createClass({
 
                             {(data.approved && !data.repeatable) ? (<p className='  approved'>This module is finished!</p>) : (<div></div>)}
 
-                            {/*OVO MOZDA JOS NIJE DOBRO*/}
+                            {/*?*/}
                             {!this.state.submittedAndWaiting && ((data.approved && data.repeatable) || data.status == "open") ?
                             (<div className='' id='changeData-form'>
                                 <fieldset>
@@ -830,7 +838,7 @@ let ModuleItemPreview = React.createClass({
                                 <div>
                                     {this.state.approved ? (<div className='approved  '>Solution is approved!</div>) : (<div></div>)}
                                     {(!this.state.approved && this.state.rejected) ? (
-                                        <div className='errorMessage  '>Solution is rejected! <div className='errorMessage'><b>Reason:</b> {this.state.adminComment}</div></div>) : (<span></span>)}
+                                        <div className='errorMessage  '>Solution is rejected! <div className='errorMessage'><b>Reason:</b> {this.state.adminComment}</div></div>) : (<div></div>)}
 
                                     {data.status != "waitingForApproval" ? (
                                         <div className=" ">
