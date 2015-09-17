@@ -284,13 +284,14 @@ fieldset {
     color: #999;
     padding: 30px 0 0 0;
     border-top: 1px solid #4d4d4d;
-    margin-top: 30px;
+    margin: 30px 0px;
 }
 
 a.rightLink,
 #sidebar .meta {
     color: #999;
     font-size:.8em;
+    margin-bottom: 30px;
 }
 
 a.rightLink {
@@ -466,6 +467,8 @@ right: 50px;
 #changeData-form input[type="text"],
 #changeData-form input[type="submit"],
 #changeData-form textarea,
+#forgotPassword-form input[type="emailReset"],
+#forgotPassword-form input[type="submit"],
 #page-wrap button.pages,
 #taxonomy-form input[type="submit"] {
   margin-right: 2%;
@@ -484,8 +487,8 @@ right: 50px;
   width: 100%;
 }
 
+#forgotPassword-form input[type="submit"]:hover,
 #changeData-form input[type="submit"]:hover,
-#changeData-form textarea:hover,
 #page-wrap button.pages:hover,
 #taxonomy-form input[type="submit"]:hover {
   background: white;
@@ -558,13 +561,14 @@ body.login .clearfix {margin-top:12px;}
 
 body.login #changeData-form input[type="email"],
 body.login #changeData-form input[type="password"],
-body.login #changeData-form input[type="text"] {
+body.login #changeData-form input[type="text"],
+body.login #forgotPassword-form input[type="emailReset"] {
   background: white;
   padding-left:12px;
   color: #666;
   border:1px solid #fff;
 }
-
+#forgotPassword-form input[type="submit"],
 #changeData-form input[type="submit"] {
   background:transparent;
   cursor:pointer;
@@ -572,14 +576,16 @@ body.login #changeData-form input[type="text"] {
   color:#666
 }
 
-body.login #changeData-form input[type="submit"] {
+body.login #changeData-form input[type="submit"],
+body.login #forgotPassword-form input[type="submit"] {
 border:1px solid #ed1b24;
 background: #ed1b24;
 color: white;
-width: 100px;
+width: 120px;
 }
 
-body.login #changeData-form input[type="submit"]:hover {
+body.login #changeData-form input[type="submit"]:hover,
+body.login #forgotPassword-form input[type="submit"]:hover {
 background:black;
 border:1px solid black;
 color: white;
