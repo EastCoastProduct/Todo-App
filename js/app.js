@@ -95,6 +95,7 @@ let App = React.createClass({
 
 let routes = (  
     <Route name="app" path="/" handler={App}>
+        <DefaultRoute name="home" handler={HomeHandler}/>
         <Route name="login" path="/login" handler={LoginHandler}/>
         <Route name="logout" path="/logout" handler={LogoutHandler}/>
         <Route name="users" path="/users" handler={UsersHandler}/>

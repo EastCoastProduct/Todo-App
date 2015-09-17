@@ -359,13 +359,18 @@ let ModulesList = React.createClass({
                                             var thisUserData = new Firebase(moduleUserFb + '/' + userId);
                                             thisUserData.once('value', function(sna){
                                                 var moduleUserData = sna.val();
-                                                item.repeated = moduleUserData.repeated;
-                                                if(item.repeatable && moduleUserData.approved){ //jel treba ovdje repeatable
-                                                    item.approved = true;
-                                                    item.status = "open";
-                                                    selectedModulesArray.push(item);
-                                                    this.setState({ modulesSelected: selectedModulesArray })
-                                                }
+
+                                                var checkRepeatable = new Firebase(this.usersFb + '/' + userId + '/modules/' + snap.key())
+                                                checkRepeatable.once('value', function(sn){
+                                                    var rep = sn.val();
+                                                    item.repeated = rep.repeated;
+                                                    if(item.repeatable && moduleUserData.approved){ //jel treba ovdje repeatable
+                                                        item.approved = true;
+                                                        item.status = "open";
+                                                        selectedModulesArray.push(item);
+                                                        this.setState({ modulesSelected: selectedModulesArray })
+                                                    }
+                                                }.bind(this))
                                             }.bind(this))
                                         } else {
                                             item.status = "open";
@@ -394,7 +399,7 @@ let ModulesList = React.createClass({
                     thisUserFb.once('value', function(snap){
                         var data = snap.val();
                         if(!data.approved){
-                            var selectedModulesArray = this.state.selectedModules;
+                            var selectedModulesArray = this.state.modulesSelected;
                             for (var i=0; i < selectedModulesArray.length; i++) {
                                 if (selectedModulesArray[i] != undefined && (selectedModulesArray[i].id === item)) {
                                     if(i>-1){
@@ -403,14 +408,14 @@ let ModulesList = React.createClass({
                                 }
                             }
                             selectedModulesArray.filter(function(e){return e});
-                            this.setState({selectedModules: selectedModulesArray})
+                            this.setState({modulesSelected: selectedModulesArray})
                         }
                     }.bind(this))
                 }
             }.bind(this))
         }.bind(this))
         this.firebaseDb.on('child_removed', function(snap){
-            var selectedModulesArray = this.state.selectedModules;
+            var selectedModulesArray = this.state.modulesSelected;
             var item = snap.key();
             for (var i=0; i < selectedModulesArray.length; i++) {
                 if (selectedModulesArray[i] != undefined && (selectedModulesArray[i].id === item)) {
@@ -420,7 +425,7 @@ let ModulesList = React.createClass({
                 }
             }
             selectedModulesArray.filter(function(e){return e});
-            this.setState({selectedModules: selectedModulesArray})
+            this.setState({modulesSelected: selectedModulesArray})
         }.bind(this))
     },
 
