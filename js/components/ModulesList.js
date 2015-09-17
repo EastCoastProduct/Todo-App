@@ -4,13 +4,10 @@ import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 import auth from '../auth';
 
-//kod svakog child_addded i child_changed eventa treba provjeeriti user id i module id za prebacivanje iz liste u listu jer ce na aplikaciji raditi vise usera odjednom pa da se ne pobrka
-
+//kad user odabere finished module iz dropdowna, nema state finished
 //nakon approvanja/rejectanja module, prvi klik na module ispod dropdowna ne radi
 //admin comment ne radi kod rejectanja modula s adminove strane
 //rejected je true kod submitanja modula prvi put?
-
-//moduli se ne prebacuju u waiting for approval za studenta
 
 let ModulesList = React.createClass({
     mixins: [Router.Navigation],
@@ -107,10 +104,6 @@ let ModulesList = React.createClass({
                 }.bind(this))
             }
         }.bind(this));
-    //brisanje iz glavne liste modula za usera:
-    //1. u moduleid/users se doda ovaj userid
-    //2. u module/users/userid se nesto promijeni - stavi se approved:false
-    //ovo je ok
         this.firebaseDb.on('child_changed', function(snap){
             var userId = auth.getUserId();
             var item = snap.key();
@@ -185,7 +178,7 @@ let ModulesList = React.createClass({
             var userModFb = new Firebase(this.usersFb + '/' + userId + '/modules/' + snap.key());
             moduserFb.once('value', function(snap){
                 var userData = snap.val();
-                if(userData.rejected || !userData.approved){ //ili approved = false?
+                if(userData.rejected || !userData.approved){
                     item.studentId = userId;
                     item.userName = userName;
                     item.rejected = false;
@@ -299,17 +292,29 @@ let ModulesList = React.createClass({
             }
         }.bind(this))
         this.firebaseDb.on('child_changed', function(snap){
-            var finishedModulesArray = this.state.finishedModules;
+            var userId = auth.getUserId();
             var item = snap.key();
-            for (var i=0; i < finishedModulesArray.length; i++) {
-                if (finishedModulesArray[i] != undefined && (finishedModulesArray[i].id === item)) {
-                    if(i>-1){
-                        delete finishedModulesArray[i]
-                    }
+            var changedFb = new Firebase(this.firebaseDb + '/' + item + '/users/');
+            changedFb.once('value', function(snapshot){
+                if(snapshot.hasChild(userId)){
+                    var thisUserFb = new Firebase(changedFb + '/' + userId);
+                    thisUserFb.once('value', function(snap){
+                        var data = snap.val();
+                        if(!data.approved){
+                            var finishedModulesArray = this.state.finishedModules;
+                            for (var i=0; i < finishedModulesArray.length; i++) {
+                                if (finishedModulesArray[i] != undefined && (finishedModulesArray[i].id === item)) {
+                                    if(i>-1){
+                                        delete finishedModulesArray[i]
+                                    }
+                                }
+                            }
+                            finishedModulesArray.filter(function(e){return e});
+                            this.setState({finishedModules: finishedModulesArray})
+                        }
+                    }.bind(this))
                 }
-            }
-            finishedModulesArray.filter(function(e){return e});
-            this.setState({finishedModules: finishedModulesArray})
+            }.bind(this))
         }.bind(this))
     },
 
@@ -380,17 +385,29 @@ let ModulesList = React.createClass({
             }
         }.bind(this));
         this.firebaseDb.on('child_changed', function(snap){
-            var selectedModulesArray = this.state.selectedModules;
+            var userId = auth.getUserId();
             var item = snap.key();
-            for (var i=0; i < selectedModulesArray.length; i++) {
-                if (selectedModulesArray[i] != undefined && (selectedModulesArray[i].id === item)) {
-                    if(i>-1){
-                        delete selectedModulesArray[i]
-                    }
+            var changedFb = new Firebase(this.firebaseDb + '/' + item + '/users/');
+            changedFb.once('value', function(snapshot){
+                if(snapshot.hasChild(userId)){
+                    var thisUserFb = new Firebase(changedFb + '/' + userId);
+                    thisUserFb.once('value', function(snap){
+                        var data = snap.val();
+                        if(!data.approved){
+                            var selectedModulesArray = this.state.selectedModules;
+                            for (var i=0; i < selectedModulesArray.length; i++) {
+                                if (selectedModulesArray[i] != undefined && (selectedModulesArray[i].id === item)) {
+                                    if(i>-1){
+                                        delete selectedModulesArray[i]
+                                    }
+                                }
+                            }
+                            selectedModulesArray.filter(function(e){return e});
+                            this.setState({selectedModules: selectedModulesArray})
+                        }
+                    }.bind(this))
                 }
-            }
-            selectedModulesArray.filter(function(e){return e});
-            this.setState({selectedModules: selectedModulesArray})
+            }.bind(this))
         }.bind(this))
         this.firebaseDb.on('child_removed', function(snap){
             var selectedModulesArray = this.state.selectedModules;
