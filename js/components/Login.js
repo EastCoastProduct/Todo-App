@@ -65,7 +65,7 @@ let Login = React.createClass({
                                             this.fb.on("value", function(snap){
                                                 var data = snap.val();
                                                 if(data.status == "created"){
-                                                    this.transitionTo('changepassword', null, {id: userId});
+                                                    this.transitionTo('edituser', null, {id: userId});
                                                 } else {
                                                     this.transitionTo('moduleslist');
                                                 }

@@ -14,7 +14,7 @@ let NewModule = React.createClass({
             var userStatus = auth.getStatus();
             var userId = auth.getUserId();
             if (userStatus == "created") {
-                this.transitionTo('changepassword', null, {id: userId});
+                this.transitionTo('edituser', null, {id: userId});
             }
         }
 

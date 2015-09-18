@@ -4,6 +4,8 @@ import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 import auth from '../auth';
 
+//dodati u desni sidebar preview finished modula
+
 let UserInfo = React.createClass({
 	mixins: [Router.Navigation],
 
@@ -63,7 +65,7 @@ let UserInfo = React.createClass({
 
     deleteAccount(){
         if (this.userStatus == "created") {
-            this.transitionTo('changepassword', null, {id: this.currentUser});
+            this.transitionTo('edituser', null, {id: this.currentUser});
         } else {
             this.userFb.update({ status: "inactive" });
             this.transitionTo('users');
@@ -72,7 +74,7 @@ let UserInfo = React.createClass({
 
     editAccount(){
         if (this.userStatus == "created") {
-            this.transitionTo('changepassword', null, {id: this.currentUser});
+            this.transitionTo('edituser', null, {id: this.currentUser});
         } else {
             this.transitionTo('edituser', null, {id: this.state.id})
         }

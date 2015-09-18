@@ -3,7 +3,7 @@ import Firebase from 'firebase';
 import Router from 'react-router';
 import auth from '../auth';
 
-//opet se ne refresha na data change
+//check left side update
 
 let MyAccount = React.createClass({
 	mixins: [Router.Navigation],
@@ -18,15 +18,13 @@ let MyAccount = React.createClass({
         this.userFb = new Firebase('https://app-todo-list.firebaseio.com/users/' + this.currentUser);
         this.getUserData();
         this.getModulesData();
-        this.allusersFb.on("child_changed", function(snap){
+    },
+
+    componentWillReceiveProps: function(nextProps, nextState) {
+        if (nextProps !== this.props){
+            this.setState({ modules: [], totalPoints: '0', image: '' });
             this.getUserData();
-        }.bind(this));
-        this.allusersFb.on("child_added", function(snap){
-            this.getUserData();
-        }.bind(this));
-        this.userFb.on("child_removed", function(snap){
-            this.getUserData();
-        }.bind(this));
+        }
     },
 
     componentWillUnmount() {
@@ -73,14 +71,6 @@ let MyAccount = React.createClass({
         this.transitionTo('edituser', null, { id: this.currentUser });
     },
 
-    changeEmail(){
-        this.transitionTo('changeemail', null, { id: this.currentUser });
-    },
-
-    changePassword(){
-        this.transitionTo('changepassword', null, { id: this.currentUser });
-    },
-
 	render() {
         var modules = this.state.modules;
         var _singleItems = [];
@@ -91,18 +81,16 @@ let MyAccount = React.createClass({
 
 		return <div>
                     {this.state.image != '' ? (<div className='imageContainer'><div className='imageBox'><img className='usersImage'src={ this.state.image }/></div></div>) : (<div></div>)}
-										<div className='content'>
-										<h2><span className='firstname'>{ this.state.firstName }</span><br /><span className='lastname'>{ this.state.lastName }</span></h2>
-                    {(!this.state.isAdmin && this.state.totalPoints > 0) ? (<div className='points_total'>{ this.state.totalPoints }</div>) : (<div></div>)}
-                    {(!this.state.isAdmin && this.state.modules != '') ? (<div className='points_modules'>{ _singleItems }</div>) : (<div></div>)}
-                    <p className='description'>{ this.state.description }</p>
-										<p className='meta'>{ this.state.email }</p>
-                    <div className='marginTopBig marginBottom'>
-                        <span className='marginRight'><button className='button_example' onClick={this.editProfile}>Edit profile</button></span>
-                        <span className='marginRight'><button className='button_example' onClick = {this.changeEmail}>Change email</button></span>
-                        <span className='marginRight'><button className='button_example' onClick = {this.changePassword}>Change password</button></span>
-                    </div>
-										</div>
+					<div className='content'>
+						<h2><span className='firstname'>{ this.state.firstName }</span><br /><span className='lastname'>{ this.state.lastName }</span></h2>
+                        {(!this.state.isAdmin && this.state.totalPoints > 0) ? (<div className='points_total'>{ this.state.totalPoints }</div>) : (<div></div>)}
+                        {(!this.state.isAdmin && this.state.modules != '') ? (<div className='points_modules'>{ _singleItems }</div>) : (<div></div>)}
+                        <p className='description'>{ this.state.description }</p>
+						<p className='meta'>{ this.state.email }</p>
+                        <div className='marginTopBig marginBottom'>
+                            <span className='marginRight'><button className='button_example' onClick={this.editProfile}>Edit profile</button></span>
+                        </div>
+					</div>
 				</div>;
 	}
 });
