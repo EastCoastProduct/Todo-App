@@ -5,8 +5,6 @@ import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-route
 import auth from '../auth';
 import Dropzone from 'react-dropzone';
 
-//check left side update
-
 let EditUser = React.createClass({
 	mixins: [Router.Navigation],
     
@@ -17,15 +15,22 @@ let EditUser = React.createClass({
             var element = document.body;
             element.className="";
         }
+
 		return { id: this.props.query.id, message: '', description: '', oldEmail: '', newEmail: '', password: '', changeEmailMessage: '', changePasswordMessage: '', 
                 email: '', oldPassword: '', newPassword: '', infoSuccessMessage: '', emailSuccessMessage: '', passwordSuccessMessage: '' };
 	},
 
+    componentWillReceiveProps: function(nextProps, nextState) {
+        if (nextProps !== this.props){
+            this.getUserData(nextProps.query.id);
+        }
+    },
+
 	componentWillMount() {
 		this.firebaseDb = new Firebase('https://app-todo-list.firebaseio.com/');
-        this.userFb = new Firebase('https://app-todo-list.firebaseio.com/users/' + this.state.id);
-        this.getUserData();
-        this.userFb.on('child_added', function(snap) {
+        this.userFb = new Firebase('https://app-todo-list.firebaseio.com/users/');
+        this.getUserData(this.state.id);
+        /*this.userFb.on('child_added', function(snap) {
             var data = snap.val();
             var key = snap.key();
             if (data != null && key == "image") {
@@ -45,7 +50,7 @@ let EditUser = React.createClass({
             if (key == "image") {
                 this.setState({ image: '' })
             }
-        }.bind(this));
+        }.bind(this));*/
     },
 
     componentWillUnmount() {
@@ -53,10 +58,11 @@ let EditUser = React.createClass({
         this.userFb.off();
     },
 
-    getUserData() {
-        this.userFb.once("value", function(snapshot){
+    getUserData(id) {
+        var thisUserDb = new Firebase(this.userFb + '/' + id);
+        thisUserDb.once("value", function(snapshot){
             var data = snapshot.val();
-            this.setState({ firstName: data.first_name, lastName: data.last_name, isAdmin: data.isAdmin });
+            this.setState({ id: id, firstName: data.first_name, lastName: data.last_name, isAdmin: data.isAdmin });
             if(data.description){
             	this.setState({ description: data.description })
             } 
@@ -112,7 +118,8 @@ let EditUser = React.createClass({
     	e.preventDefault();
         this.handleValidationEditUser(res => {
             if(res){
-    			this.userFb.update({ first_name: this.state.firstName, last_name: this.state.lastName, description: this.state.description })
+                var thisUserDb = new Firebase(this.userFb + '/' + this.state.id);
+    			thisUserDb.update({ first_name: this.state.firstName, last_name: this.state.lastName, description: this.state.description })
                 this.setState({ infoSuccessMessage: 'User info is successfuly changed!' });
             }
         })
@@ -144,7 +151,8 @@ let EditUser = React.createClass({
         e.preventDefault();
         this.handleValidationChangeEmail(res => {
             if(res){
-                this.userFb.once("value", function(snap){
+                var thisUserDb = new Firebase(this.userFb + '/' + this.state.id);
+                thisUserDb.once("value", function(snap){
                     var userData = snap.val();
                     if(userData.email != this.state.oldEmail){
                         this.setState({changeEmailMessage: "The specified email address is incorrect."});
@@ -166,7 +174,7 @@ let EditUser = React.createClass({
                                     this.setState({error: true, changeEmailMessage: "Error creating user"});
                                 }
                             } else {
-                                this.userFb.update({ email: this.state.newEmail })
+                                thisUserDb.update({ email: this.state.newEmail })
                                 this.setState({ emailSuccessMessage: 'Your email address is successfuly changed!' });
                             }
                         }.bind(this))
@@ -199,7 +207,8 @@ let EditUser = React.createClass({
         e.preventDefault();
         this.handleValidationChangePassword(res => {
             if(res){
-                this.userFb.once("value", function(snap){
+                var thisUserDb = new Firebase(this.userFb + '/' + this.state.id);
+                thisUserDb.once("value", function(snap){
                     var userData = snap.val();
                     if(userData.email != this.state.email){
                         this.setState({changePasswordMessage: "The specified email address is incorrect."});
@@ -221,7 +230,7 @@ let EditUser = React.createClass({
                                     this.setState({changePasswordMessage: "Error changing password."});
                                 }
                             } else {
-                                this.userFb.once("value", function(snap){
+                                thisUserDb.once("value", function(snap){
                                     var userData = snap.val();
                                     if(userData.status == "created"){
                                         this.userFb.update({
@@ -261,7 +270,7 @@ let EditUser = React.createClass({
         if(err){ response (false); return; } else { response (true); return; }
     },
 
-    onDrop(files) { //fix users id
+    onDrop(files) {
         var f = files[0];
         var reader = new FileReader();
         reader.onload = (function(theFile) {
@@ -276,7 +285,8 @@ let EditUser = React.createClass({
     },
 
     removeImage(e){
-        var imgFb = new Firebase(this.userFb + '/image');
+        var thisUserDb = new Firebase(this.userFb + '/' + this.state.id);
+        var imgFb = new Firebase(thisUserDb + '/image');
         imgFb.remove();
         this.setState({image: ''});
     },
@@ -311,60 +321,64 @@ let EditUser = React.createClass({
                     ) : (
                     <div>
                         <h2>Basic info</h2>
-                        {this.state.infoSuccessMessage}
+                        <p className='approved'>{this.state.infoSuccessMessage}</p>
                     </div>)}
-                
-                {this.state.emailSuccessMessage == '' ? (
+
+                {!auth.isAdmin() || (auth.getUserId() === this.state.id) ? (
                     <div>
-                        <h2>Change email</h2>
-                        <div id='changeData-form'>
-                            <fieldset>
-                                <form onSubmit={this.changeEmail} >
-                                        <input type='email' placeholder="Old Email" value={this.state.oldEmail} onChange = {this.inputOldEmailTextChange} />
-                                        <div className='errorMessage'>{this.state.oldEmailMessage}</div>
+                        {this.state.emailSuccessMessage == '' ? (
+                            <div>
+                                <h2>Change email</h2>
+                                <div id='changeData-form'>
+                                    <fieldset>
+                                        <form onSubmit={this.changeEmail} >
+                                                <input type='email' placeholder="Old Email" value={this.state.oldEmail} onChange = {this.inputOldEmailTextChange} />
+                                                <div className='errorMessage'>{this.state.oldEmailMessage}</div>
 
-                                        <input type='email' placeholder="New Email" value={this.state.newEmail} onChange = {this.inputNewEmailTextChange} />
-                                        <div className='errorMessage'>{this.state.newEmailMessage}</div>
+                                                <input type='email' placeholder="New Email" value={this.state.newEmail} onChange = {this.inputNewEmailTextChange} />
+                                                <div className='errorMessage'>{this.state.newEmailMessage}</div>
 
-                                        <input type='password' placeholder="Password" value={this.state.password} onChange = {this.inputPasswordTextChange} />
-                                        <div className='errorMessage'>{this.state.passwordMessage}</div>
+                                                <input type='password' placeholder="Password" value={this.state.password} onChange = {this.inputPasswordTextChange} />
+                                                <div className='errorMessage'>{this.state.passwordMessage}</div>
+                                                <input type='submit' value='Save'/>
+                                        </form>
+                                    </fieldset>
+                                    <div className='errorMessage paddingLeft'>{this.state.changeEmailMessage}</div>
+                                </div>
+                            </div>
+                        ) : (
+                            <div>
+                                <h2>Email address</h2>
+                                <p className='approved'>{this.state.emailSuccessMessage}</p>
+                            </div>)}
+                        
+                        {this.state.passwordSuccessMessage == '' ? (
+                            <div>
+                                <h2>Change password</h2>
+                                <div id='changeData-form'>
+                                <fieldset>
+                                    <form onSubmit={this.changePassword} >
+                                        <input type='email' placeholder='Email' value={this.state.email} onChange = {this.inputEmailTextChange} />
+                                        <div className='errorMessage'>{this.state.emailMessage}</div>
+
+                                        <input type='password' placeholder='Old password' value={this.state.oldPassword} onChange = {this.inputOldPasswordTextChange} />
+                                        <div className='errorMessage'>{this.state.oldPasswordMessage}</div>
+
+                                        <input type='password' placeholder='New password' value={this.state.newPassword} onChange = {this.inputNewPasswordTextChange} />
+                                        <div className='errorMessage'>{this.state.newPasswordMessage}</div>
                                         <input type='submit' value='Save'/>
-                                </form>
-                            </fieldset>
-                            <div className='errorMessage paddingLeft'>{this.state.changeEmailMessage}</div>
+                                    </form>
+                                </fieldset>
+                                <div className='errorMessage paddingLeft'>{this.state.changePasswordMessage}</div>
+                            </div>
+                            </div>
+                        ) : (
+                            <div>
+                                <h2>Password</h2>
+                                <p className='approved'>{this.state.passwordSuccessMessage}</p>
+                            </div>)}
                         </div>
-                    </div>
-                ) : (
-                    <div>
-                        <h2>Email address</h2>
-                        {this.state.emailSuccessMessage}
-                    </div>)}
-                
-                {this.state.passwordSuccessMessage == '' ? (
-                    <div>
-                        <h2>Change password</h2>
-                        <div id='changeData-form'>
-                        <fieldset>
-                            <form onSubmit={this.changePassword} >
-                                <input type='email' placeholder='Email' value={this.state.email} onChange = {this.inputEmailTextChange} />
-                                <div className='errorMessage'>{this.state.emailMessage}</div>
-
-                                <input type='password' placeholder='Old password' value={this.state.oldPassword} onChange = {this.inputOldPasswordTextChange} />
-                                <div className='errorMessage'>{this.state.oldPasswordMessage}</div>
-
-                                <input type='password' placeholder='New password' value={this.state.newPassword} onChange = {this.inputNewPasswordTextChange} />
-                                <div className='errorMessage'>{this.state.newPasswordMessage}</div>
-                                <input type='submit' value='Save'/>
-                            </form>
-                        </fieldset>
-                        <div className='errorMessage paddingLeft'>{this.state.changePasswordMessage}</div>
-                    </div>
-                    </div>
-                ) : (
-                    <div>
-                        <h2>Password</h2>
-                        {this.state.passwordSuccessMessage}
-                    </div>)}
+                ) : (<div></div>)}    
             </div>
 	}
 });
