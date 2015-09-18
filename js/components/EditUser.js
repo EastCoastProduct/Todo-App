@@ -30,27 +30,6 @@ let EditUser = React.createClass({
 		this.firebaseDb = new Firebase('https://app-todo-list.firebaseio.com/');
         this.userFb = new Firebase('https://app-todo-list.firebaseio.com/users/');
         this.getUserData(this.state.id);
-        /*this.userFb.on('child_added', function(snap) {
-            var data = snap.val();
-            var key = snap.key();
-            if (data != null && key == "image") {
-                this.setState({ image: data })
-            }
-        }.bind(this));
-        this.userFb.on('child_changed', function(snap) {
-            var data = snap.val();
-            var key = snap.key();
-            if (data != null && key == "image") {
-                this.setState({ image: data })
-            } else { this.setState({ image: '' }) }
-        }.bind(this));
-        this.userFb.on('child_removed', function(snap) {
-            var data = snap.val();
-            var key = snap.key();
-            if (key == "image") {
-                this.setState({ image: '' })
-            }
-        }.bind(this));*/
     },
 
     componentWillUnmount() {
@@ -69,6 +48,27 @@ let EditUser = React.createClass({
             if(data.image){
                 this.setState({ image: data.image })
             } else {
+                this.setState({ image: '' })
+            }
+        }.bind(this));
+        thisUserDb.on('child_added', function(snap) {
+            var data = snap.val();
+            var key = snap.key();
+            if (data != null && key == "image") {
+                this.setState({ image: data })
+            }
+        }.bind(this));
+        thisUserDb.on('child_changed', function(snap) {
+            var data = snap.val();
+            var key = snap.key();
+            if (data != null && key == "image") {
+                this.setState({ image: data })
+            } else { this.setState({ image: '' }) }
+        }.bind(this));
+        thisUserDb.on('child_removed', function(snap) {
+            var data = snap.val();
+            var key = snap.key();
+            if (key == "image") {
                 this.setState({ image: '' })
             }
         }.bind(this));
@@ -109,10 +109,6 @@ let EditUser = React.createClass({
     inputNewPasswordTextChange(e){
         this.setState({newPassword: e.target.value, newPasswordMessage: '', changePasswordMessage: '' });
     },
-
-    //cancel() {
-    //    {auth.isAdmin() ? (this.transitionTo('userinfo', null, {id: this.state.id})) : (this.transitionTo('myaccount'))}
-    //},
 
     editUser(e) {
     	e.preventDefault();

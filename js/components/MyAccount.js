@@ -18,8 +18,23 @@ let MyAccount = React.createClass({
         this.userFb = new Firebase('https://app-todo-list.firebaseio.com/users/' + this.currentUser);
         this.getUserData();
         this.getModulesData();
+        this.userFb.on('child_changed', function(snap){
+            var data = snap.val();
+            var key = snap.key();
+            this.getUserData();
+        }.bind(this))
+        this.userFb.on('child_removed', function(snap){
+            var data = snap.val();
+            var key = snap.key();
+            this.getUserData();
+        }.bind(this))
+        this.userFb.on('child_added', function(snap){
+            var data = snap.val();
+            var key = snap.key();
+            this.getUserData();
+        }.bind(this))
     },
-
+    //kad je module acceptan treba updateati listu zavrsenih modula
     componentWillReceiveProps: function(nextProps, nextState) {
         if (nextProps !== this.props){
             this.setState({ modules: [], totalPoints: '0', image: '' });
