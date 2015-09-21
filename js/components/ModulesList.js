@@ -183,14 +183,17 @@ let ModulesList = React.createClass({
                     item.comment = userData.comment;
                     item.solutionUrl = userData.solutionUrl;
 
-                    for (var i=0; i < modulesForApprovalArray.length; i++) {
-                        if (modulesForApprovalArray[i] != undefined && (modulesForApprovalArray[i].id === item.id)) {
-                            if(i>-1){}else{
-                                modulesForApprovalArray.push(item);
-                                this.setState({ modulesForApproval: modulesForApprovalArray })
-                            }
-                        }
-                    }
+                    modulesForApprovalArray.push(item);
+
+                    var arr = {};
+                    for ( var i=0, len=modulesForApprovalArray.length; i < len; i++ )
+                        arr[modulesForApprovalArray[i]['id']] = modulesForApprovalArray[i];
+
+                    modulesForApprovalArray = new Array();
+                    for ( var key in arr )
+                        modulesForApprovalArray.push(arr[key]);
+
+                    this.setState({ modulesForApproval: modulesForApprovalArray })
 
                 }
             }.bind(this))
