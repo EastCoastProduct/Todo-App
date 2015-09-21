@@ -4,9 +4,6 @@ import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 import auth from '../auth';
 
-//admin comment ne radi kod rejectanja modula s adminove strane
-//testirati sa 2 usera u isto vrijeme
-//testirati admina i usera u isto vrijeme
 
 let ModulesList = React.createClass({
     mixins: [Router.Navigation],
@@ -27,7 +24,7 @@ let ModulesList = React.createClass({
         var userId = auth.getUserId();
 
         if (!auth.loggedIn()) { this.transitionTo('login'); };
-        if (userStatus == "created") { this.transitionTo('changepassword', null, {id: userId});};
+        if (userStatus == "created") { this.transitionTo('edituser', null, {id: userId});};
         return { modules: [], modulesForApproval: [], finishedModules: [], rejectedModules: [], taxonomy: [], taxonomySelected: 'All', modulesSelected: [], showModuleInfo: false };
     },
 
@@ -166,6 +163,7 @@ let ModulesList = React.createClass({
                 }.bind(this))
             }
         }.bind(this))
+        //var moduserFb = new Firebase(this.approvalDb + '/' + userId);
         this.firebaseDb.on('child_changed', function(snap){
             var modulesForApprovalArray = this.state.modulesForApproval;
             var userId = auth.getUserId();
@@ -177,15 +175,23 @@ let ModulesList = React.createClass({
             var userModFb = new Firebase(this.usersFb + '/' + userId + '/modules/' + snap.key());
             moduserFb.once('value', function(snap){
                 var userData = snap.val();
-                if(userData.rejected || !userData.approved){
+                if(!userData.rejected && !userData.approved){
                     item.studentId = userId;
                     item.userName = userName;
                     item.rejected = false;
                     item.status = "waitingForApproval";
                     item.comment = userData.comment;
                     item.solutionUrl = userData.solutionUrl;
-                    modulesForApprovalArray.push(item);
-                    this.setState({ modulesForApproval: modulesForApprovalArray })
+
+                    for (var i=0; i < modulesForApprovalArray.length; i++) {
+                        if (modulesForApprovalArray[i] != undefined && (modulesForApprovalArray[i].id === item.id)) {
+                            if(i>-1){}else{
+                                modulesForApprovalArray.push(item);
+                                this.setState({ modulesForApproval: modulesForApprovalArray })
+                            }
+                        }
+                    }
+
                 }
             }.bind(this))
         }.bind(this))
@@ -235,7 +241,7 @@ let ModulesList = React.createClass({
                     var thisUserFb = new Firebase(changedFb + '/' + userId);
                     thisUserFb.once('value', function(snap){
                         var data = snap.val();
-                        if(!data.approved){
+                        if(!data.rejected){
                             var rejectedModulesArray = this.state.rejectedModules;
                             for (var i=0; i < rejectedModulesArray.length; i++) {
                                 if (rejectedModulesArray[i] != undefined && (rejectedModulesArray[i].id === item)) {
@@ -706,7 +712,7 @@ let ModuleItemPreview = React.createClass({
         studentFb.once("value", function(snap){
             var data = snap.val();
             if (snap.hasChild("repeated")){
-                var oldRepeated = parseInt(this.props.data.repeated);
+                var oldRepeated = parseInt(data.repeated);
                 var newRepeate = String(oldRepeated + 1);
                 moduleApprovalFb.update({ approved: true });
                 studentFb.set({ approved: true, points: this.props.data.points, repeated: newRepeate, title: this.props.data.title });
