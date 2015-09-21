@@ -184,14 +184,15 @@ let ModulesList = React.createClass({
                     item.solutionUrl = userData.solutionUrl;
 
                     modulesForApprovalArray.push(item);
+                    if(!auth.isAdmin()){
+                        var arr = {};
+                        for ( var i=0, len=modulesForApprovalArray.length; i < len; i++ )
+                            arr[modulesForApprovalArray[i]['id']] = modulesForApprovalArray[i];
 
-                    var arr = {};
-                    for ( var i=0, len=modulesForApprovalArray.length; i < len; i++ )
-                        arr[modulesForApprovalArray[i]['id']] = modulesForApprovalArray[i];
-
-                    modulesForApprovalArray = new Array();
-                    for ( var key in arr )
-                        modulesForApprovalArray.push(arr[key]);
+                        modulesForApprovalArray = new Array();
+                        for ( var key in arr )
+                            modulesForApprovalArray.push(arr[key]);
+                    }
 
                     this.setState({ modulesForApproval: modulesForApprovalArray })
 
