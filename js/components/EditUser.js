@@ -124,22 +124,18 @@ let EditUser = React.createClass({
     handleValidationEditUser(response){
         response = arguments[arguments.length - 1];
         var err = false;
-
         if(this.state.firstName.trim().length == 0){
             this.setState({ firstNameMessage: 'Enter first name.' });
             err = true;
         }
-
         if(this.state.lastName.trim().length == 0){
             this.setState({ lastNameMessage: 'Enter last name.' });
             err = true;
         }
-
         if(this.state.description.trim().length == 0){
             this.setState({ descriptionMessage: 'Enter description.' });
             err = true;
         }
-
         if(err){ response (false); return; } else { response (true); return; }
     },
 
@@ -154,9 +150,7 @@ let EditUser = React.createClass({
                         this.setState({changeEmailMessage: "The specified email address is incorrect."});
                     } else {
                         this.firebaseDb.changeEmail({
-                            oldEmail: this.state.oldEmail,
-                            newEmail: this.state.newEmail,
-                            password: this.state.password
+                            oldEmail: this.state.oldEmail, newEmail: this.state.newEmail, password: this.state.password
                         }, function(error){
                             if(error) {
                                 switch (error.code) {
@@ -210,9 +204,7 @@ let EditUser = React.createClass({
                         this.setState({changePasswordMessage: "The specified email address is incorrect."});
                     } else {
                         this.firebaseDb.changePassword({
-                            email: this.state.email,
-                            oldPassword: this.state.oldPassword,
-                            newPassword: this.state.newPassword
+                            email: this.state.email, oldPassword: this.state.oldPassword, newPassword: this.state.newPassword
                         }, function(error){
                             if(error) {
                                 switch (error.code) {
@@ -229,9 +221,7 @@ let EditUser = React.createClass({
                                 thisUserDb.once("value", function(snap){
                                     var userData = snap.val();
                                     if(userData.status == "created"){
-                                        this.userFb.update({
-                                            status: "active"
-                                        })
+                                        this.userFb.update({ status: "active" })
                                         localStorage.userStatus = "active";
                                         this.setState({ passwordSuccessMessage: 'Your password is successfully changed!' });
                                     } else {

@@ -3,8 +3,6 @@ import Firebase from 'firebase';
 import Router from 'react-router';
 import auth from '../auth';
 
-//check left side update
-
 let MyAccount = React.createClass({
 	mixins: [Router.Navigation],
 

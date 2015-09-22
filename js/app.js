@@ -19,6 +19,8 @@ import HomeHandler from './components/Home.js'
 import ChangeSuccessHandler from './components/ChangeSuccess.js';
 import '../css/style.css';
 
+//header se ne updatea na promjenu user/admin
+
 let App = React.createClass({ 
     contextTypes: {
         router: React.PropTypes.func.isRequired
@@ -35,7 +37,7 @@ let App = React.createClass({
     setStateOnAuth(loggedIn) {
         this.setState({
             loggedIn: loggedIn,
-            user: auth.getUser(), //users first name and last name
+            user: auth.getUser(),
             admin: auth.isAdmin()
         });
     },

@@ -77,13 +77,8 @@ let EditModule = React.createClass({
         this.handleValidation(res => {
             if(res){
                 var moduleFb = new Firebase(firebaseDb + '/' + this.state.id)
-                moduleFb.update({ 
-                    title: this.state.title, 
-                    description: this.state.description,
-                    taxonomy: this.state.taxonomySelected,
-                    points: this.state.points,
-                    repeatable: this.state.repeatable
-                });
+                moduleFb.update({ title: this.state.title, description: this.state.description, taxonomy: this.state.taxonomySelected,
+                    points: this.state.points, repeatable: this.state.repeatable });
                 this.transitionTo('moduleslist');
             }
         })

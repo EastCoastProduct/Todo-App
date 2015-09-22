@@ -98,30 +98,24 @@ let Login = React.createClass({
 
     render() {
         return (
-
                 <div id="changeData-form" className='paddingBottom'>
-								<img src="https://resilientcoders.s3.amazonaws.com/i/white-skull.png" />
+					<img src="https://resilientcoders.s3.amazonaws.com/i/white-skull.png" />
                     <fieldset>
                         <form onSubmit={this.loginUser}>
                             <input type='email' placeholder="Email" onChange={this.handleEmailChange} />
                             <input type="password" placeholder="Password" onChange={this.handlePasswordChange}/>
-														<input type="submit" value="Login" />
-														<div className='errorMessage'>{this.state.emailMessage}</div>
+							<input type="submit" value="Login" />
+							<div className='errorMessage'>{this.state.emailMessage}</div>
                             <div className='errorMessage'>{this.state.passwordMessage}</div>
-
                             <footer className="clearfix">
                                 <p><a href='/#/forgotpassword'>Forgot Password</a></p>
                             </footer>
                         </form>
                         <div className='errorMessage paddingTop'>{this.state.message}</div>
                     </fieldset>
-
                 </div>
         );
     }
 });
 
 export default Login;
-
-//var element = document.body;
-//element.className="login";

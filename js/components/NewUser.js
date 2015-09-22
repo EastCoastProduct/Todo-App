@@ -80,16 +80,10 @@ let NewUser = React.createClass({
 							email: this.state.email
 						}, function(error) {
 							if (error === null) {
-								this.firebaseDb.push({
-									uid: this.state.uid,
-								    first_name: this.state.first_name,
-								    last_name: this.state.last_name,
-								    email: this.state.email,
-								    isAdmin: this.state.isAdmin,
-								    status: "created"
-								});
+								this.firebaseDb.push({ uid: this.state.uid, first_name: this.state.first_name, last_name: this.state.last_name, email: this.state.email, 
+									isAdmin: this.state.isAdmin, status: "created" });
 								this.setState({ first_name: '', last_name: '', email: '', isAdmin: false }); 
-								this.transitionTo('users'); //show message? 
+								this.transitionTo('users');
 							} else {
 								switch (error.code) {
 									case "INVALID_USER":
@@ -119,12 +113,10 @@ let NewUser = React.createClass({
 			this.setState({ firstNameMessage: 'Enter first name.' });
 			err = true;
 		}
-
 		if(this.state.last_name.trim().length == 0){
 			this.setState({ lastNameMessage: 'Enter last name.' });
 			err = true;
 		}
-
 		if(!emailRegex.test(this.state.email)){
 			this.setState({ emailMessage: 'Enter a valid email address.' }); 
 			err = true;

@@ -20,18 +20,14 @@ let UserInfo = React.createClass({
     },
 
     componentWillUnmount() {
+        this.firebaseDb.off();
         this.userFb.off();
     },
 
     getUserData() {
         this.userFb.once("value", function(snapshot){
             var data = snapshot.val();
-            this.setState({
-                firstName: data.first_name,
-                lastName: data.last_name,
-                email: data.email,
-                isAdmin: data.isAdmin
-            });
+            this.setState({ firstName: data.first_name, lastName: data.last_name, email: data.email, isAdmin: data.isAdmin });
             if (data.total_points) {
                 this.setState({ totalPoints: data.total_points })
             }
@@ -164,14 +160,11 @@ let ModuleItemPreview = React.createClass({
         return <div>
                     <div className='points_total'>{data.points}</div>
                     <div className='headlineFont '>{data.title}</div>
-                    
                     <p>{data.description}</p>
                     <p><b>Submission info:</b></p>
                     <div>{data.comment}</div>
                     <div>{data.solutionUrl}</div>
-
                     <div className=' '><button className='close' onClick={this.showAllModules}>Close</button></div>
-
                 </div>;
     }
 });

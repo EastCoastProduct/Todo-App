@@ -58,7 +58,7 @@ let NewModule = React.createClass({
 	},
 
 	checkboxRepeatableChange(e) {
-    	this.setState({repeatable: e.target.checked}); //change this
+    	this.setState({repeatable: e.target.checked});
 	},
 
 	createModule(e) {
@@ -73,7 +73,7 @@ let NewModule = React.createClass({
 					points: this.state.points
 	            });
 	            this.setState({title: '', description: '', taxonomy: '', taxonomySelected: 'General', repeatable: '', points: ''});
-				this.transitionTo('moduleslist'); //show message?
+				this.transitionTo('moduleslist');
         	}
     	})
     },
@@ -91,22 +91,18 @@ let NewModule = React.createClass({
             this.setState({ titleMessage: 'Enter title.' });
             err = true;
         }
-
         if(this.state.description.trim().length == 0){
             this.setState({ descriptionMessage: 'Enter description.' });
             err = true;
         }
-
         if(this.state.points.trim().length == 0){
             this.setState({ pointsMessage: 'Enter points.' });
             err = true;
         }
-
         if(!onlyNumeric.test(this.state.points)){
             this.setState({ pointsMessage: 'Enter numeric value.' });
             err = true;
         }
-
         if(err){ response (false); return; } else { response (true); return; }
     },
 

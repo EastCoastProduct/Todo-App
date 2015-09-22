@@ -4,8 +4,6 @@ import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 import auth from '../auth';
 
-//user se moze ulogirati sa starim pass
-
 let ForgotPassword = React.createClass({
 	mixins: [Router.Navigation],
 
@@ -43,14 +41,11 @@ let ForgotPassword = React.createClass({
 				                userRef.once("value", function(snap){
 				                	var data = snap.val();
 				                	if(data.status != "inactive"){
-				                		userRef.update({
-						                	status: "created"
-						                })
+				                		userRef.update({ status: "created" })
 				                	}
 				                }.bind(this))
 				            }
 				            this.transitionTo('changesuccess', null, { successMessage: 'Password reset email is sent to your email address!' });
-				            //this.transitionTo('login'); //ne redirectati nego prikazati success poruku
 				        }.bind(this))
 					} else {
 						switch (error.code) {

@@ -22,13 +22,14 @@ let Taxonomy = React.createClass({
 
     componentWillUnmount(){
         this.firebaseDb.off();
+        this.moduleFb.off();
     },
 
     inputNameTextChange(e){
     	this.setState({ name: e.target.value, nameMessage:'', error: '' });
     },
 
-    getAllTaxonomies(){ //after deleting and adding new items, length of array is not the same as actual. Fix this
+    getAllTaxonomies(){
     	this.firebaseDb.on('child_added', function(snap){
     		var taxonomyArray = this.state.taxonomies;
     		var items = snap.val();
@@ -55,9 +56,7 @@ let Taxonomy = React.createClass({
     	e.preventDefault();
     	this.handleValidation(res => {
             if(res){
-            	this.firebaseDb.push({
-            		name: this.state.name
-            	})
+            	this.firebaseDb.push({ name: this.state.name })
             	this.setState({name: ''});
             }
         })
@@ -71,7 +70,6 @@ let Taxonomy = React.createClass({
             this.setState({ nameMessage: 'Enter title.' });
             err = true;
         }
-
         if(err){ response (false); return; } else { response (true); return; }
     },
 
@@ -137,8 +135,7 @@ let TaxonomyItem = React.createClass({
 
         return <div className='marginTop' key={ this.state.id }>
 				<div className='taxonomyValue'>{!this.state.error ? (<button type='button' className='close' onClick={this.delete}>Delete</button>) : (<div></div>)}</div>
-
-                    <div className='taxonomyKey'>{this.state.value}</div>
+                <div className='taxonomyKey'>{this.state.value}</div>
                 </div>;
     }
 });
