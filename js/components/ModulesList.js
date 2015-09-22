@@ -4,7 +4,6 @@ import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 import auth from '../auth';
 
-
 let ModulesList = React.createClass({
     mixins: [Router.Navigation],
 
@@ -125,6 +124,19 @@ let ModulesList = React.createClass({
                 }
             }.bind(this))
         }.bind(this))
+        this.firebaseDb.on('child_removed', function(snap){
+            var modulesArray = this.state.modules;
+            var item = snap.key();
+            for (var i=0; i < modulesArray.length; i++) {
+                if (modulesArray[i] != undefined && (modulesArray[i].id === item)) {
+                    if(i>-1){
+                        delete modulesArray[i]
+                    }
+                }
+            }
+            modulesArray.filter(function(e){return e});
+            this.setState({modules: modulesArray})
+        }.bind(this))
     },
 
     getWaitingForApprovalModulesForStudent() {
@@ -176,27 +188,29 @@ let ModulesList = React.createClass({
                 var userModFb = new Firebase(this.usersFb + '/' + userId + '/modules/' + snap.key());
                 moduserFb.once('value', function(snap){
                     var userData = snap.val();
-                    if(!userData.rejected && !userData.approved){
-                        item.studentId = userId;
-                        item.userName = userName;
-                        item.rejected = false;
-                        item.status = "waitingForApproval";
-                        item.comment = userData.comment;
-                        item.solutionUrl = userData.solutionUrl;
+                    if(userData != null){
+                        if(!userData.rejected && !userData.approved){
+                            item.studentId = userId;
+                            item.userName = userName;
+                            item.rejected = false;
+                            item.status = "waitingForApproval";
+                            item.comment = userData.comment;
+                            item.solutionUrl = userData.solutionUrl;
 
-                        modulesForApprovalArray.push(item);
-                        
-                            var arr = {};
-                            for ( var i=0, len=modulesForApprovalArray.length; i < len; i++ )
-                                arr[modulesForApprovalArray[i]['id']] = modulesForApprovalArray[i];
+                            modulesForApprovalArray.push(item);
+                            
+                                var arr = {};
+                                for ( var i=0, len=modulesForApprovalArray.length; i < len; i++ )
+                                    arr[modulesForApprovalArray[i]['id']] = modulesForApprovalArray[i];
 
-                            modulesForApprovalArray = new Array();
-                            for ( var key in arr )
-                                modulesForApprovalArray.push(arr[key]);
-                        
+                                modulesForApprovalArray = new Array();
+                                for ( var key in arr )
+                                    modulesForApprovalArray.push(arr[key]);
+                            
 
-                        this.setState({ modulesForApproval: modulesForApprovalArray })
+                            this.setState({ modulesForApproval: modulesForApprovalArray })
 
+                        }
                     }
                 }.bind(this))
             }
@@ -497,7 +511,6 @@ let ModulesList = React.createClass({
             modulesArray.filter(function(e){return e});
             this.setState({modules: modulesArray})
         }.bind(this))
-        //testirati ovo
         this.firebaseDb.on('child_changed', function(snap){
             if(auth.isAdmin()){
                 var item = snap.key();
