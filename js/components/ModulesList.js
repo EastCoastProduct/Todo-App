@@ -18,7 +18,6 @@ let ModulesList = React.createClass({
             var element = document.body;
             element.className="";
         }
-
         var userStatus = auth.getStatus();
         var userId = auth.getUserId();
 

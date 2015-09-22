@@ -15,8 +15,7 @@ import MyAccountHandler from './components/MyAccount.js';
 import EditUserHandler from './components/EditUser.js';
 import ForgotPasswordHandler from './components/ForgotPassword.js';
 import TaxonomyHandler from './components/Taxonomy.js';
-import HomeHandler from './components/Home.js'
-import ChangeSuccessHandler from './components/ChangeSuccess.js';
+import HomeHandler from './components/Home.js';
 import '../css/style.css';
 
 //header se ne updatea na promjenu user/admin
@@ -108,7 +107,6 @@ let routes = (
         <Route name="edituser" path="/edituser" handler={EditUserHandler}/>
         <Route name="forgotpassword" path="/forgotpassword" handler={ForgotPasswordHandler}/>
         <Route name="taxonomy" path="/taxonomy" handler={TaxonomyHandler}/>
-        <Route name="changesuccess" path="/changesuccess" handler={ChangeSuccessHandler}/>
     </Route>
 );
 

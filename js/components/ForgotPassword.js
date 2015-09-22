@@ -45,7 +45,7 @@ let ForgotPassword = React.createClass({
 				                	}
 				                }.bind(this))
 				            }
-				            this.transitionTo('changesuccess', null, { successMessage: 'Password reset email is sent to your email address!' });
+				            this.transitionTo('login', null, { successMessage: 'Password reset email is sent to your email address!' });
 				        }.bind(this))
 					} else {
 						switch (error.code) {

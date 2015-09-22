@@ -221,7 +221,7 @@ let EditUser = React.createClass({
                                 thisUserDb.once("value", function(snap){
                                     var userData = snap.val();
                                     if(userData.status == "created"){
-                                        this.userFb.update({ status: "active" })
+                                        thisUserDb.update({ status: "active" })
                                         localStorage.userStatus = "active";
                                         this.setState({ passwordSuccessMessage: 'Your password is successfully changed!' });
                                     } else {

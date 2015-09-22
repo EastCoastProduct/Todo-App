@@ -8,7 +8,7 @@ let Login = React.createClass({
 	mixins: [Router.Navigation],
 
 	getInitialState() {
-    	return { error: false, message: '', email: '', password: '' };
+    	return { error: false, message: '', email: '', password: '', passwordResetMessage: this.props.query.successMessage };
     },
 
     componentWillMount() {
@@ -102,6 +102,7 @@ let Login = React.createClass({
 					<img src="https://resilientcoders.s3.amazonaws.com/i/white-skull.png" />
                     <fieldset>
                         <form onSubmit={this.loginUser}>
+                            {this.state.passwordResetMessage ? (<div className='errorMessage'>{this.state.passwordResetMessage}</div>) : (<div></div>)}
                             <input type='email' placeholder="Email" onChange={this.handleEmailChange} />
                             <input type="password" placeholder="Password" onChange={this.handlePasswordChange}/>
 							<input type="submit" value="Login" />
