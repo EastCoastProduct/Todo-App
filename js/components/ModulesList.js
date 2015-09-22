@@ -165,39 +165,41 @@ let ModulesList = React.createClass({
         }.bind(this))
         //var moduserFb = new Firebase(this.approvalDb + '/' + userId);
         this.firebaseDb.on('child_changed', function(snap){
-            var modulesForApprovalArray = this.state.modulesForApproval;
-            var userId = auth.getUserId();
-            var userName = auth.getUser();
-            var item = snap.val();
-            item.id = snap.key();
+            if(!auth.isAdmin()){
+                var modulesForApprovalArray = this.state.modulesForApproval;
+                var userId = auth.getUserId();
+                var userName = auth.getUser();
+                var item = snap.val();
+                item.id = snap.key();
 
-            var moduserFb = new Firebase(this.firebaseDb + '/' + snap.key() + '/users/' + userId);
-            var userModFb = new Firebase(this.usersFb + '/' + userId + '/modules/' + snap.key());
-            moduserFb.once('value', function(snap){
-                var userData = snap.val();
-                if(!userData.rejected && !userData.approved){
-                    item.studentId = userId;
-                    item.userName = userName;
-                    item.rejected = false;
-                    item.status = "waitingForApproval";
-                    item.comment = userData.comment;
-                    item.solutionUrl = userData.solutionUrl;
+                var moduserFb = new Firebase(this.firebaseDb + '/' + snap.key() + '/users/' + userId);
+                var userModFb = new Firebase(this.usersFb + '/' + userId + '/modules/' + snap.key());
+                moduserFb.once('value', function(snap){
+                    var userData = snap.val();
+                    if(!userData.rejected && !userData.approved){
+                        item.studentId = userId;
+                        item.userName = userName;
+                        item.rejected = false;
+                        item.status = "waitingForApproval";
+                        item.comment = userData.comment;
+                        item.solutionUrl = userData.solutionUrl;
 
-                    modulesForApprovalArray.push(item);
-                    if(!auth.isAdmin()){
-                        var arr = {};
-                        for ( var i=0, len=modulesForApprovalArray.length; i < len; i++ )
-                            arr[modulesForApprovalArray[i]['id']] = modulesForApprovalArray[i];
+                        modulesForApprovalArray.push(item);
+                        
+                            var arr = {};
+                            for ( var i=0, len=modulesForApprovalArray.length; i < len; i++ )
+                                arr[modulesForApprovalArray[i]['id']] = modulesForApprovalArray[i];
 
-                        modulesForApprovalArray = new Array();
-                        for ( var key in arr )
-                            modulesForApprovalArray.push(arr[key]);
+                            modulesForApprovalArray = new Array();
+                            for ( var key in arr )
+                                modulesForApprovalArray.push(arr[key]);
+                        
+
+                        this.setState({ modulesForApproval: modulesForApprovalArray })
+
                     }
-
-                    this.setState({ modulesForApproval: modulesForApprovalArray })
-
-                }
-            }.bind(this))
+                }.bind(this))
+            }
         }.bind(this))
     },
 
@@ -497,14 +499,16 @@ let ModulesList = React.createClass({
         }.bind(this))
         //testirati ovo
         this.firebaseDb.on('child_changed', function(snap){
+            if(auth.isAdmin()){
                 var item = snap.key();
                 var changedFb = new Firebase(this.firebaseDb + '/' + item + '/users/');
                 changedFb.on('child_added', function(snapshot){
                     var data = snapshot.val();
-                    if(data.approved || (!data.approved && data.rejected && data.adminComment)){
+                    var dataKey = snapshot.key();
+                    if((data.approved) || (!data.approved && data.rejected && data.adminComment)){
                         var modulesForApprovalArray = this.state.modulesForApproval;
                         for (var i=0; i < modulesForApprovalArray.length; i++) {
-                            if (modulesForApprovalArray[i] != undefined && (modulesForApprovalArray[i].id === item)) {
+                            if (modulesForApprovalArray[i] != undefined && (modulesForApprovalArray[i].id === item && modulesForApprovalArray[i].studentId === dataKey)) {
                                 if(i>-1){
                                     delete modulesForApprovalArray[i]
                                 }
@@ -514,6 +518,7 @@ let ModulesList = React.createClass({
                         this.setState({modulesForApproval: modulesForApprovalArray})
                     }
                 }.bind(this))
+            }
         }.bind(this))
     },
 
@@ -749,7 +754,7 @@ let ModuleItemPreview = React.createClass({
         e.preventDefault();
         this.handleValidation(res => {
             if(res){
-                moduleApprovalFb.update({ approved: false, adminComment: this.state.adminComment, rejected: true });
+                moduleApprovalFb.update({ approved: false, adminComment: this.state.adminComment, rejected: true, updated: true });
                 studentFb.update({ rejected: true })
                 this.setState({ approved: false, adminComment: '', rejected: true })
             }
