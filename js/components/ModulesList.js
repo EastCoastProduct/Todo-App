@@ -175,7 +175,6 @@ let ModulesList = React.createClass({
                 }.bind(this))
             }
         }.bind(this))
-        //var moduserFb = new Firebase(this.approvalDb + '/' + userId);
         this.firebaseDb.on('child_changed', function(snap){
             if(!auth.isAdmin()){
                 var modulesForApprovalArray = this.state.modulesForApproval;
@@ -196,9 +195,7 @@ let ModulesList = React.createClass({
                             item.status = "waitingForApproval";
                             item.comment = userData.comment;
                             item.solutionUrl = userData.solutionUrl;
-
                             modulesForApprovalArray.push(item);
-                            
                                 var arr = {};
                                 for ( var i=0, len=modulesForApprovalArray.length; i < len; i++ )
                                     arr[modulesForApprovalArray[i]['id']] = modulesForApprovalArray[i];
@@ -206,10 +203,7 @@ let ModulesList = React.createClass({
                                 modulesForApprovalArray = new Array();
                                 for ( var key in arr )
                                     modulesForApprovalArray.push(arr[key]);
-                            
-
-                            this.setState({ modulesForApproval: modulesForApprovalArray })
-
+                                this.setState({ modulesForApproval: modulesForApprovalArray })
                         }
                     }
                 }.bind(this))
@@ -311,7 +305,6 @@ let ModulesList = React.createClass({
                                 this.setState({ finishedModules: finishedModulesArray })
                             }
                         }.bind(this))
-
                     }
                 }.bind(this))
             }
@@ -769,7 +762,7 @@ let ModuleItemPreview = React.createClass({
             if(res){
                 moduleApprovalFb.update({ approved: false, adminComment: this.state.adminComment, rejected: true, updated: true });
                 studentFb.update({ rejected: true })
-                this.setState({ approved: false, adminComment: '', rejected: true })
+                this.setState({ approved: false, adminComment: this.state.adminComment, rejected: true })
             }
         })
     },
