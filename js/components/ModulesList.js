@@ -486,6 +486,36 @@ let ModulesList = React.createClass({
                         }.bind(this))
                     }
                 }.bind(this))
+                this.approvalDb.on("child_changed", function(snap) {
+                    var data = snap.val();
+                    if(!data.approved && !data.rejected){
+                        var userId = snap.key();
+                        this.userDataFb = new Firebase(this.usersFb + '/' + userId);
+                        this.userModFb = new Firebase(this.userDataFb + '/modules/' + itemsKey);
+                        this.userDataFb.once("value", function(snapshot) {
+                            var user = snapshot.val();
+                            data.userName = user.first_name + ' ' + user.last_name;
+                            data.studentId = userId;
+                            data.id = itemsKey;
+                            data.title = items.title;
+                            data.status = "waitingForApproval";
+                            data.description = items.description;
+                            data.points = items.points;
+                            data.taxonomy = items.taxonomy;
+                            data.repeatable = items.repeatable;
+                            if(user.status != "inactive"){
+                                this.userModFb.once('value', function(snap){
+                                    var dataR = snap.val();
+                                    if(dataR != null){
+                                        data.repeated = dataR.repeated;
+                                    }
+                                    modulesForApprovalArray.push(data);
+                                    this.setState({ modulesForApproval: modulesForApprovalArray })
+                                }.bind(this))
+                            }
+                        }.bind(this))
+                    }
+                }.bind(this))
             }
             items.id = data.key();
             modulesArray.push(items);
@@ -553,6 +583,7 @@ let ModulesList = React.createClass({
         this.setState({showModuleInfo: false })
     },
     //ovdje jos provjerit jel userov account aktivan
+    //ovo se ne koristi?
     getProgressInfo(id){
         this.setState({ moduleInProgress: "false" });
         var userFb = new Firebase('https://app-todo-list.firebaseio.com/modules/' + id + '/users/');
