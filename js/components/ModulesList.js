@@ -464,21 +464,21 @@ let ModulesList = React.createClass({
                         this.userModFb = new Firebase(this.userDataFb + '/modules/' + itemsKey);
                         this.userDataFb.once("value", function(snapshot) {
                             var user = snapshot.val();
+                            data.userName = user.first_name + ' ' + user.last_name;
+                            data.studentId = userId;
+                            data.id = itemsKey;
+                            data.title = items.title;
+                            data.status = "waitingForApproval";
+                            data.description = items.description;
+                            data.points = items.points;
+                            data.taxonomy = items.taxonomy;
+                            data.repeatable = items.repeatable;
                             if(user.status != "inactive"){
                                 this.userModFb.once('value', function(snap){
                                     var dataR = snap.val();
                                     if(dataR != null){
                                         data.repeated = dataR.repeated;
                                     }
-                                    data.userName = user.first_name + ' ' + user.last_name;
-                                    data.studentId = userId;
-                                    data.id = itemsKey;
-                                    data.title = items.title;
-                                    data.status = "waitingForApproval";
-                                    data.description = items.description;
-                                    data.points = items.points;
-                                    data.taxonomy = items.taxonomy;
-                                    data.repeatable = items.repeatable;
                                     modulesForApprovalArray.push(data);
                                     this.setState({ modulesForApproval: modulesForApprovalArray })
                                 }.bind(this))

@@ -17,7 +17,6 @@ let NewModule = React.createClass({
                 this.transitionTo('edituser', null, {id: userId});
             }
         }
-
 	  	return { title: '', description: '', taxonomy: [], taxonomySelected: 'General', points: '', repeatable: false, module: {}};
 	},
 
