@@ -29,6 +29,7 @@ let NewModule = React.createClass({
 
     componentWillUnmount() {
         this.firebaseDb.off();
+        this.taxonomyDb.off();
     },
 
     getTaxonomy(){

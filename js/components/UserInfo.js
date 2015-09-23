@@ -14,6 +14,7 @@ let UserInfo = React.createClass({
 	componentWillMount() {
         this.firebaseDb = new Firebase('https://app-todo-list.firebaseio.com/');
         this.userFb = new Firebase('https://app-todo-list.firebaseio.com/users/' + this.state.id);
+        this.userModulesFb = new Firebase(this.userFb + '/modules');
         this.getUserData();
         this.userStatus = auth.getStatus();
         this.currentUser = auth.getUserId();
@@ -22,6 +23,7 @@ let UserInfo = React.createClass({
     componentWillUnmount() {
         this.firebaseDb.off();
         this.userFb.off();
+        this.userModulesFb.off();
     },
 
     getUserData() {
@@ -38,7 +40,6 @@ let UserInfo = React.createClass({
                 this.setState({ image: data.image })
             }
             if (data.modules) {
-                this.userModulesFb = new Firebase(this.userFb + '/modules');
                 var modulesArray = this.state.modules;
                 this.userModulesFb.on("child_added", function(snap) {
                     var id = snap.key();
@@ -82,7 +83,16 @@ let UserInfo = React.createClass({
         if (this.userStatus == "created") {
             this.transitionTo('edituser', null, {id: this.currentUser});
         } else {
-            this.userFb.update({ status: "inactive" });
+            var modulesFb = new Firebase(this.userFb + '/modules');
+            modulesFb.on('child_added', function(snap){
+                var dataId = snap.key();
+                if(dataId != null){
+                    var modUserFb = new Firebase(this.firebaseDb + '/modules/' + dataId + '/users/' + this.state.id);
+                    modUserFb.remove();
+                }
+            }.bind(this))
+            modulesFb.remove();
+            this.userFb.update({ status: "inactive", total_points: "0" });
             this.transitionTo('users');
         }
     },

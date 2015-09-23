@@ -4,8 +4,6 @@ import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 import auth from '../auth';
 
-var firebaseDb = new Firebase('https://app-todo-list.firebaseio.com/modules');
-
 let EditModule = React.createClass({
 	mixins: [Router.Navigation],
 
@@ -17,17 +15,21 @@ let EditModule = React.createClass({
 	},
 
 	componentWillMount() {
+        this.firebaseDb = new Firebase('https://app-todo-list.firebaseio.com/modules/' + this.state.id);
         this.taxonomyDb = new Firebase('https://app-todo-list.firebaseio.com/taxonomy');
         this.getModuleData();
         this.getTaxonomy();
     },
 
+    componentWillUnmount() {
+        this.firebaseDb.off();
+        this.taxonomyDb.off();
+    },
+
     getModuleData() {
-        var id = this.state.id;
-        var moduleFb = new Firebase(firebaseDb + '/' + id);
         var title, description, taxonomySelected, points, repeatable;
 
-        moduleFb.once('value', function(snapshot){
+        this.firebaseDb.once('value', function(snapshot){
             var data = snapshot.val();
             title = data.title;
             description = data.description;
@@ -46,10 +48,6 @@ let EditModule = React.createClass({
             taxonomyArray.push(data);
             this.setState({taxonomy: taxonomyArray})
         }.bind(this))
-    },
-
-    componentWillUnmount() {
-        firebaseDb.off();
     },
 
 	inputTitleTextChange(e) {
@@ -76,8 +74,7 @@ let EditModule = React.createClass({
         e.preventDefault();
         this.handleValidation(res => {
             if(res){
-                var moduleFb = new Firebase(firebaseDb + '/' + this.state.id)
-                moduleFb.update({ title: this.state.title, description: this.state.description, taxonomy: this.state.taxonomySelected,
+                this.firebaseDb.update({ title: this.state.title, description: this.state.description, taxonomy: this.state.taxonomySelected,
                     points: this.state.points, repeatable: this.state.repeatable });
                 this.transitionTo('moduleslist');
             }

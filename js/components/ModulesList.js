@@ -30,7 +30,7 @@ let ModulesList = React.createClass({
         this.firebaseDb = new Firebase("https://app-todo-list.firebaseio.com/modules/");
         this.usersFb = new Firebase("https://app-todo-list.firebaseio.com/users/");
         this.taxonomyDb = new Firebase("https://app-todo-list.firebaseio.com/taxonomy/");
-
+        
         this.getTaxonomy();
         if (!auth.isAdmin()) { this.getAllModulesForStudent();
                                this.getFinishedModulesForStudent();
@@ -453,7 +453,6 @@ let ModulesList = React.createClass({
             var items = data.val();
             var itemsKey = data.key();
 
-            var inProgress = this.getProgressInfo(itemsKey);
             items.inProgress = this.state.moduleInProgress;
             if (items.users) {
                 this.approvalDb = new Firebase('https://app-todo-list.firebaseio.com/modules/' + data.key() + '/users/');
@@ -462,22 +461,24 @@ let ModulesList = React.createClass({
                     if(!data.approved && !data.rejected){
                         var userId = snap.key();
                         this.userDataFb = new Firebase(this.usersFb + '/' + userId);
-                        this.userModFb = new Firebase(this.usersFb + '/' + userId + '/modules/' + itemsKey);
+                        this.userModFb = new Firebase(this.userDataFb + '/modules/' + itemsKey);
                         this.userDataFb.once("value", function(snapshot) {
                             var user = snapshot.val();
-                            data.userName = user.first_name + ' ' + user.last_name;
-                            data.studentId = userId;
-                            data.id = itemsKey;
-                            data.title = items.title;
-                            data.status = "waitingForApproval";
-                            data.description = items.description;
-                            data.points = items.points;
-                            data.taxonomy = items.taxonomy;
-                            data.repeatable = items.repeatable;
                             if(user.status != "inactive"){
                                 this.userModFb.once('value', function(snap){
                                     var dataR = snap.val();
-                                    data.repeated = dataR.repeated;
+                                    if(dataR != null){
+                                        data.repeated = dataR.repeated;
+                                    }
+                                    data.userName = user.first_name + ' ' + user.last_name;
+                                    data.studentId = userId;
+                                    data.id = itemsKey;
+                                    data.title = items.title;
+                                    data.status = "waitingForApproval";
+                                    data.description = items.description;
+                                    data.points = items.points;
+                                    data.taxonomy = items.taxonomy;
+                                    data.repeatable = items.repeatable;
                                     modulesForApprovalArray.push(data);
                                     this.setState({ modulesForApproval: modulesForApprovalArray })
                                 }.bind(this))
@@ -506,6 +507,7 @@ let ModulesList = React.createClass({
         this.firebaseDb.on('child_changed', function(snap){
             if(auth.isAdmin()){
                 var item = snap.key();
+                var itemVal = snap.val();
                 var changedFb = new Firebase(this.firebaseDb + '/' + item + '/users/');
                 changedFb.on('child_added', function(snapshot){
                     var data = snapshot.val();
@@ -550,7 +552,7 @@ let ModulesList = React.createClass({
     hideModuleInfo(module){
         this.setState({showModuleInfo: false })
     },
-
+    //ovdje jos provjerit jel userov account aktivan
     getProgressInfo(id){
         this.setState({ moduleInProgress: "false" });
         var userFb = new Firebase('https://app-todo-list.firebaseio.com/modules/' + id + '/users/');
@@ -881,12 +883,6 @@ let ModuleItemPreview = React.createClass({
 });
 
 let ModuleItem = React.createClass({
-    mixins: [Router.Navigation],
-
-    getInitialState() {
-        return { value: this.props.module.title }
-    },
-
     handleShowModuleInfo() {
         this.props.onModuleItemClick(this);
     },
@@ -895,23 +891,14 @@ let ModuleItem = React.createClass({
         var module = this.props.module;
 
         return <a onClick={this.handleShowModuleInfo}>
-                    <div className='moduleItem  itemBackground overflow paddingBottomSmall' key={ module.id }>
-                        <div className='moduleKey'> {this.state.value} </div>
+                    <div className='moduleItem  itemBackground overflow paddingBottomSmall'>
+                        <div className='moduleKey'> {module.title} </div>
                     </div>
                 </a>;
     }
 });
 
 let ModuleItemRejected = React.createClass({
-    mixins: [Router.Navigation],
-
-    getInitialState() {
-        return {
-            moduleIdVal: this.props.rejectedModule.id,
-            nameVal: this.props.rejectedModule.title
-        }
-    },
-
     handleShowModuleInfo() {
         this.props.onRejectedModuleItemClick(this);
     },
@@ -920,24 +907,14 @@ let ModuleItemRejected = React.createClass({
         var rejectedModule = this.props.rejectedModule;
 
         return <a onClick={this.handleShowModuleInfo}>
-                    <div className='moduleItem  itemBackgroundRejected overflow paddingBottomSmall' key={ rejectedModule.moduleId }>
-                        <div className='moduleKey'> {this.state.nameVal} </div>
+                    <div className='moduleItem  itemBackgroundRejected overflow paddingBottomSmall'>
+                        <div className='moduleKey'> {rejectedModule.title} </div>
                     </div>
                 </a>;
     }
 });
 
 let ModuleItemFinished = React.createClass({
-    mixins: [Router.Navigation],
-
-    getInitialState() {
-        return {
-            moduleIdVal: this.props.finishedModule.key,
-            nameVal: this.props.finishedModule.title,
-            deleted: this.props.finishedModule.deleted
-        }
-    },
-
     handleShowModuleInfo() {
         this.props.onFinishedModuleItemClick(this);
     },
@@ -946,14 +923,14 @@ let ModuleItemFinished = React.createClass({
         var finishedModule = this.props.finishedModule;
 
         return <div>
-                {this.state.deleted ? (
-                    <div className='moduleItem  paddingBottomSmall itemBackgroundFinished overflow' key={ this.state.moduleIdVal }>
-                        <div className='moduleKey'> {this.state.nameVal} <span className='fontExtraSmall '>(no longer available)</span> </div>
+                {finishedModule.deleted ? (
+                    <div className='moduleItem  paddingBottomSmall itemBackgroundFinished overflow'>
+                        <div className='moduleKey'> {finishedModule.title} <span className='fontExtraSmall '>(no longer available)</span> </div>
                     </div>
                 ) : (
                     <a onClick={this.handleShowModuleInfo}>
-                        <div className='moduleItem  itemBackgroundFinished overflow paddingBottomSmall' key={ finishedModule.moduleId }>
-                            <div className='moduleKey'> {this.state.nameVal} </div>
+                        <div className='moduleItem  itemBackgroundFinished overflow paddingBottomSmall'>
+                            <div className='moduleKey'> {finishedModule.title} </div>
                         </div>
                     </a>
                 )}
@@ -962,17 +939,6 @@ let ModuleItemFinished = React.createClass({
 });
 
 let ModuleItemForA = React.createClass({
-    mixins: [Router.Navigation],
-
-    getInitialState() {
-        return {
-            nameVal: this.props.moduleForA.title,
-            userVal: this.props.moduleForA.userName,
-            moduleIdVal: this.props.moduleForA.id,
-            studentIdVal: this.props.moduleForA.studentId
-        }
-    },
-
     handleShowModuleInfo() {
         this.props.onWaitingModuleItemClick(this);
     },
@@ -981,17 +947,15 @@ let ModuleItemForA = React.createClass({
         var moduleForA = this.props.moduleForA;
 
         return <a onClick={this.handleShowModuleInfo}>
-                    <div className='moduleItem  itemBackground overflow paddingBottomSmall' key={ moduleForA.moduleId }>
-                        {auth.isAdmin() ? (<div className='moduleKey approved'> {this.state.nameVal} - <b>{this.state.userVal}</b> </div>) :
-                        (<div className='moduleKey'> {this.state.nameVal} </div>)}
+                    <div className='moduleItem  itemBackground overflow paddingBottomSmall'>
+                        {auth.isAdmin() ? (<div className='moduleKey approved'> {moduleForA.title} - <b>{moduleForA.userName}</b> </div>) :
+                        (<div className='moduleKey'> {moduleForA.title} </div>)}
                     </div>
                 </a>;
     }
 });
 
 let ModuleItemSelected = React.createClass({
-    mixins: [Router.Navigation],
-
     handleShowModuleInfo() {
         this.props.onSelectedModuleItemClick(this);
     },
@@ -1000,7 +964,7 @@ let ModuleItemSelected = React.createClass({
         var selectedModule = this.props.selectedModule;
 
         return <a onClick={this.handleShowModuleInfo}>
-                    <div className='moduleItem  itemBackground overflow paddingBottomSmall' key={ selectedModule.id }>
+                    <div className='moduleItem  itemBackground overflow paddingBottomSmall'>
                         <div className='moduleKey'> {selectedModule.title} </div>
                     </div>
                 </a>;

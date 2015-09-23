@@ -17,6 +17,10 @@ let UsersList = React.createClass({
         this.getAllUsers();
     },
 
+    componentWillUnmount() {
+        this.firebaseDb.off();
+    },
+
     getAllUsers() {
         this.firebaseDb.on("child_added", function(data){
             var array = this.state.users;
@@ -43,10 +47,6 @@ let UsersList = React.createClass({
                 }
             }
         }.bind(this));
-    },
-
-    componentWillUnmount() {
-        this.firebaseDb.off();
     },
 
     redirectToNewUser() {

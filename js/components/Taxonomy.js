@@ -105,12 +105,12 @@ let TaxonomyItem = React.createClass({
     componentWillMount(){
         var deleteFb = this.props.onDelete;
         var selected = this.state.value;
-        var moduleFb = new Firebase('https://app-todo-list.firebaseio.com/modules/')
-        moduleFb.orderByChild('taxonomy').startAt(selected).endAt(selected).once('value', function(snap){
+        this.moduleFb = new Firebase('https://app-todo-list.firebaseio.com/modules/')
+        this.moduleFb.orderByChild('taxonomy').startAt(selected).endAt(selected).once('value', function(snap){
             var moduleData = snap.val();
             if(moduleData != null){
                 for (var k in moduleData){
-                    var thismoduleFb = new Firebase(moduleFb + '/' + k);
+                    var thismoduleFb = new Firebase(this.moduleFb + '/' + k);
                     thismoduleFb.once('value', function(snap){
                         var data = snap.val();
                         if(data.taxonomy == selected && data.status == 'active'){
@@ -122,6 +122,10 @@ let TaxonomyItem = React.createClass({
                 }
             }
         }.bind(this))
+    },
+
+    componentWillUnmount(){
+        this.moduleFb.off();
     },
 
     delete(){
