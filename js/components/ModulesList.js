@@ -453,6 +453,7 @@ let ModulesList = React.createClass({
             var items = data.val();
             var itemsKey = data.key();
 
+            var inProgress = this.getProgressInfo(itemsKey);
             items.inProgress = this.state.moduleInProgress;
             if (items.users) {
                 this.approvalDb = new Firebase('https://app-todo-list.firebaseio.com/modules/' + data.key() + '/users/');
