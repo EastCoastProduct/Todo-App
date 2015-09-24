@@ -8,6 +8,12 @@ let UsersList = React.createClass({
     mixins: [Router.Navigation],
 
     getInitialState() {
+        var currentRoutes = this.context.router.getCurrentRoutes();
+        var lastRoute = currentRoutes[currentRoutes.length - 1];
+        if(lastRoute.name != "login"){
+            var element = document.body;
+            element.className="";
+        }
         return { users: [] };
     },
 
