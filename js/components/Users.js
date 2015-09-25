@@ -8,16 +8,21 @@ let UsersList = React.createClass({
     mixins: [Router.Navigation],
 
     getInitialState() {
-        var currentRoutes = this.context.router.getCurrentRoutes();
-        var lastRoute = currentRoutes[currentRoutes.length - 1];
-        if(lastRoute.name != "login"){
-            var element = document.body;
-            element.className="";
-        }
         return { users: [] };
     },
 
     componentWillMount() {
+        if(!auth.loggedIn()){
+            var currentRoutes = this.context.router.getCurrentRoutes();
+            var lastRoute = currentRoutes[currentRoutes.length - 1];
+            if(lastRoute.name == "users"){
+                var element = document.body;
+                element.className="userinfopublic";
+            }
+        } else {
+            var element = document.body;
+            element.className="";
+        }
         this.firebaseDb = new Firebase("https://app-todo-list.firebaseio.com/users/");
         this.currentUser = auth.getUserId();
         this.getAllUsers();
