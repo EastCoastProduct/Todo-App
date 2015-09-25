@@ -11,14 +11,13 @@ import ModulesListHandler from './components/ModulesList.js';
 import NewModuleHandler from './components/NewModule.js';
 import EditModuleHandler from './components/EditModule.js';
 import UserInfoHandler from './components/UserInfo.js';
+import UserInfoPublicHandler from './components/UserInfoPublic.js';
 import MyAccountHandler from './components/MyAccount.js';
 import EditUserHandler from './components/EditUser.js';
 import ForgotPasswordHandler from './components/ForgotPassword.js';
 import TaxonomyHandler from './components/Taxonomy.js';
 import HomeHandler from './components/Home.js';
 import '../css/style.css';
-
-//header se ne updatea na promjenu user/admin
 
 let App = React.createClass({ 
     contextTypes: {
@@ -82,7 +81,7 @@ let App = React.createClass({
                                 <span className='marginForNavigation'><Link to="/users" className='rightLink'>Users </Link></span>
                                 <span className='marginForNavigation'><Link to="/login" className='rightLink'>Login </Link></span>
                             </div>
-                            <div id="sidebarEmpty"></div>
+                            <div id="sidebar"></div>
                             <div id="page-wrap"><RouteHandler /></div>
                         </div>
                     )
@@ -103,6 +102,7 @@ let routes = (
         <Route name="editmodule" path="/editmodule" handler={EditModuleHandler}/>
         <Route name="newmodule" path="/newmodule" handler={NewModuleHandler}/>
         <Route name="userinfo" path="/userinfo/:id" handler={UserInfoHandler}/>
+        <Route name="userinfopublic" path="/userinfopublic/:id" handler={UserInfoPublicHandler}/>
         <Route name="myaccount" path="/myaccount" handler={MyAccountHandler}/>
         <Route name="edituser" path="/edituser" handler={EditUserHandler}/>
         <Route name="forgotpassword" path="/forgotpassword" handler={ForgotPasswordHandler}/>
