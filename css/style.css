@@ -546,7 +546,7 @@ body.login fieldset {
   */
 }
 
-body.login .right {display:none;}
+/*body.login .right {display:none;}*/
 
 body.login #page-wrap {
   background: transparent;
@@ -604,4 +604,12 @@ cursor:pointer;
     #main {
       background:#efefef;
     }
+}
+
+.leftUserInfo{
+  float: left;
+}
+
+.rightUserInfo{
+  float: left;
 }

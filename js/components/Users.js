@@ -83,7 +83,13 @@ let UserItem = React.createClass({
 
     render() {
         var user = this.props.user;
-        return <Link to="userinfo" params={{ id: this.props.user.id }}><div className='userItem marginTop paddingBottomSmall itemBackground overflow' key={ user.id }><div className='moduleKey'>{this.state.firstName}</div></div></Link>;
+        return <div>
+                {auth.loggedIn() ? (
+                    <Link to="userinfo" params={{ id: this.props.user.id }}><div className='userItem marginTop paddingBottomSmall itemBackground overflow' key={ user.id }><div className='moduleKey'>{this.state.firstName}</div></div></Link>
+                ) : (
+                    <Link to="userinfopublic" params={{ id: this.props.user.id }}><div className='userItem marginTop paddingBottomSmall itemBackground overflow' key={ user.id }><div className='moduleKey'>{this.state.firstName}</div></div></Link>
+                )}
+                </div>
     }
 });
 
