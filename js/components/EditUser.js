@@ -29,6 +29,7 @@ let EditUser = React.createClass({
 	componentWillMount() {
 		this.firebaseDb = new Firebase('https://app-todo-list.firebaseio.com/');
         this.userFb = new Firebase('https://app-todo-list.firebaseio.com/users/');
+        this.currentUser = auth.getUserId();
         this.getUserData(this.state.id);
     },
 
@@ -41,7 +42,7 @@ let EditUser = React.createClass({
         var thisUserDb = new Firebase(this.userFb + '/' + id);
         thisUserDb.once("value", function(snapshot){
             var data = snapshot.val();
-            this.setState({ id: id, firstName: data.first_name, lastName: data.last_name, isAdmin: data.isAdmin });
+            this.setState({ id: id, firstName: data.first_name, lastName: data.last_name, isAdmin: data.isAdmin, status: data.status });
             if(data.description){
             	this.setState({ description: data.description })
             } 
@@ -279,6 +280,7 @@ let EditUser = React.createClass({
 
 	render() {
 		return <div>
+                {this.currentUser == this.state.id && this.state.status == "created" ? (<div className='errorMessage'>Please change your password!</div>) : (null)}
                 {this.state.infoSuccessMessage == '' ? (
                     <div>
                         <h2>Change basic info</h2>
