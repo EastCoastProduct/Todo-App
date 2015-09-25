@@ -4,7 +4,7 @@ import Router from 'react-router';
 import { DefaultRoute, Link, Route, RouteHandler, Navigation } from 'react-router';
 import auth from '../auth';
 
-let UserInfo = React.createClass({
+let UserInfoPublic = React.createClass({
 	mixins: [Router.Navigation],
 
 	getInitialState() {
@@ -22,6 +22,13 @@ let UserInfo = React.createClass({
 	},
 
 	componentWillMount() {
+        var currentRoutes = this.context.router.getCurrentRoutes();
+        var lastRoute = currentRoutes[currentRoutes.length - 1];
+        if(lastRoute.name == "userinfopublic"){
+            var element = document.body;
+            element.className="userinfopublic";
+        }
+        
         if(this.state.id != null){
             this.firebaseDb = new Firebase('https://app-todo-list.firebaseio.com/');
             this.userFb = new Firebase('https://app-todo-list.firebaseio.com/users/' + this.state.id);
@@ -228,4 +235,4 @@ let ModuleItem = React.createClass({
     }
   });
 
-export default UserInfo;
+export default UserInfoPublic;
