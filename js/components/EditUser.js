@@ -178,7 +178,7 @@ let EditUser = React.createClass({
     handleValidationChangeEmail(response){
         response = arguments[arguments.length - 1];
         var err = false;
-        var emailRegex = /^[a-z][a-zA-Z0-9_]*(\.[a-zA-Z][a-zA-Z0-9_]*)?@[a-z][a-zA-Z-0-9]*\.[a-z]+(\.[a-z]+)?$/;
+        var emailRegex = /^[0-9a-zA-Z]+([0-9a-zA-Z]*[-._+])*[0-9a-zA-Z]+@[0-9a-zA-Z]+([-.][0-9a-zA-Z]+)*([0-9a-zA-Z]*[.])[a-zA-Z]{2,6}$/;
         if(!emailRegex.test(this.state.oldEmail)){
             this.setState({ oldEmailMessage: 'Enter a valid email address.' }); 
             err = true;
@@ -240,7 +240,7 @@ let EditUser = React.createClass({
     handleValidationChangePassword(response){
         response = arguments[arguments.length - 1];
         var err = false;
-        var emailRegex = /^[a-z][a-zA-Z0-9_]*(\.[a-zA-Z][a-zA-Z0-9_]*)?@[a-z][a-zA-Z-0-9]*\.[a-z]+(\.[a-z]+)?$/;
+        var emailRegex = /^[0-9a-zA-Z]+([0-9a-zA-Z]*[-._+])*[0-9a-zA-Z]+@[0-9a-zA-Z]+([-.][0-9a-zA-Z]+)*([0-9a-zA-Z]*[.])[a-zA-Z]{2,6}$/;
         var passwordRegex = /^(?=.*\d)[0-9a-zA-Z]{6,}$/;
         if(!emailRegex.test(this.state.email)){
             this.setState({ emailMessage: 'Enter a valid email address.' }); 

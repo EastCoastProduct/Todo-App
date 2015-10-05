@@ -84,7 +84,7 @@ let Login = React.createClass({
     handleValidation(response){
         response = arguments[arguments.length - 1];
         var err = false;
-        var emailRegex = /^[a-z][a-zA-Z0-9_]*(\.[a-zA-Z][a-zA-Z0-9_]*)?@[a-z][a-zA-Z-0-9]*\.[a-z]+(\.[a-z]+)?$/;
+        var emailRegex = /^[0-9a-zA-Z]+([0-9a-zA-Z]*[-._+])*[0-9a-zA-Z]+@[0-9a-zA-Z]+([-.][0-9a-zA-Z]+)*([0-9a-zA-Z]*[.])[a-zA-Z]{2,6}$/;
         if(!emailRegex.test(this.state.email)){
             this.setState({ emailMessage: 'Enter a valid email address.' });
             err = true;
